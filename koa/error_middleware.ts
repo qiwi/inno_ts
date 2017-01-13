@@ -10,7 +10,6 @@ export async function errorMiddleware(ctx: Context, next: Function): Promise<any
         error.log();
         ctx.status = parseInt(error.status);
         ctx.body = {
-            status: 'error',
             code: error.code
         };
     }
