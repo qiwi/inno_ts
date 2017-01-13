@@ -1,0 +1,124 @@
+import * as oracledb from 'oracledb';
+import IConnection = oracledb.IConnection;
+import IExecuteReturn = oracledb.IExecuteReturn;
+import IExecuteOptions = oracledb.IExecuteOptions;
+import IResultSet = oracledb.IResultSet;
+import IConnectionAttributes = oracledb.IConnectionAttributes;
+import {ResultError} from "../error";
+
+export const DB_CONNECT_ERROR: string = 'DB_QUERY';
+export const DB_ORACLE_ERROR: string = 'DB_ORACLE_ERROR';
+export const DB_ORACLE_FETCH_ERROR: string = 'DB_ORACLE_FETCH_ERROR';
+export const DB_ORACLE_CLOSE_ERROR: string = 'DB_ORACLE_CLOSE_ERROR';
+export const DB_ORACLE_RELEASE_ERROR: string = 'DB_ORACLE_RELEASE_ERROR';
+
+// TODO temp workaround: we don't have getRows oracledb definition. But we use it, so we add it here.
+declare module 'oracledb' {
+    interface IResultSet {
+       getRows(num: number): any;
+    }
+}
+
+export default class OracleService {
+    private db: IConnection;
+
+    constructor() {}
+
+    /**
+     * Performs connection to database using passed connection params.
+     * @param params
+     * @return {Promise<void>}
+     */
+    async connect(params: IConnectionAttributes): Promise<void> | never {
+        try {
+            this.db = await oracledb.getConnection(params);
+            console.log((new Date()).toString() + ' Oracle connected');
+        } catch (error) {
+            throw new ResultError(DB_CONNECT_ERROR, 500, error.message);
+        }
+    };
+
+    /**
+     * Curried {@link getRows} method: getRows with rows prefetch param.
+     * @param query
+     * @param params
+     * @return {Promise<IExecuteReturn>}
+     */
+    async getManyRows(query: string, params: Array<any> = []): Promise<IExecuteReturn> | never {
+        try {
+            return await this.db.execute(query, params, {resultSet: true, prefetchRows: 500});
+        } catch (error) {
+            throw new ResultError(DB_ORACLE_ERROR, 500, query + '\n' + error.message + '\n' + params.toString());
+        }
+    };
+
+    /**
+     * Fetches rows from result set.
+     * @param resultSet
+     * @param numRows
+     * @return {Promise<Array<any>[]>}
+     */
+    async fetchRows(resultSet: IResultSet, numRows): Promise<Array<any>[]> | never {
+        let rows;
+        try {
+            rows = await resultSet.getRows(numRows);
+        } catch (error) {
+            await this.closeResultSet(resultSet);
+            throw new ResultError(DB_ORACLE_FETCH_ERROR, 500, error.message);
+        }
+
+        if (rows.length == 0) {    // no rows, or no more rows
+            await this.closeResultSet(resultSet); // always close the result set
+            return [];
+        }
+
+        return rows;
+    };
+
+    /**
+     * Closes result set (optional - closes db connection).
+     * @param resultSet
+     * @param closeConnection
+     * @return {Promise<void>}
+     */
+    async closeResultSet(resultSet: IResultSet, closeConnection: boolean = false): Promise<void> | never {
+        try {
+            await resultSet.close();
+        } catch (error) {
+            throw new ResultError(DB_ORACLE_CLOSE_ERROR, 500, error.message);
+        }
+
+        if (closeConnection) {
+            await this.closeConnection();
+        }
+    };
+
+    /**
+     * Closes db conn.
+     * @return Promise<void>
+     */
+    async closeConnection(): Promise<void> {
+        try {
+            await this.db.release();
+        } catch (error) {
+            throw new ResultError(DB_ORACLE_RELEASE_ERROR, 500, error.message);
+        }
+    };
+
+    /**
+     * Executes sql and returns rows from executed result.
+     * @param sql
+     * @param bindParams
+     * @param options
+     * @return {Promise<Array<any>>}
+     */
+    async getRows(sql: string, bindParams: Array<any> = [], options: IExecuteOptions = {}): Promise<{}[]> | never {
+        try {
+            const result: IExecuteReturn = await this.db.execute(sql, bindParams, options);
+
+            return result.rows;
+        } catch (error) {
+            throw new ResultError(DB_ORACLE_ERROR, 500, sql + '\n' + error.message + '\n' + bindParams.toString());
+        }
+    };
+};
