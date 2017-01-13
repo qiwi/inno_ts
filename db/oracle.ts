@@ -20,21 +20,35 @@ declare module 'oracledb' {
 }
 
 export default class OracleService {
-    private db: IConnection;
+    private connectionParams: IConnectionAttributes;
+    private connection: IConnection;
 
-    constructor() {}
+    constructor(connectionParams: IConnectionAttributes) {
+        this.connectionParams = connectionParams;
+    }
 
     /**
      * Performs connection to database using passed connection params.
-     * @param params
      * @return {Promise<void>}
      */
-    async connect(params: IConnectionAttributes): Promise<void> | never {
+    public async connect(): Promise<void> | never {
         try {
-            this.db = await oracledb.getConnection(params);
+            this.connection = await oracledb.getConnection(this.connectionParams);
             console.log((new Date()).toString() + ' Oracle connected');
         } catch (error) {
             throw new ResultError(DB_CONNECT_ERROR, 500, error.message);
+        }
+    };
+
+    /**
+     * Closes db conn.
+     * @return {Promise<void>}
+     */
+    public async disconnect(): Promise<void> {
+        try {
+            await this.connection.release();
+        } catch (error) {
+            throw new ResultError(DB_ORACLE_RELEASE_ERROR, 500, error.message);
         }
     };
 
@@ -46,7 +60,7 @@ export default class OracleService {
      */
     async getManyRows(query: string, params: Array<any> = []): Promise<IExecuteReturn> | never {
         try {
-            return await this.db.execute(query, params, {resultSet: true, prefetchRows: 500});
+            return await this.connection.execute(query, params, {resultSet: true, prefetchRows: 500});
         } catch (error) {
             throw new ResultError(DB_ORACLE_ERROR, 500, query + '\n' + error.message + '\n' + params.toString());
         }
@@ -89,19 +103,7 @@ export default class OracleService {
         }
 
         if (closeConnection) {
-            await this.closeConnection();
-        }
-    };
-
-    /**
-     * Closes db conn.
-     * @return Promise<void>
-     */
-    async closeConnection(): Promise<void> {
-        try {
-            await this.db.release();
-        } catch (error) {
-            throw new ResultError(DB_ORACLE_RELEASE_ERROR, 500, error.message);
+            await this.disconnect();
         }
     };
 
@@ -114,7 +116,7 @@ export default class OracleService {
      */
     async getRows(sql: string, bindParams: Array<any> = [], options: IExecuteOptions = {}): Promise<{}[]> | never {
         try {
-            const result: IExecuteReturn = await this.db.execute(sql, bindParams, options);
+            const result: IExecuteReturn = await this.connection.execute(sql, bindParams, options);
 
             return result.rows;
         } catch (error) {
