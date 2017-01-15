@@ -1,0 +1,46 @@
+{
+  "name": "inno_ts",
+  "version": "1.0.0",
+  "description": "Core ecom rnd lib",
+  "main": "build/index.js",
+  "typings": "js/index",
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@types/koa": "^2.0.37",
+    "crypto": "0.0.3",
+    "fs": "0.0.1-security",
+    "koa": "^2.0.0",
+    "koa-bodyparser": "^2.3.0",
+    "koa-router": "^7.1.0",
+    "oracledb": "^1.12.2",
+    "pg": "^6.1.2",
+    "pg-pool": "^1.6.0",
+    "promisify-node": "^0.4.0",
+    "validator": "^6.2.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.qiwi.com/ecom-rnd/inno_ts.git"
+  },
+  "keywords": [
+    "typescript"
+  ],
+  "author": "d.lukanin@qiwi.com",
+  "bugs": {
+    "url": "https://github.qiwi.com/ecom-rnd/inno_ts/issues"
+  },
+  "homepage": "https://github.qiwi.com/ecom-rnd/inno_ts/",
+  "devDependencies": {
+    "@types/koa": "^2.0.37",
+    "@types/koa-bodyparser": "^3.0.22",
+    "@types/koa-router": "^7.0.21",
+    "@types/oracledb": "^1.11.33",
+    "@types/pg": "^6.1.34",
+    "@types/pg-pool": "0.0.2",
+    "@types/promisify-node": "^0.4.0",
+    "@types/validator": "^5.7.35",
+    "typescript": "^2.1.5"
+  }
+}

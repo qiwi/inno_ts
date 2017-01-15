@@ -3,7 +3,7 @@ import * as bodyParser from 'koa-bodyparser';
 import {errorMiddleware} from './error_middleware';
 import * as Router from 'koa-router';
 
-export default class App {
+export class App {
     public koa: Koa;
 
     constructor(config, router: Router) {
@@ -13,10 +13,6 @@ export default class App {
     private initKoa(config, router: Router): void {
         const app = new Koa();
         const appPort = config.get('port');
-
-        // const rrouter = new Router();
-        // const ctrl = new Bills();
-        // rrouter.get('/test/', ctrl.replicate);
 
         app.use(bodyParser());
         app.use(errorMiddleware);
