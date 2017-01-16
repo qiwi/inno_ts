@@ -8,7 +8,7 @@ export async function errorMiddleware(ctx: Context, next: Function): Promise<any
         const error = ResultError.isError(err) ? err : new ResultError('INTERNAL', 500, err);
 
         error.log();
-        ctx.status = parseInt(error.status);
+        ctx.status = error.status;
         ctx.body = {
             code: error.code
         };

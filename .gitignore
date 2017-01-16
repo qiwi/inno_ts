@@ -1,4 +1,4 @@
-*.js
+src/*.js
 *.js.map
 logs
 *.log
