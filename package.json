@@ -1,6 +1,6 @@
 {
   "name": "inno_ts",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "description": "Core ecom rnd lib",
   "main": "build/index.js",
   "typings": "build/index",
@@ -22,16 +22,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.qiwi.com/ecom-rnd/inno_ts.git"
+    "url": "git+https://github.com/qiwi/inno_ts.git"
   },
   "keywords": [
     "typescript"
   ],
-  "author": "d.lukanin@qiwi.com",
+  "author": "dylukanin@gmail.com",
   "bugs": {
-    "url": "https://github.qiwi.com/ecom-rnd/inno_ts/issues"
+    "url": "https://github.com/qiwi/inno_ts/issues"
   },
-  "homepage": "https://github.qiwi.com/ecom-rnd/inno_ts/",
+  "homepage": "https://github.com/qiwi/inno_ts/issues",
   "devDependencies": {
     "@types/koa": "^2.0.37",
     "@types/koa-bodyparser": "^3.0.22",
