@@ -9,11 +9,6 @@ export declare const DB_ORACLE_ERROR: string;
 export declare const DB_ORACLE_FETCH_ERROR: string;
 export declare const DB_ORACLE_CLOSE_ERROR: string;
 export declare const DB_ORACLE_RELEASE_ERROR: string;
-declare module 'oracledb' {
-    interface IResultSet {
-        getRows(num: number): any;
-    }
-}
 export default class OracleService {
     private connectionParams;
     private connection;

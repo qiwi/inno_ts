@@ -12,13 +12,6 @@ export const DB_ORACLE_FETCH_ERROR: string = 'DB_ORACLE_FETCH_ERROR';
 export const DB_ORACLE_CLOSE_ERROR: string = 'DB_ORACLE_CLOSE_ERROR';
 export const DB_ORACLE_RELEASE_ERROR: string = 'DB_ORACLE_RELEASE_ERROR';
 
-// TODO temp workaround: we don't have getRows oracledb definition. But we use it, so we add it here.
-declare module 'oracledb' {
-    interface IResultSet {
-       getRows(num: number): any;
-    }
-}
-
 export default class OracleService {
     private connectionParams: IConnectionAttributes;
     private connection: IConnection;
