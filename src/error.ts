@@ -1,8 +1,16 @@
 export const ERROR_PREFIX = 'ERROR_';
 
-export class ResultError {
-    public static isError(value: any): boolean {
-        return value instanceof ResultError;
+export interface IResultError {
+    log(): void;
+
+    code: string;
+    status: number;
+    logObject: any;
+}
+
+export class ResultError implements IResultError {
+    public static isError(obj: any): obj is IResultError {
+        return obj instanceof ResultError;
     }
 
     public code: string;
