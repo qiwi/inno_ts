@@ -18,4 +18,7 @@ npm run build
  Например:
  
  `import {Controller} from 'inno_ts'`
+
+Важный момент: для использование OracleService на данный момент необходима
+зависимость на oracledb в родительском проекте.
  

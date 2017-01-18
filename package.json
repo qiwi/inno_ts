@@ -34,6 +34,7 @@
     "@types/koa": "^2.0.37",
     "@types/koa-bodyparser": "^3.0.22",
     "@types/koa-router": "^7.0.21",
+    "@types/oracledb": "^1.11.33",
     "@types/pg": "^6.1.34",
     "@types/pg-pool": "0.0.2",
     "@types/promisify-node": "^0.4.0",
