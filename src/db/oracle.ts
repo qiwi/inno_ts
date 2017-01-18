@@ -12,7 +12,7 @@ export const DB_ORACLE_FETCH_ERROR: string = 'DB_ORACLE_FETCH_ERROR';
 export const DB_ORACLE_CLOSE_ERROR: string = 'DB_ORACLE_CLOSE_ERROR';
 export const DB_ORACLE_RELEASE_ERROR: string = 'DB_ORACLE_RELEASE_ERROR';
 
-export default class OracleService {
+export class OracleService {
     private connectionParams: IConnectionAttributes;
     private connection: IConnection;
 
