@@ -8,3 +8,4 @@ export * from './koa/error_middleware';
 export * from './koa/controller';
 export * from './koa/app';
 export * from './db/pg';
+export * from './db/oracle';
