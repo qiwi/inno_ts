@@ -21,7 +21,7 @@ export class PgService {
      * @return {Promise<QueryResult>}
      * @private
      */
-    private async __run(query: string, params: Array<any> = []): Promise<QueryResult> | never {
+    private async __run(query: string, params: Array<any> = []): Promise<QueryResult> {
         try {
             return await this.pool.query(query, params);
         } catch (err) {
@@ -35,7 +35,7 @@ export class PgService {
      * @param params
      * @return {Promise<QueryResult>}
      */
-    public async run(query: string, params?: Array<any>): Promise<QueryResult> | never {
+    public async run(query: string, params?: Array<any>): Promise<QueryResult> {
         return await this.__run(query, params);
     }
 
@@ -45,7 +45,7 @@ export class PgService {
      * @param params
      * @return {Promise<Array<any>>}
      */
-    public async getRows(query: string, params?: Array<any>): Promise<Array<any>> | never {
+    public async getRows(query: string, params?: Array<any>): Promise<Array<any>> {
         let items = await this.__run(query, params);
         return items.rows;
     }
@@ -56,7 +56,7 @@ export class PgService {
      * @param params
      * @return {Promise<Array<any>>}
      */
-    public async getRow(query: string, params?: Array<any>): Promise<any> | never {
+    public async getRow(query: string, params?: Array<any>): Promise<any> {
         const items = await this.__run(query, params);
         const rows = items.rows || [];
         if (rows.length == 0) {
@@ -77,7 +77,7 @@ export class PgService {
      * @param params
      * @return {Promise<any>}
      */
-    public async mustGetRow(errorCode: number, query: string, params?: Array<any>): Promise<any> | never {
+    public async mustGetRow(errorCode: number, query: string, params?: Array<any>): Promise<any> {
         const row = await this.getRow(query, params);
         if (row === false) {
             throw new ResultError(NO_ROW_ERROR, errorCode);

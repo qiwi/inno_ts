@@ -13,10 +13,10 @@ export default class OracleService {
     private connectionParams;
     private connection;
     constructor(connectionParams: IConnectionAttributes);
-    connect(): Promise<void> | never;
+    connect(): Promise<void>;
     disconnect(): Promise<void>;
-    getManyRows(query: string, params?: Array<any>): Promise<IExecuteReturn> | never;
-    fetchRows(resultSet: IResultSet, numRows: any): Promise<Array<any>[]> | never;
-    closeResultSet(resultSet: IResultSet, closeConnection?: boolean): Promise<void> | never;
-    getRows(sql: string, bindParams?: Array<any>, options?: IExecuteOptions): Promise<{}[]> | never;
+    getManyRows(query: string, params?: Array<any>): Promise<IExecuteReturn>;
+    fetchRows(resultSet: IResultSet, numRows: any): Promise<Array<any>[]>;
+    closeResultSet(resultSet: IResultSet, closeConnection?: boolean): Promise<void>;
+    getRows(sql: string, bindParams?: Array<any>, options?: IExecuteOptions): Promise<Array<any>>;
 }

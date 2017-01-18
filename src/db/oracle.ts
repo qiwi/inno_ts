@@ -24,7 +24,7 @@ export default class OracleService {
      * Performs connection to database using passed connection params.
      * @return {Promise<void>}
      */
-    public async connect(): Promise<void> | never {
+    public async connect(): Promise<void> {
         try {
             this.connection = await oracledb.getConnection(this.connectionParams);
             console.log((new Date()).toString() + ' Oracle connected');
@@ -51,7 +51,7 @@ export default class OracleService {
      * @param params
      * @return {Promise<IExecuteReturn>}
      */
-    async getManyRows(query: string, params: Array<any> = []): Promise<IExecuteReturn> | never {
+    public async getManyRows(query: string, params: Array<any> = []): Promise<IExecuteReturn> {
         try {
             return await this.connection.execute(query, params, {resultSet: true, prefetchRows: 500});
         } catch (error) {
@@ -65,7 +65,7 @@ export default class OracleService {
      * @param numRows
      * @return {Promise<Array<any>[]>}
      */
-    async fetchRows(resultSet: IResultSet, numRows): Promise<Array<any>[]> | never {
+    public async fetchRows(resultSet: IResultSet, numRows): Promise<Array<any>[]> {
         let rows;
         try {
             rows = await resultSet.getRows(numRows);
@@ -88,7 +88,7 @@ export default class OracleService {
      * @param closeConnection
      * @return {Promise<void>}
      */
-    async closeResultSet(resultSet: IResultSet, closeConnection: boolean = false): Promise<void> | never {
+    public async closeResultSet(resultSet: IResultSet, closeConnection: boolean = false): Promise<void> {
         try {
             await resultSet.close();
         } catch (error) {
@@ -107,7 +107,7 @@ export default class OracleService {
      * @param options
      * @return {Promise<Array<any>>}
      */
-    async getRows(sql: string, bindParams: Array<any> = [], options: IExecuteOptions = {}): Promise<{}[]> | never {
+    public async getRows(sql: string, bindParams: Array<any> = [], options: IExecuteOptions = {}): Promise<Array<any>> {
         try {
             const result: IExecuteReturn = await this.connection.execute(sql, bindParams, options);
 

@@ -8,8 +8,8 @@ export declare class PgService {
     pool: Pool;
     constructor(pgPool: Pool);
     private __run(query, params?);
-    run(query: string, params?: Array<any>): Promise<QueryResult> | never;
-    getRows(query: string, params?: Array<any>): Promise<Array<any>> | never;
-    getRow(query: string, params?: Array<any>): Promise<any> | never;
-    mustGetRow(errorCode: number, query: string, params?: Array<any>): Promise<any> | never;
+    run(query: string, params?: Array<any>): Promise<QueryResult>;
+    getRows(query: string, params?: Array<any>): Promise<Array<any>>;
+    getRow(query: string, params?: Array<any>): Promise<any>;
+    mustGetRow(errorCode: number, query: string, params?: Array<any>): Promise<any>;
 }
