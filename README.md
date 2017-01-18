@@ -17,5 +17,5 @@ npm run build
  
  Например:
  
- `import {Controller} from 'inno_ts`
+ `import {Controller} from 'inno_ts'`
  
