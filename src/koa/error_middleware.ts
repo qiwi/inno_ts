@@ -10,7 +10,7 @@ export async function errorMiddleware(ctx: Context, next: Function): Promise<any
         error.log();
         ctx.status = error.status;
         ctx.body = {
-            code: error.code
+            error: error.code
         };
     }
 }
