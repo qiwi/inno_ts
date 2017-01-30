@@ -1,4 +1,5 @@
 import * as Koa from "koa";
+import * as jwt from "koa-jwt";
 import * as bodyParser from 'koa-bodyparser';
 import {errorMiddleware} from './error_middleware';
 import * as Router from 'koa-router';
@@ -16,6 +17,7 @@ export class App {
 
         app.use(bodyParser());
         app.use(errorMiddleware);
+        app.use(jwt({secret: config.get('secret')}).unless({path: [new RegExp('^\/public')]}));
         app.use(router.routes());
         app.use(router.allowedMethods());
 
