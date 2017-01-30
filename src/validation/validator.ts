@@ -4,6 +4,8 @@ import {ResultError} from '../error';
 export const VALIDATION_NO_INT = 'VALIDATION_NO_INT';
 export const VALIDATION_NO_STRING = 'VALIDATION_NO_STRING';
 export const VALIDATION_NO_EMAIL = 'VALIDATION_NO_EMAIL';
+export const VALIDATION_INT_OUT_OF_BOUNDS = 'VALIDATION_INT_OUT_OF_BOUNDS';
+export const VALIDATION_STRING_OUT_OF_BOUNDS = 'VALIDATION_STRING_OUT_OF_BOUNDS';
 
 export const DEFAULT_CODE = 400;
 
@@ -11,12 +13,19 @@ export class Validator {
     /**
      * Проверяет, что значение - целое число. undefined не принимает.
      */
-    static isInt(value: any): any | never {
+    static isInt(value: any, min: number = Number.MIN_SAFE_INTEGER, max: number = Number.MAX_SAFE_INTEGER): number | never {
+        value = Validator.isString(value);
         if (!isNaN(value) && validator.isInt(value)) {
-            return value;
-        } else {
-            throw new ResultError(VALIDATION_NO_INT, DEFAULT_CODE, value);
+            value = parseInt(value);
+
+            if (value < max && value > min) {
+                return value;
+            }
+
+            throw new ResultError(VALIDATION_INT_OUT_OF_BOUNDS, DEFAULT_CODE, value);
         }
+
+        throw new ResultError(VALIDATION_NO_INT, DEFAULT_CODE, value);
     }
 
     /**
@@ -27,15 +36,19 @@ export class Validator {
     }
 
     /**
-     * Проверяет, что значение - строка, эскейпит, тримит. undefined вызовет ошибку.
+     * Проверяет, что значение - строка, эскейпит, тримит.
      */
-    static isString(value: any): any | never {
-        let processedValue;
-        if (typeof value !== 'string' || (processedValue = value.trim()).length === 0) {
-            throw new ResultError(VALIDATION_NO_STRING, DEFAULT_CODE, value);
+    static isString(value: any, min: number = 0, max: number = 256): any | never {
+        if (typeof value == 'string') {
+            const processedValue = value.trim();
+            if (processedValue.length > min && processedValue.length < max) {
+                return Validator.escape(processedValue);
+            }
+
+            throw new ResultError(VALIDATION_STRING_OUT_OF_BOUNDS, DEFAULT_CODE, value);
         }
 
-        return Validator.escape(processedValue);
+        throw new ResultError(VALIDATION_NO_STRING, DEFAULT_CODE, value);
     }
 
     /**
@@ -50,54 +63,4 @@ export class Validator {
             throw new ResultError(VALIDATION_NO_EMAIL, DEFAULT_CODE, value);
         }
     }
-
-
-};
-
-
-/*
- func IsInt(item string) (int) {
- num, err := strconv.Atoi(item)
- checkError(err, "VALIDATION_NOT_INT")
- return num
- }
-
- func IsCode(item string) (string) {
- isOk, err := regexp.MatchString("^[a-zA-Z0-9_]+$", item)
- checkError(err, "VALIDATION_CODE_REGEXP")
-
- if (isOk) {
- return item
- }
- sendErrorByCode("VALIDATION_NOT_CODE")
- return ""
- }
-
- func IsValidStrArr(items []string, validateFunc StringValidator, required bool) []string {
- if (items == nil) {
- if (required){
- sendErrorByCode("NO_VALID_STR_ARR")
- return nil
- }else{
- return make([]string, 0)
- }
-
- }
- results := make([]string, len(items))
- for i, item := range items {
- results[i] = validateFunc(item)
- }
- return results
- }
-
-
- func checkError(err error, errCode string) {
- if err != nil {
- panic(safeerror.New(err, errCode))
- }
- }
-
- func sendErrorByCode(errCode string) {
- panic(safeerror.NewByCode(errCode))
- }
- */
+}
