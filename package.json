@@ -43,8 +43,13 @@
   "devDependencies": {
     "@types/chai": "^3.4.34",
     "@types/mocha": "^2.2.38",
+    "@types/request": "0.0.39",
+    "@types/request-promise": "^4.1.33",
     "chai": "^3.5.0",
+    "koa-router": "^7.1.0",
     "mocha": "^3.2.0",
+    "request": "^2.79.0",
+    "request-promise": "^4.1.1",
     "typescript": "^2.1.5"
   }
 }

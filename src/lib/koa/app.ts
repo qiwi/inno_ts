@@ -10,7 +10,7 @@ export class App {
         this.initKoa(config, router);
     }
 
-    private initKoa(config, router: Router): void {
+    private initKoa(config: any, router: Router): void {
         const app = new Koa();
         const appPort = config.get('port');
 
