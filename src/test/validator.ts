@@ -1,7 +1,6 @@
 import {expect} from 'chai';
-import {Validator, VALIDATION_NO_INT, DEFAULT_CODE} from '../src/validation/validator';
-import {ResultError} from "../src/error";
-import {VALIDATION_NO_STRING} from "../src/validation/validator";
+import {Validator, VALIDATION_NO_INT, DEFAULT_CODE} from '../validation/validator';
+import {ResultError} from "../error";
 
 describe('validator', function() {
     describe('isInt', function() {

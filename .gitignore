@@ -13,7 +13,6 @@ lib-cov
 coverage
 .nyc_output
 .lock-wscript
-build/Release
 node_modules
 jspm_packages
 .npm
