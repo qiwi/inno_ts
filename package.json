@@ -10,7 +10,7 @@
     "test": "mocha ./build/test/"
   },
   "dependencies": {
-    "@types/jsonwebtoken": "^7.2.0",
+    "@types/config": "0.0.31",
     "@types/koa": "^2.0.37",
     "@types/koa-bodyparser": "^3.0.22",
     "@types/koa-router": "^7.0.21",
@@ -21,7 +21,6 @@
     "@types/validator": "^5.7.35",
     "crypto": "0.0.3",
     "fs": "0.0.1-security",
-    "jsonwebtoken": "^7.2.1",
     "koa": "^2.0.0",
     "koa-bodyparser": "^2.3.0",
     "koa-jwt": "^1.3.1",
@@ -50,6 +49,7 @@
     "@types/request": "0.0.39",
     "@types/request-promise": "^4.1.33",
     "chai": "^3.5.0",
+    "jsonwebtoken": "^7.2.1",
     "koa-router": "^7.1.0",
     "mocha": "^3.2.0",
     "request": "^2.79.0",

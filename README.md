@@ -10,8 +10,20 @@
 ```
 npm run build
 ```
-Модуль сбилдится в `/build`. Там же будут декларации для ts.
-Сами сурсы лежат в `/src`.
+Или
+```
+npm run watch
+```
+Sources: `/src/lib`
+## Tests
+
+```
+npm run build
+```
+```
+npm run test
+```
+Sources: `/src/test`
 
 ## Использование в коде
  
