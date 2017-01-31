@@ -2,6 +2,7 @@ import * as Koa from "koa";
 import * as jwt from "koa-jwt";
 import * as bodyParser from 'koa-bodyparser';
 import {errorMiddleware} from './error_middleware';
+import {successMiddleware} from './success_middleware';
 import * as Router from 'koa-router';
 import * as config from 'config';
 import IConfig = config.IConfig;
@@ -30,6 +31,7 @@ export class App {
         }
         app.use(router.routes());
         app.use(router.allowedMethods());
+        app.use(successMiddleware);
 
         app.on('error', (err, ctx) => console.log('REQUEST_ERROR', err, ctx));
         process.on('uncaughtException', (err) => console.log('PROCESS_EXCEPTION', err.stack));

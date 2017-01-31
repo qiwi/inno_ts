@@ -3,6 +3,8 @@ import {App} from '../index';
 import * as request from 'request-promise';
 import {expect} from 'chai';
 import * as jsonWebToken from 'jsonwebtoken';
+import * as Koa from 'koa';
+import Context = Koa.Context;
 
 const router = new Router();
 
@@ -56,11 +58,13 @@ const commonConfigMock = {
 };
 
 router
-    .post(publicResource, function(ctx) {
-        ctx.body = {result: 1};
+    .post(publicResource, function(ctx: Context, next: Function) {
+        ctx.body = 1;
+        next();
     })
-    .post(protectedResource, function(ctx) {
-        ctx.body = {result: 2};
+    .post(protectedResource, function(ctx: Context, next: Function) {
+        ctx.body = 2;
+        next();
     });
 
 describe('koa', async function () {

@@ -1,7 +1,7 @@
 import {ResultError} from '../error';
 import {Context} from 'koa';
 
-export async function errorMiddleware(ctx: Context, next: Function): Promise<any> {
+export async function errorMiddleware(ctx: Context, next: Function): Promise<void> {
     try {
         await next();
     } catch (err) {
