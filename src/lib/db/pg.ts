@@ -1,4 +1,4 @@
-import {ResultError} from '../error';
+import {InnoError} from '../error/error';
 import * as pgPool from 'pg-pool';
 import Pool = pgPool.Pool;
 import {QueryResult} from "pg";
@@ -25,7 +25,7 @@ export class PgService {
         try {
             return await this.pool.query(query, params);
         } catch (err) {
-            throw new ResultError(DB_QUERY, 500, query);
+            throw new InnoError(DB_QUERY, query);
         }
     }
 
@@ -80,7 +80,7 @@ export class PgService {
     public async mustGetRow(errorCode: number, query: string, params?: Array<any>): Promise<any> {
         const row = await this.getRow(query, params);
         if (row === false) {
-            throw new ResultError(NO_ROW_ERROR, errorCode);
+            throw new InnoError(NO_ROW_ERROR, {}, errorCode);
         }
         return row;
     }

@@ -1,13 +1,5 @@
 import * as validator from 'validator';
-import {ResultError} from '../error';
-
-export const VALIDATION_NO_INT = 'VALIDATION_NO_INT';
-export const VALIDATION_NO_STRING = 'VALIDATION_NO_STRING';
-export const VALIDATION_NO_EMAIL = 'VALIDATION_NO_EMAIL';
-export const VALIDATION_INT_OUT_OF_BOUNDS = 'VALIDATION_INT_OUT_OF_BOUNDS';
-export const VALIDATION_STRING_OUT_OF_BOUNDS = 'VALIDATION_STRING_OUT_OF_BOUNDS';
-
-export const DEFAULT_CODE = 400;
+import {ValidationError} from "../error/validation";
 
 export class Validator {
     /**
@@ -22,10 +14,10 @@ export class Validator {
                 return value;
             }
 
-            throw new ResultError(VALIDATION_INT_OUT_OF_BOUNDS, DEFAULT_CODE, value);
+            throw new ValidationError(ValidationError.INT_OUT_OF_BOUNDS, value);
         }
 
-        throw new ResultError(VALIDATION_NO_INT, DEFAULT_CODE, value);
+        throw new ValidationError(ValidationError.NO_INT, value);
     }
 
     /**
@@ -45,10 +37,10 @@ export class Validator {
                 return Validator.escape(processedValue);
             }
 
-            throw new ResultError(VALIDATION_STRING_OUT_OF_BOUNDS, DEFAULT_CODE, value);
+            throw new ValidationError(ValidationError.STRING_OUT_OF_BOUNDS, value);
         }
 
-        throw new ResultError(VALIDATION_NO_STRING, DEFAULT_CODE, value);
+        throw new ValidationError(ValidationError.NO_STRING, value);
     }
 
     /**
@@ -60,7 +52,7 @@ export class Validator {
         if (validator.isEmail(email)) {
             return email;
         } else {
-            throw new ResultError(VALIDATION_NO_EMAIL, DEFAULT_CODE, value);
+            throw new ValidationError(ValidationError.NO_EMAIL, value);
         }
     }
 }

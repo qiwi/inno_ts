@@ -1,6 +1,6 @@
 import {expect} from 'chai';
-import {Validator, VALIDATION_NO_INT, DEFAULT_CODE} from '../lib/validation/validator';
-import {ResultError} from "../lib/error";
+import {Validator} from '../lib/validation/validator';
+import {ValidationError} from "../lib/error/validation";
 
 describe('validator', function() {
     describe('isInt', function() {
@@ -9,16 +9,16 @@ describe('validator', function() {
         });
 
         it('boolean', function() {
-            expect(function() {Validator.isInt(true)}).to.throw(ResultError);
+            expect(function() {Validator.isInt(true)}).to.throw(ValidationError);
         });
 
         it('object', function() {
-            expect(function() {Validator.isInt({})}).to.throw(ResultError);
+            expect(function() {Validator.isInt({})}).to.throw(ValidationError);
         });
 
         it('Infinity', function() {
-            expect(function() {Validator.isInt(Infinity)}).to.throw(ResultError);
-            expect(function() {Validator.isInt(-Infinity)}).to.throw(ResultError);
+            expect(function() {Validator.isInt(Infinity)}).to.throw(ValidationError);
+            expect(function() {Validator.isInt(-Infinity)}).to.throw(ValidationError);
         });
     });
 
@@ -29,15 +29,15 @@ describe('validator', function() {
 
         it('long string', function() {
             const arr = new Array(2000);
-            expect(function() {Validator.isString(arr.toString())}).to.throw(ResultError);
+            expect(function() {Validator.isString(arr.toString())}).to.throw(ValidationError);
         });
 
         it('empty string', function() {
-            expect(function() {Validator.isString('')}).to.throw(ResultError);
+            expect(function() {Validator.isString('')}).to.throw(ValidationError);
         });
 
         it('spaces', function() {
-            expect(function() {Validator.isString('   ')}).to.throw(ResultError);
+            expect(function() {Validator.isString('   ')}).to.throw(ValidationError);
         });
     })
 });

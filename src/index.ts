@@ -1,4 +1,4 @@
-export * from './lib/error';
+export * from './lib/error/error';
 export * from './lib/fs';
 export * from './lib/hash';
 export * from './lib/validation/interfaces';

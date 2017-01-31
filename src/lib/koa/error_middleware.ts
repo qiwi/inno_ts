@@ -1,5 +1,6 @@
-import {ResultError} from '../error';
+import {InnoError} from '../error/error';
 import {Context} from 'koa';
+import {ValidationError} from "../error/validation";
 
 export async function errorMiddleware(ctx: Context, next: Function): Promise<void> {
     try {
@@ -9,15 +10,22 @@ export async function errorMiddleware(ctx: Context, next: Function): Promise<voi
         // TODO move common error codes to single place
         // koa-jwt request error interceptor
         if (err.status == 401) {
-            error = new ResultError('AUTH_TOKEN_IS_INVALID', 401, err);
+            error = new InnoError(InnoError.AUTH, err, 401);
         } else {
-            error = ResultError.isError(err) ? err : new ResultError('INTERNAL', 500, err);
+            error = err instanceof InnoError ? err : new InnoError(InnoError.INTERNAL, err);
         }
 
-        error.log();
+        console.error(error.toString());
         ctx.status = error.status;
-        ctx.body = {
+
+        const result: any = {
             error: error.code
         };
+
+        if (error instanceof ValidationError) {
+            result.additionalInfo = error.logObject;
+        }
+
+        ctx.body = result;
     }
 }
