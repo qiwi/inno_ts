@@ -1,7 +1,10 @@
 import * as Koa from "koa";
+import * as jwt from "koa-jwt";
 import * as bodyParser from 'koa-bodyparser';
 import {errorMiddleware} from './error_middleware';
 import * as Router from 'koa-router';
+import * as config from 'config';
+import IConfig = config.IConfig;
 
 export class App {
     public koa: Koa;
@@ -10,12 +13,21 @@ export class App {
         this.initKoa(config, router);
     }
 
-    private initKoa(config, router: Router): void {
+    private initKoa(config: IConfig, router: Router): void {
         const app = new Koa();
         const appPort = config.get('port');
+        let jwtSecret = config.has('jwt.secret') ? config.get('jwt.secret') : null;
 
         app.use(bodyParser());
         app.use(errorMiddleware);
+        if (jwtSecret) {
+            app.use(jwt({secret: jwtSecret})
+                .unless({
+                    path: [
+                        new RegExp(config.get<string>('jwt.publicPath'))
+                    ]
+                }));
+        }
         app.use(router.routes());
         app.use(router.allowedMethods());
 
@@ -26,7 +38,6 @@ export class App {
         this.koa = app;
     }
 }
-
 
 // непереведенные старые части
 /*
