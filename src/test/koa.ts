@@ -6,6 +6,8 @@ import * as jsonWebToken from 'jsonwebtoken';
 
 const router = new Router();
 
+const host = 'http://localhost';
+
 const jwtPort = 9888;
 const jwtSecret = 'test-secret';
 const jwtPublicPath = '^\/public';
@@ -15,6 +17,9 @@ const commonPort = 9889;
 const publicResource = '/public/test';
 const protectedResource = '/test';
 
+function makeRequestAddress(port: number, resource: string): string {
+    return `${host}:${port}${resource}`;
+}
 
 const jwtConfigMock = {
     get: function(key: string) {
@@ -67,7 +72,7 @@ describe('koa', async function () {
     });
 
     it('serves requests', async function() {
-        const response = await request.post(`http://localhost:${jwtPort}${publicResource}`, {
+        const response = await request.post(makeRequestAddress(jwtPort, publicResource), {
             form: {},
             json: true
         });
@@ -75,7 +80,7 @@ describe('koa', async function () {
     });
 
     it('returns error when accessing protected resource with no key', async function() {
-        const response = await request.post(`http://localhost:${jwtPort}${protectedResource}`, {
+        const response = await request.post(makeRequestAddress(jwtPort, protectedResource), {
             form: {},
             json: true,
             simple: false
@@ -85,7 +90,7 @@ describe('koa', async function () {
 
     it('serves protected request with passed key', async function() {
         const token = jsonWebToken.sign({foo: 1}, jwtSecret);
-        const response = await request.post(`http://localhost:${jwtPort}${protectedResource}`, {
+        const response = await request.post(makeRequestAddress(jwtPort, protectedResource), {
             form: {},
             json: true,
             auth: {
@@ -96,7 +101,7 @@ describe('koa', async function () {
     });
 
     it('makes all routes unprotected w/o jwt config', async function() {
-        const response = await request.post(`http://localhost:${commonPort}${protectedResource}`, {
+        const response = await request.post(makeRequestAddress(commonPort, protectedResource), {
             form: {},
             json: true
         });

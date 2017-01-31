@@ -21,7 +21,12 @@ export class App {
         app.use(bodyParser());
         app.use(errorMiddleware);
         if (jwtSecret) {
-            app.use(jwt({secret: jwtSecret}).unless({path: [new RegExp(config.get<string>('jwt.publicPath'))]}));
+            app.use(jwt({secret: jwtSecret})
+                .unless({
+                    path: [
+                        new RegExp(config.get<string>('jwt.publicPath'))
+                    ]
+                }));
         }
         app.use(router.routes());
         app.use(router.allowedMethods());
@@ -33,7 +38,6 @@ export class App {
         this.koa = app;
     }
 }
-
 
 // непереведенные старые части
 /*
