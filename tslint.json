@@ -1,0 +1,58 @@
+{
+    "extends": "tslint:recommended",
+    "rulesDirectory": "node_modules/tslint-eslint-rules/dist/rules",
+    "rules": {
+        "array-type": false,
+        "no-console": false,
+        "quotemark": false,
+        "eofline": false,
+        "ordered-imports": "any",
+        "object-literal-sort-keys": false,
+        "trailing-comma": [
+            true,
+            {
+                "multiline": "never",
+                "singleline": "never"
+            }
+        ],
+        "promise-function-async": true,
+        "only-arrow-functions": false,
+        "no-shadowed-variable": false,
+        "member-access": false,
+        "radix": false,
+        "typedef": [
+            true,
+            "call-signature",
+            "parameter",
+            "property-declaration",
+            "member-variable-declaration"
+        ],
+        "whitespace": [
+            true,
+            "check-branch",
+            "check-decl",
+            "check-operator",
+            "check-module",
+            "check-separator",
+            "check-type",
+            "check-typecast"
+        ],
+        "typedef-whitespace": [
+            true,
+            {
+                "call-signature": "nospace",
+                "index-signature": "nospace",
+                "parameter": "nospace",
+                "property-declaration": "nospace",
+                "variable-declaration": "nospace"
+            },
+            {
+                "call-signature": "onespace",
+                "index-signature": "onespace",
+                "parameter": "onespace",
+                "property-declaration": "onespace",
+                "variable-declaration": "onespace"
+            }
+        ]
+    }
+}

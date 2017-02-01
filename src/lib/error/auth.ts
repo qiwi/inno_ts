@@ -1,10 +1,10 @@
 import {InnoError, IInnoErrorOptions} from "./error";
 
 export class AuthError extends InnoError {
-    public static readonly TOKEN_IS_INVALID = 'TOKEN_IS_INVALID';
-    public static readonly AUTH_REJECTED = 'AUTH_REJECTED';
+    static readonly TOKEN_IS_INVALID: string = 'TOKEN_IS_INVALID';
+    static readonly AUTH_REJECTED: string = 'AUTH_REJECTED';
 
-    public static defaultOptions: IInnoErrorOptions = {
+    static defaultOptions: IInnoErrorOptions = {
         code: AuthError.TOKEN_IS_INVALID,
         innerDetails: {},
         details: {},

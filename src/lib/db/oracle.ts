@@ -24,7 +24,7 @@ export class OracleService {
      * Performs connection to database using passed connection params.
      * @return {Promise<void>}
      */
-    public async connect(): Promise<void> {
+    async connect(): Promise<void> {
         try {
             this.connection = await oracledb.getConnection(this.connectionParams);
             console.log((new Date()).toString() + ' Oracle connected');
@@ -40,7 +40,7 @@ export class OracleService {
      * Closes db conn.
      * @return {Promise<void>}
      */
-    public async disconnect(): Promise<void> {
+    async disconnect(): Promise<void> {
         try {
             await this.connection.release();
         } catch (error) {
@@ -57,7 +57,7 @@ export class OracleService {
      * @param params
      * @return {Promise<IExecuteReturn>}
      */
-    public async getManyRows(query: string, params: Array<any> = []): Promise<IExecuteReturn> {
+    async getManyRows(query: string, params: Array<any> = []): Promise<IExecuteReturn> {
         try {
             return await this.connection.execute(query, params, {resultSet: true, prefetchRows: 500});
         } catch (error) {
@@ -74,7 +74,7 @@ export class OracleService {
      * @param numRows
      * @return {Promise<Array<any>[]>}
      */
-    public async fetchRows(resultSet: IResultSet, numRows): Promise<Array<any>[]> {
+    async fetchRows(resultSet: IResultSet, numRows: number): Promise<Array<any>[]> {
         let rows;
         try {
             rows = await resultSet.getRows(numRows);
@@ -86,7 +86,7 @@ export class OracleService {
             });
         }
 
-        if (rows.length == 0) {    // no rows, or no more rows
+        if (rows.length === 0) {    // no rows, or no more rows
             await this.closeResultSet(resultSet); // always close the result set
             return [];
         }
@@ -100,7 +100,7 @@ export class OracleService {
      * @param closeConnection
      * @return {Promise<void>}
      */
-    public async closeResultSet(resultSet: IResultSet, closeConnection: boolean = false): Promise<void> {
+    async closeResultSet(resultSet: IResultSet, closeConnection: boolean = false): Promise<void> {
         try {
             await resultSet.close();
         } catch (error) {
@@ -122,7 +122,7 @@ export class OracleService {
      * @param options
      * @return {Promise<Array<any>>}
      */
-    public async getRows(sql: string, bindParams: Array<any> = [], options: IExecuteOptions = {}): Promise<Array<any>> {
+    async getRows(sql: string, bindParams: Array<any> = [], options: IExecuteOptions = {}): Promise<Array<any>> {
         try {
             const result: IExecuteReturn = await this.connection.execute(sql, bindParams, options);
 

@@ -3,14 +3,15 @@ import {ItemValidator} from '../lib/validation/item_validator';
 import {ValidationError} from "../lib/error/validation";
 import {IValidator} from "../lib/validation/interfaces";
 
-const longString = (new Array(2000)).toString();
+const testString = (new Array(2000)).toString();
 let itemValidator: IValidator;
 
+/* tslint:disable:typedef */
 describe('validator', function() {
     before(function(done) {
         itemValidator = new ItemValidator({
             numericStringWithSpaces: ' 12312312312  ',
-            longString: longString,
+            longString: testString,
             emptyString: '',
             stringWithSpaces: '    ',
             boolean: true,
@@ -28,7 +29,7 @@ describe('validator', function() {
 
         it('returns valid error details', function(done) {
             try {
-                itemValidator.isInt('boolean')
+                itemValidator.isInt('boolean');
             } catch (error) {
                 expect(error).to.be.instanceof(ValidationError);
                 expect(error.code).to.eq('ERROR_VALIDATION_NO_STRING');
@@ -41,20 +42,20 @@ describe('validator', function() {
         });
 
         it('numeric string with small bounds', function() {
-            expect(function() {itemValidator.isInt('numericStringWithSpaces', 0, 5)}).to.throw(ValidationError);
+            expect(function() { itemValidator.isInt('numericStringWithSpaces', 0, 5); }).to.throw(ValidationError);
         });
 
         it('boolean', function() {
-            expect(function() {itemValidator.isInt('boolean')}).to.throw(ValidationError);
+            expect(function() { itemValidator.isInt('boolean'); }).to.throw(ValidationError);
         });
 
         it('object', function() {
-            expect(function() {itemValidator.isInt('object')}).to.throw(ValidationError);
+            expect(function() { itemValidator.isInt('object'); }).to.throw(ValidationError);
         });
 
         it('Infinity', function() {
-            expect(function() {itemValidator.isInt('plusInf')}).to.throw(ValidationError);
-            expect(function() {itemValidator.isInt('minusInf')}).to.throw(ValidationError);
+            expect(function() { itemValidator.isInt('plusInf'); }).to.throw(ValidationError);
+            expect(function() { itemValidator.isInt('minusInf'); }).to.throw(ValidationError);
         });
     });
 
@@ -65,28 +66,28 @@ describe('validator', function() {
 
         it('returns valid error details', function(done) {
             try {
-                itemValidator.isString('longString')
+                itemValidator.isString('longString');
             } catch (error) {
                 expect(error).to.be.instanceof(ValidationError);
                 expect(error.code).to.eq('ERROR_VALIDATION_STRING_OUT_OF_BOUNDS');
                 expect(error.details).to.eql({
                     invalidField: 'longString',
-                    invalidValue: longString
+                    invalidValue: testString
                 });
                 done();
             }
         });
 
         it('string with small bounds', function() {
-            expect(function() {itemValidator.isString('numericStringWithSpaces', 0, 5)}).to.throw(ValidationError);
+            expect(function() { itemValidator.isString('numericStringWithSpaces', 0, 5); }).to.throw(ValidationError);
         });
 
         it('empty string', function() {
-            expect(function() {itemValidator.isString('emptyString')}).to.throw(ValidationError);
+            expect(function() { itemValidator.isString('emptyString'); }).to.throw(ValidationError);
         });
 
         it('spaces', function() {
-            expect(function() {itemValidator.isString('stringWithSpaces')}).to.throw(ValidationError);
+            expect(function() { itemValidator.isString('stringWithSpaces'); }).to.throw(ValidationError);
         });
-    })
+    });
 });

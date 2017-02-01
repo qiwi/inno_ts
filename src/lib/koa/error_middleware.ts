@@ -8,8 +8,7 @@ export async function errorMiddleware(ctx: Context, next: Function): Promise<voi
     } catch (err) {
         let error;
         // koa-jwt request error interceptor
-        if (err.status == 401) {
-            err.stack = ''; // NOTE we don't need stack, we know why this error is thrown
+        if (err.status === 401) {
             error = new AuthError({
                 innerDetails: {
                     headers: ctx.request.headers

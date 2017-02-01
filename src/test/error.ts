@@ -1,9 +1,10 @@
 import {expect} from 'chai';
 import {InnoError} from "../lib/error/error";
 import {ValidationError} from "../lib/error/validation";
+/* tslint:disable:typedef */
 describe('error', function() {
-    it('should produce valid error message', function(done) {
-        const date = (new Date).toISOString();
+    it('should produce valid error message', function(done: Function) {
+        const date = (new Date()).toISOString();
 
         const expected = '\nERROR_CODE: ERROR_VALIDATION_NO_STRING \nERROR_HTTP_STATUS: 400 ' +
             '\nERROR_INNER_DETAILS: {\n  "foo": 1\n} ' +
@@ -13,7 +14,7 @@ describe('error', function() {
                 code: ValidationError.NO_STRING,
                 innerDetails: {foo: 1}
             });
-        } catch(error) {
+        } catch (error) {
             expect(error.name).to.eq('ValidationError');
             // TODO use regular expr
             expect(error.message.substring(date.length + 1, error.message.length)).to.eq(expected);

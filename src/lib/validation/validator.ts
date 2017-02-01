@@ -5,7 +5,10 @@ export class Validator {
     /**
      * Проверяет, что значение - целое число. undefined не принимает.
      */
-    static isInt(value: any, min: number = Number.MIN_SAFE_INTEGER, max: number = Number.MAX_SAFE_INTEGER): number | never {
+    static isInt(value: any,
+                 min: number = Number.MIN_SAFE_INTEGER,
+                 max: number = Number.MAX_SAFE_INTEGER
+    ): number | never {
         value = Validator.isString(value);
         if (!isNaN(value) && validator.isInt(value)) {
             value = parseInt(value);
@@ -35,7 +38,7 @@ export class Validator {
      * Проверяет, что значение - строка, эскейпит, тримит.
      */
     static isString(value: any, min: number = 0, max: number = 256): any | never {
-        if (typeof value == 'string') {
+        if (typeof value === 'string') {
             const processedValue = value.trim();
             if (processedValue.length > min && processedValue.length < max) {
                 return Validator.escape(processedValue);

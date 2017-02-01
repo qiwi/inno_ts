@@ -1,16 +1,16 @@
 import {InnoError, IInnoErrorOptions} from "./error";
 
 export class ValidationError extends InnoError {
-    public static readonly VALIDATION = 'VALIDATION';
+    static readonly VALIDATION: string = 'VALIDATION';
 
-    public static readonly NO_STRING = 'NO_STRING';
-    public static readonly NO_INT = 'NO_INT';
-    public static readonly NO_EMAIL = 'NO_EMAIL';
+    static readonly NO_STRING: string = 'NO_STRING';
+    static readonly NO_INT: string = 'NO_INT';
+    static readonly NO_EMAIL: string = 'NO_EMAIL';
 
-    public static readonly INT_OUT_OF_BOUNDS = 'INT_OUT_OF_BOUNDS';
-    public static readonly STRING_OUT_OF_BOUNDS = 'STRING_OUT_OF_BOUNDS';
+    static readonly INT_OUT_OF_BOUNDS: string = 'INT_OUT_OF_BOUNDS';
+    static readonly STRING_OUT_OF_BOUNDS: string = 'STRING_OUT_OF_BOUNDS';
 
-    public static defaultOptions: IInnoErrorOptions = {
+    static defaultOptions: IInnoErrorOptions = {
         code: ValidationError.VALIDATION,
         innerDetails: {},
         details: {},

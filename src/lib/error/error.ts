@@ -18,19 +18,19 @@ export interface IInnoErrorOptions {
 }
 
 export class InnoError extends Error {
-    public static readonly INTERNAL = 'INTERNAL';
-    public static defaultOptions: IInnoErrorOptions = {
+    static readonly INTERNAL: string = 'INTERNAL';
+    static defaultOptions: IInnoErrorOptions = {
         code: InnoError.INTERNAL,
         innerDetails: {},
         details: {},
         status: 500
     };
-    public errorPrefix = 'ERROR_';
-    public code: string;
-    public details: any;
-    public status: number;
+    errorPrefix: string = 'ERROR_';
+    code: string;
+    details: any;
+    status: number;
 
-    public get message() {
+    get message(): string {
         return (new Date()).toISOString() +
             ' \nERROR_CODE: ' + this.code +
             ' \nERROR_HTTP_STATUS: ' + this.status +
@@ -40,11 +40,23 @@ export class InnoError extends Error {
 
     protected innerDetails: any;
 
-    private _jsonReplacer(key, value) {
+    constructor(options: IInnoErrorOptions = {}) {
+        super();
+        this.name = this.constructor.name;
+
+        const processedOptions = Object.assign({}, InnoError.defaultOptions, options);
+
+        this.code = this.errorPrefix + processedOptions.code;
+        this.status = processedOptions.status;
+        this.details = processedOptions.details;
+        this.innerDetails = processedOptions.innerDetails;
+    }
+
+    private _jsonReplacer(key: string, value: any): any {
         if (value instanceof Error) {
             const error = {};
 
-            Object.getOwnPropertyNames(value).forEach(function (key) {
+            Object.getOwnPropertyNames(value).forEach((key) => {
                 error[key] = value[key];
             });
 
@@ -60,17 +72,5 @@ export class InnoError extends Error {
 
     private _getDetails(): any {
         return JSON.stringify(this.details, this._jsonReplacer, 2);
-    }
-
-    constructor(options: IInnoErrorOptions = {}) {
-        super();
-        this.name = this.constructor.name;
-
-        const processedOptions = Object.assign({}, InnoError.defaultOptions, options);
-
-        this.code = this.errorPrefix + processedOptions.code;
-        this.status = processedOptions.status;
-        this.details = processedOptions.details;
-        this.innerDetails = processedOptions.innerDetails;
     }
 }

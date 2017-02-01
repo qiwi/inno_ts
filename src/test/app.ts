@@ -28,7 +28,7 @@ function makeRequestAddress(port: number, resource: string): string {
 }
 
 const jwtConfigMock = {
-    get: function(key: string) {
+    get: (key: string) => {
         switch (key) {
             case 'port':
                 return jwtPort;
@@ -36,52 +36,61 @@ const jwtConfigMock = {
                 return jwtSecret;
             case 'jwt.publicPath':
                 return jwtPublicPath;
+            default:
+                return '';
         }
     },
-    has: function(key: string) {
+    has: (key: string) => {
         switch (key) {
             case 'jwt.secret':
                 return true;
+            default:
+                return '';
         }
     }
 };
 
 const commonConfigMock = {
-    get: function(key: string) {
+    get: (key: string) => {
         switch (key) {
             case 'port':
-                return commonPort
+                return commonPort;
+            default:
+                return '';
         }
     },
-    has: function(key: string) {
+    has: (key: string) => {
         switch (key) {
             case 'jwt.secret':
                 return false;
+            default:
+                return '';
         }
     }
 };
 
 router
-    .post(publicResource, async function(ctx: Context, next: Function) {
+    .post(publicResource, async function(ctx: Context, next: Function): Promise<void> {
         ctx.body = 1;
         await next();
     })
-    .post(protectedResource, async function(ctx: Context, next: Function) {
+    .post(protectedResource, async function(ctx: Context, next: Function): Promise<void> {
         ctx.body = 2;
         await next();
     })
-    .get(publicResourceWithError, async function(ctx: Context, next: Function) {
+    .get(publicResourceWithError, async function(ctx: Context, next: Function): Promise<void> {
         throw new Error('Test error');
     })
-    .post(publicResourceWithValidationError, async function(ctx: Context, next: Function) {
+    .post(publicResourceWithValidationError, async function(ctx: Context, next: Function): Promise<void> {
         throw new ValidationError({
             code: ValidationError.NO_EMAIL,
             details: 'test'
         });
     });
 
-describe('app', async function () {
-    before(function(done) {
+/* tslint:disable:typedef */
+describe('app', async function(): Promise<void> {
+    before(function(done: Function) {
         // TODO !!!!!! DANGER ZONE - refactor me
         const jwtApp = new App(jwtConfigMock, router);
         const app = new App(commonConfigMock, router);

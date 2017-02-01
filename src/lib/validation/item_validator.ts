@@ -4,9 +4,9 @@ import {InnoError} from "../error/error";
 import {ValidationError} from "../error/validation";
 
 class ItemValidator implements IValidator {
-    item: {};
+    item: any;
 
-    constructor(item) {
+    constructor(item: any) {
         this.item = item;
     }
 
@@ -53,7 +53,7 @@ class ItemValidator implements IValidator {
 // NOTE !!! Wrapper hack for validator - wraps all ItemValidator methods in try/catch
 
 function wrap(fn: Function): Function {
-    return function(field): any | never {
+    return function(field: string): any | never {
         try {
             return fn.apply(this, [].slice.call(arguments, 0));
         } catch (error) {
@@ -66,7 +66,7 @@ function wrap(fn: Function): Function {
 
             throw err;
         }
-    }
+    };
 }
 
 Object.getOwnPropertyNames(ItemValidator.prototype).forEach((key: string) => {
