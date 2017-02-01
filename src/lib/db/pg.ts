@@ -25,7 +25,10 @@ export class PgService {
         try {
             return await this.pool.query(query, params);
         } catch (err) {
-            throw new InnoError(DB_QUERY, query);
+            throw new InnoError({
+                code: DB_QUERY,
+                innerDetails: query
+            });
         }
     }
 
@@ -35,8 +38,9 @@ export class PgService {
      * @param params
      * @return {Promise<QueryResult>}
      */
-    public async run(query: string, params?: Array<any>): Promise<QueryResult> {
-        return await this.__run(query, params);
+    public async run(query: string, params?: Array<any>): Promise<boolean> {
+        await this.__run(query, params);
+        return true;
     }
 
     /**
@@ -77,10 +81,13 @@ export class PgService {
      * @param params
      * @return {Promise<any>}
      */
-    public async mustGetRow(errorCode: number, query: string, params?: Array<any>): Promise<any> {
+    public async mustGetRow(errorCode: string, query: string, params?: Array<any>): Promise<any> {
         const row = await this.getRow(query, params);
         if (row === false) {
-            throw new InnoError(NO_ROW_ERROR, {}, errorCode);
+            throw new InnoError({
+                code: errorCode,
+                innerDetails: {},
+            });
         }
         return row;
     }

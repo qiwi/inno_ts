@@ -14,10 +14,14 @@ export class Validator {
                 return value;
             }
 
-            throw new ValidationError(ValidationError.INT_OUT_OF_BOUNDS, value);
+            throw new ValidationError({
+                code: ValidationError.INT_OUT_OF_BOUNDS
+            });
         }
 
-        throw new ValidationError(ValidationError.NO_INT, value);
+        throw new ValidationError({
+            code: ValidationError.NO_INT
+        });
     }
 
     /**
@@ -37,22 +41,28 @@ export class Validator {
                 return Validator.escape(processedValue);
             }
 
-            throw new ValidationError(ValidationError.STRING_OUT_OF_BOUNDS, value);
+            throw new ValidationError({
+                code: ValidationError.STRING_OUT_OF_BOUNDS
+            });
         }
 
-        throw new ValidationError(ValidationError.NO_STRING, value);
+        throw new ValidationError({
+            code: ValidationError.NO_STRING
+        });
     }
 
     /**
      * Проверяет, что передан email + lowercase+trim+escape
      */
     static isEmail(value: any): string | never {
-        const email = Validator.isString(value).toLowerCase();
+        const email = Validator.isString(Validator.isString(value)).toLowerCase();
 
         if (validator.isEmail(email)) {
             return email;
         } else {
-            throw new ValidationError(ValidationError.NO_EMAIL, value);
+            throw new ValidationError({
+                code: ValidationError.NO_EMAIL
+            });
         }
     }
 }

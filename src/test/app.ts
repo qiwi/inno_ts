@@ -6,6 +6,7 @@ import * as jsonWebToken from 'jsonwebtoken';
 import * as Koa from 'koa';
 import Context = Koa.Context;
 import {ValidationError} from "../lib/error/validation";
+import {AuthError} from "../lib/error/auth";
 
 const router = new Router();
 
@@ -73,7 +74,10 @@ router
         throw new Error('Test error');
     })
     .post(publicResourceWithValidationError, async function(ctx: Context, next: Function) {
-        throw new ValidationError(ValidationError.NO_EMAIL, 'dfdffd');
+        throw new ValidationError({
+            code: ValidationError.NO_EMAIL,
+            details: 'test'
+        });
     });
 
 describe('app', async function () {
@@ -137,9 +141,8 @@ describe('app', async function () {
                 json: true,
                 simple: false
             });
-            console.log(response);
             expect(response.error).to.eq('ERROR_VALIDATION_NO_EMAIL');
-            expect(response.additionalInfo).to.eq('dfdffd');
+            expect(response.details).to.eq('test');
         });
     });
 });

@@ -29,7 +29,10 @@ export class OracleService {
             this.connection = await oracledb.getConnection(this.connectionParams);
             console.log((new Date()).toString() + ' Oracle connected');
         } catch (error) {
-            throw new InnoError(DB_CONNECT_ERROR, error.message);
+            throw new InnoError({
+                code: DB_CONNECT_ERROR,
+                innerDetails: error.message
+            });
         }
     };
 
@@ -41,7 +44,10 @@ export class OracleService {
         try {
             await this.connection.release();
         } catch (error) {
-            throw new InnoError(DB_ORACLE_RELEASE_ERROR, error.message);
+            throw new InnoError({
+                code: DB_ORACLE_RELEASE_ERROR,
+                innerDetails: error.message
+            });
         }
     };
 
@@ -55,7 +61,10 @@ export class OracleService {
         try {
             return await this.connection.execute(query, params, {resultSet: true, prefetchRows: 500});
         } catch (error) {
-            throw new InnoError(DB_ORACLE_ERROR, query + '\n' + error.message + '\n' + params.toString());
+            throw new InnoError({
+                code: DB_ORACLE_ERROR,
+                innerDetails: query + '\n' + error.message + '\n' + params.toString()
+            });
         }
     };
 
@@ -71,7 +80,10 @@ export class OracleService {
             rows = await resultSet.getRows(numRows);
         } catch (error) {
             await this.closeResultSet(resultSet);
-            throw new InnoError(DB_ORACLE_FETCH_ERROR, error.message);
+            throw new InnoError({
+                code: DB_ORACLE_FETCH_ERROR,
+                innerDetails: error.message
+            });
         }
 
         if (rows.length == 0) {    // no rows, or no more rows
@@ -92,7 +104,10 @@ export class OracleService {
         try {
             await resultSet.close();
         } catch (error) {
-            throw new InnoError(DB_ORACLE_CLOSE_ERROR, error.message);
+            throw new InnoError({
+                code: DB_ORACLE_FETCH_ERROR,
+                innerDetails: error.message
+            });
         }
 
         if (closeConnection) {
@@ -113,7 +128,10 @@ export class OracleService {
 
             return result.rows;
         } catch (error) {
-            throw new InnoError(DB_ORACLE_ERROR, sql + '\n' + error.message + '\n' + bindParams.toString());
+            throw new InnoError({
+                code: DB_ORACLE_ERROR,
+                innerDetails: sql + '\n' + error.message + '\n' + bindParams.toString()
+            });
         }
     };
-};
+}

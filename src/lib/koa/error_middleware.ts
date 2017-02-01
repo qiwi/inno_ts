@@ -1,18 +1,24 @@
 import {InnoError} from '../error/error';
 import {Context} from 'koa';
-import {ValidationError} from "../error/validation";
+import {AuthError} from "../error/auth";
 
 export async function errorMiddleware(ctx: Context, next: Function): Promise<void> {
     try {
         await next();
     } catch (err) {
         let error;
-        // TODO move common error codes to single place
         // koa-jwt request error interceptor
         if (err.status == 401) {
-            error = new InnoError(InnoError.AUTH, err, 401);
+            err.stack = ''; // NOTE we don't need stack, we know why this error is thrown
+            error = new AuthError({
+                innerDetails: {
+                    headers: ctx.request.headers
+                }
+            });
         } else {
-            error = err instanceof InnoError ? err : new InnoError(InnoError.INTERNAL, err);
+            error = err instanceof InnoError ? err : new InnoError({
+                innerDetails: err
+            });
         }
 
         console.error(error.toString());
@@ -22,9 +28,7 @@ export async function errorMiddleware(ctx: Context, next: Function): Promise<voi
             error: error.code
         };
 
-        if (error instanceof ValidationError) {
-            result.additionalInfo = error.logObject;
-        }
+        result.details = error.details;
 
         ctx.body = result;
     }
