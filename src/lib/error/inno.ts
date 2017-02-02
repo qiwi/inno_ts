@@ -1,6 +1,6 @@
-import {InnoError} from "./error";
+import {BaseError} from "./base";
 
-export class DefaultError extends InnoError {
+export class InnoError extends BaseError {
     constructor(code: string, status?: number, innerDetails: any = {}) {
         super({});
         this.code = this.errorPrefix + code;

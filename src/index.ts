@@ -9,5 +9,5 @@ export * from './lib/koa/app';
 export * from './lib/db/pg';
 export * from './lib/db/oracle';
 export * from './lib/error/auth';
-export * from './lib/error/default';
+export * from './lib/error/inno';
 export * from './lib/error/validation';

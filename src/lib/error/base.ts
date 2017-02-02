@@ -17,10 +17,10 @@ export interface IInnoErrorOptions {
     status?: number;
 }
 
-export class InnoError extends Error {
+export class BaseError extends Error {
     static readonly INTERNAL: string = 'INTERNAL';
     static defaultOptions: IInnoErrorOptions = {
-        code: InnoError.INTERNAL,
+        code: BaseError.INTERNAL,
         innerDetails: {},
         details: {},
         status: 500
@@ -44,7 +44,7 @@ export class InnoError extends Error {
         super();
         this.name = this.constructor.name;
 
-        const processedOptions = Object.assign({}, InnoError.defaultOptions, options);
+        const processedOptions = Object.assign({}, BaseError.defaultOptions, options);
 
         this.code = this.errorPrefix + processedOptions.code;
         this.status = processedOptions.status;

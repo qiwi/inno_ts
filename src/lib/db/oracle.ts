@@ -4,7 +4,7 @@ import IExecuteReturn = oracledb.IExecuteReturn;
 import IExecuteOptions = oracledb.IExecuteOptions;
 import IResultSet = oracledb.IResultSet;
 import IConnectionAttributes = oracledb.IConnectionAttributes;
-import {InnoError} from "../error/error";
+import {BaseError} from "../error/base";
 
 export const DB_CONNECT_ERROR: string = 'DB_QUERY';
 export const DB_ORACLE_ERROR: string = 'DB_ORACLE_ERROR';
@@ -31,7 +31,7 @@ export class OracleService {
             this.connection = await oracledb.getConnection(this.connectionParams);
             console.log((new Date()).toString() + ' Oracle connected');
         } catch (error) {
-            throw new InnoError({
+            throw new BaseError({
                 code: DB_CONNECT_ERROR,
                 innerDetails: error.message
             });
@@ -46,7 +46,7 @@ export class OracleService {
         try {
             await this.connection.release();
         } catch (error) {
-            throw new InnoError({
+            throw new BaseError({
                 code: DB_ORACLE_RELEASE_ERROR,
                 innerDetails: error.message
             });
@@ -63,7 +63,7 @@ export class OracleService {
         try {
             return await this.connection.execute(query, params, {resultSet: true, prefetchRows: 500});
         } catch (error) {
-            throw new InnoError({
+            throw new BaseError({
                 code: DB_ORACLE_ERROR,
                 innerDetails: {
                     query,
@@ -86,7 +86,7 @@ export class OracleService {
             rows = await resultSet.getRows(numRows);
         } catch (error) {
             await this.closeResultSet(resultSet);
-            throw new InnoError({
+            throw new BaseError({
                 code: DB_ORACLE_FETCH_ERROR,
                 innerDetails: error.message
             });
@@ -110,7 +110,7 @@ export class OracleService {
         try {
             await resultSet.close();
         } catch (error) {
-            throw new InnoError({
+            throw new BaseError({
                 code: DB_ORACLE_FETCH_ERROR,
                 innerDetails: error.message
             });
@@ -134,7 +134,7 @@ export class OracleService {
 
             return result.rows;
         } catch (error) {
-            throw new InnoError({
+            throw new BaseError({
                 code: DB_ORACLE_ERROR,
                 innerDetails: {
                     query,

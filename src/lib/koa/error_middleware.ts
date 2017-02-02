@@ -1,4 +1,4 @@
-import {InnoError} from '../error/error';
+import {BaseError} from '../error/base';
 import {Context} from 'koa';
 import {AuthError} from "../error/auth";
 
@@ -6,16 +6,19 @@ export async function errorMiddleware(ctx: Context, next: Function): Promise<voi
     try {
         await next();
     } catch (err) {
-        let error: InnoError;
+        let error: BaseError;
 
-        if (err instanceof InnoError) {
+        if (err instanceof BaseError) {
             error = err;
         } else if (err.status === 401) {
             // Auth errors (e.g. koa-jwt errors) interceptor
-            error = new AuthError(AuthError.TOKEN_IS_INVALID, ctx);
+            error = new AuthError(
+                AuthError.TOKEN_IS_INVALID,
+                process.env.NODE_ENV === 'development' ? ctx.request.headers : {}
+            );
         } else {
             // Other errors interceptor
-            error = new InnoError({
+            error = new BaseError({
                 innerDetails: err
             });
         }

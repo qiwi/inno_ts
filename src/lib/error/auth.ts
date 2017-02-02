@@ -1,8 +1,8 @@
-import {InnoError, IInnoErrorOptions} from "./error";
+import {BaseError, IInnoErrorOptions} from "./base";
 import * as Koa from 'koa';
 import Context = Koa.Context;
 
-export class AuthError extends InnoError {
+export class AuthError extends BaseError {
     static readonly TOKEN_IS_INVALID: TAuthErrorCode = 'TOKEN_IS_INVALID';
     static readonly AUTH_REJECTED: TAuthErrorCode = 'AUTH_REJECTED';
 
@@ -14,15 +14,15 @@ export class AuthError extends InnoError {
     /**
      * Constructs new instance of AuthError
      * @param {TAuthErrorCode} code
-     * @param {Context} [ctx] If passed, headers from context are saved to error inner details.
+     * @param {Context} [headers] If passed, headers from context are saved to error inner details.
      */
-    constructor(code: TAuthErrorCode, ctx?: Context) {
+    constructor(code: TAuthErrorCode, headers: any = {}) {
         super(Object.assign(
             {},
             AuthError.defaultOptions,
             {
                 code,
-                innerDetails: ctx ? ctx.request.headers : {}
+                innerDetails: headers
             })
         );
 

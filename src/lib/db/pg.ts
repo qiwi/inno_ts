@@ -1,4 +1,4 @@
-import {InnoError} from '../error/error';
+import {BaseError} from '../error/base';
 import * as pgPool from 'pg-pool';
 import Pool = pgPool.Pool;
 import {QueryResult} from "pg";
@@ -67,7 +67,7 @@ export class PgService {
     async mustGetRow(errorCode: string, query: string, params?: Array<any>): Promise<any> {
         const row = await this.getRow(query, params);
         if (row === false) {
-            throw new InnoError({
+            throw new BaseError({
                 code: errorCode,
                 innerDetails: {}
             });
@@ -86,7 +86,7 @@ export class PgService {
         try {
             return await this.pool.query(query, params);
         } catch (err) {
-            throw new InnoError({
+            throw new BaseError({
                 code: DB_QUERY,
                 innerDetails: query
             });

@@ -1,11 +1,11 @@
-import {InnoError, IInnoErrorOptions} from "./error";
+import {BaseError, IInnoErrorOptions} from "./base";
 
 export interface IValidationErrorDetails {
     invalidField: string;
     invalidValue: any;
 }
 
-export class ValidationError extends InnoError {
+export class ValidationError extends BaseError {
     static readonly VALIDATION: TValidationErrorCode = 'VALIDATION';
 
     static readonly NO_STRING: TValidationErrorCode = 'NO_STRING';

@@ -1,10 +1,10 @@
 import {expect} from 'chai';
-import {InnoError} from "../lib/error/error";
+import {BaseError} from "../lib/error/base";
 import {ValidationError} from "../lib/error/validation";
 import {AuthError} from "../lib/error/auth";
-import {DefaultError} from "../lib/error/default";
+import {InnoError} from "../lib/error/inno";
 
-function assertErrorResult(error: InnoError, expectedErrorName: string, expectedErrorMessage: string): void {
+function assertErrorResult(error: BaseError, expectedErrorName: string, expectedErrorMessage: string): void {
     const date = (new Date()).toISOString();
     expect(error.name).to.eq(expectedErrorName);
     // TODO use regular expr
@@ -13,14 +13,14 @@ function assertErrorResult(error: InnoError, expectedErrorName: string, expected
 
 /* tslint:disable:typedef */
 describe('error', function() {
-    it('Default', function (done: Function) {
+    it('Inno', function (done: Function) {
         const expected = '\nERROR_CODE: ERROR_TEST_CODE \nERROR_HTTP_STATUS: 400 ' +
             '\nERROR_INNER_DETAILS: {\n  "foo": 1\n} ' +
             '\nERROR_DETAILS: {}';
         try {
-            throw new DefaultError('TEST_CODE', 400, {foo: 1});
+            throw new InnoError('TEST_CODE', 400, {foo: 1});
         } catch (error) {
-            assertErrorResult(error, 'DefaultError', expected);
+            assertErrorResult(error, 'InnoError', expected);
             done();
         }
     });

@@ -1,6 +1,6 @@
 import {Validator} from './validator';
 import {IValidator} from "./interfaces";
-import {InnoError} from "../error/error";
+import {BaseError} from "../error/base";
 import {ValidationError} from "../error/validation";
 
 class ItemValidator implements IValidator {
