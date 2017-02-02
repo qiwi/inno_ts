@@ -1,23 +1,37 @@
-import {ResultError} from '../error';
+import {BaseError} from '../error/base';
 import {Context} from 'koa';
+import {AuthError} from "../error/auth";
 
-export async function errorMiddleware(ctx: Context, next: Function): Promise<any> {
+export async function errorMiddleware(ctx: Context, next: Function): Promise<void> {
     try {
         await next();
     } catch (err) {
-        let error;
-        // TODO move common error codes to single place
-        // koa-jwt request error interceptor
-        if (err.status == 401) {
-            error = new ResultError('AUTH_TOKEN_IS_INVALID', 401, err);
+        let error: BaseError;
+
+        if (err instanceof BaseError) {
+            error = err;
+        } else if (err.status === 401) {
+            // Auth errors (e.g. koa-jwt errors) interceptor
+            error = new AuthError(
+                AuthError.TOKEN_IS_INVALID,
+                process.env.NODE_ENV === 'development' ? ctx.request.headers : {}
+            );
         } else {
-            error = ResultError.isError(err) ? err : new ResultError('INTERNAL', 500, err);
+            // Other errors interceptor
+            error = new BaseError({
+                innerDetails: err
+            });
         }
 
-        error.log();
+        console.error(error.toString());
         ctx.status = error.status;
-        ctx.body = {
+
+        const result: any = {
             error: error.code
         };
+
+        result.details = error.details;
+
+        ctx.body = result;
     }
 }

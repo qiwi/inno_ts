@@ -4,7 +4,7 @@ import IExecuteReturn = oracledb.IExecuteReturn;
 import IExecuteOptions = oracledb.IExecuteOptions;
 import IResultSet = oracledb.IResultSet;
 import IConnectionAttributes = oracledb.IConnectionAttributes;
-import {ResultError} from "../error";
+import {BaseError} from "../error/base";
 
 export const DB_CONNECT_ERROR: string = 'DB_QUERY';
 export const DB_ORACLE_ERROR: string = 'DB_ORACLE_ERROR';
@@ -12,9 +12,11 @@ export const DB_ORACLE_FETCH_ERROR: string = 'DB_ORACLE_FETCH_ERROR';
 export const DB_ORACLE_CLOSE_ERROR: string = 'DB_ORACLE_CLOSE_ERROR';
 export const DB_ORACLE_RELEASE_ERROR: string = 'DB_ORACLE_RELEASE_ERROR';
 
+// TODO DbError
+
 export class OracleService {
-    private connectionParams: IConnectionAttributes;
-    private connection: IConnection;
+    protected connectionParams: IConnectionAttributes;
+    protected connection: IConnection;
 
     constructor(connectionParams: IConnectionAttributes) {
         this.connectionParams = connectionParams;
@@ -24,12 +26,15 @@ export class OracleService {
      * Performs connection to database using passed connection params.
      * @return {Promise<void>}
      */
-    public async connect(): Promise<void> {
+    async connect(): Promise<void> {
         try {
             this.connection = await oracledb.getConnection(this.connectionParams);
             console.log((new Date()).toString() + ' Oracle connected');
         } catch (error) {
-            throw new ResultError(DB_CONNECT_ERROR, 500, error.message);
+            throw new BaseError({
+                code: DB_CONNECT_ERROR,
+                innerDetails: error.message
+            });
         }
     };
 
@@ -37,11 +42,14 @@ export class OracleService {
      * Closes db conn.
      * @return {Promise<void>}
      */
-    public async disconnect(): Promise<void> {
+    async disconnect(): Promise<void> {
         try {
             await this.connection.release();
         } catch (error) {
-            throw new ResultError(DB_ORACLE_RELEASE_ERROR, 500, error.message);
+            throw new BaseError({
+                code: DB_ORACLE_RELEASE_ERROR,
+                innerDetails: error.message
+            });
         }
     };
 
@@ -51,11 +59,18 @@ export class OracleService {
      * @param params
      * @return {Promise<IExecuteReturn>}
      */
-    public async getManyRows(query: string, params: Array<any> = []): Promise<IExecuteReturn> {
+    async getManyRows(query: string, params: Array<any> = []): Promise<IExecuteReturn> {
         try {
             return await this.connection.execute(query, params, {resultSet: true, prefetchRows: 500});
         } catch (error) {
-            throw new ResultError(DB_ORACLE_ERROR, 500, query + '\n' + error.message + '\n' + params.toString());
+            throw new BaseError({
+                code: DB_ORACLE_ERROR,
+                innerDetails: {
+                    query,
+                    message: error.message,
+                    params
+                }
+            });
         }
     };
 
@@ -65,16 +80,19 @@ export class OracleService {
      * @param numRows
      * @return {Promise<Array<any>[]>}
      */
-    public async fetchRows(resultSet: IResultSet, numRows): Promise<Array<any>[]> {
+    async fetchRows(resultSet: IResultSet, numRows: number): Promise<Array<any>[]> {
         let rows;
         try {
             rows = await resultSet.getRows(numRows);
         } catch (error) {
             await this.closeResultSet(resultSet);
-            throw new ResultError(DB_ORACLE_FETCH_ERROR, 500, error.message);
+            throw new BaseError({
+                code: DB_ORACLE_FETCH_ERROR,
+                innerDetails: error.message
+            });
         }
 
-        if (rows.length == 0) {    // no rows, or no more rows
+        if (rows.length === 0) {    // no rows, or no more rows
             await this.closeResultSet(resultSet); // always close the result set
             return [];
         }
@@ -88,11 +106,14 @@ export class OracleService {
      * @param closeConnection
      * @return {Promise<void>}
      */
-    public async closeResultSet(resultSet: IResultSet, closeConnection: boolean = false): Promise<void> {
+    async closeResultSet(resultSet: IResultSet, closeConnection: boolean = false): Promise<void> {
         try {
             await resultSet.close();
         } catch (error) {
-            throw new ResultError(DB_ORACLE_CLOSE_ERROR, 500, error.message);
+            throw new BaseError({
+                code: DB_ORACLE_FETCH_ERROR,
+                innerDetails: error.message
+            });
         }
 
         if (closeConnection) {
@@ -102,18 +123,25 @@ export class OracleService {
 
     /**
      * Executes sql and returns rows from executed result.
-     * @param sql
-     * @param bindParams
+     * @param query
+     * @param params
      * @param options
      * @return {Promise<Array<any>>}
      */
-    public async getRows(sql: string, bindParams: Array<any> = [], options: IExecuteOptions = {}): Promise<Array<any>> {
+    async getRows(query: string, params: Array<any> = [], options: IExecuteOptions = {}): Promise<Array<any>> {
         try {
-            const result: IExecuteReturn = await this.connection.execute(sql, bindParams, options);
+            const result: IExecuteReturn = await this.connection.execute(query, params, options);
 
             return result.rows;
         } catch (error) {
-            throw new ResultError(DB_ORACLE_ERROR, 500, sql + '\n' + error.message + '\n' + bindParams.toString());
+            throw new BaseError({
+                code: DB_ORACLE_ERROR,
+                innerDetails: {
+                    query,
+                    message: error.message,
+                    params
+                }
+            });
         }
     };
-};
+}

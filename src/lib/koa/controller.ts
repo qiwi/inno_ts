@@ -1,19 +1,16 @@
 import {Context} from 'koa';
 import {ItemValidator} from '../validation/item_validator';
 
-export const STATUS_SUCCESS: number = 200;
-export const DEFAULT_SUCCESS_PAYLOAD: string = 'success';
-
 export abstract class Controller {
-    public validateQuery(ctx: Context, cb: (ItemValidator) => any): any {
+    validateQuery(ctx: Context, cb: (ItemValidator: ItemValidator) => any): any {
         return cb(this.__validate(ctx.request.query));
     };
 
-    public validateBody(ctx: Context, cb: (ItemValidator) => any): any {
+    validateBody(ctx: Context, cb: (ItemValidator: ItemValidator) => any): any {
         return cb(this.__validate(ctx.request.body));
     };
 
-    protected __validate(item): ItemValidator {
+    protected __validate(item: any): ItemValidator {
         return new ItemValidator(item);
     };
 }

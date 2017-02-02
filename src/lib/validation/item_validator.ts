@@ -1,39 +1,79 @@
 import {Validator} from './validator';
 import {IValidator} from "./interfaces";
+import {BaseError} from "../error/base";
+import {ValidationError} from "../error/validation";
 
-//TODO добавить здесь обертку для возврата поля, которое не прошло валидацию
-export class ItemValidator implements IValidator {
-    item: {};
+class ItemValidator implements IValidator {
+    item: any;
 
-    constructor(item) {
+    constructor(item: any) {
         this.item = item;
     }
 
     /**
-     * Проверяет, что значение - целое число. undefined не принимает.
+     * Numeric string check. Escapes, checks and converts to number.
+     * @param field
+     * @param min
+     * @param max
+     * @returns {number|never}
      */
-    isInt(field: any): any | never {
-        return Validator.isInt(this.item[field]);
+    isInt(field: any, min: number = Number.MIN_SAFE_INTEGER, max: number = Number.MAX_SAFE_INTEGER): number | never {
+        return Validator.isInt(this.item[field], min, max);
     }
 
     /**
-     * Эскейпит строку. Не проверяет наличие.
+     * Escapes string.
+     * @param field
+     * @returns {string}
      */
     escape(field: string): string {
         return Validator.escape(this.item[field]);
     }
 
     /**
-     * Проверяет, что значение - строка, эскейпит, тримит. undefined вызовет ошибку.
+     * String check. Escapes, checks and returns value with string type.
+     * @param field
+     * @param min
+     * @param max
+     * @returns {any|never}
      */
-    isString(field: any): any | never {
-        return Validator.isString(this.item[field]);
+    isString(field: any, min: number = 0, max: number = 256): string | never {
+        return Validator.isString(this.item[field], min, max);
     }
 
     /**
-     * Проверяет, что передан email + lowercase+trim+escape
+     * String email check. Escapes, checks and returns value with string type.
+     * @param field
+     * @returns {string|never}
      */
     isEmail(field: any): string | never {
         return Validator.isEmail(this.item[field]);
     }
 }
+// NOTE !!! Wrapper hack for validator - wraps all ItemValidator methods in try/catch
+
+function wrap(fn: Function): Function {
+    return function(field: string): any | never {
+        try {
+            return fn.apply(this, [].slice.call(arguments, 0));
+        } catch (error) {
+            const err = error instanceof ValidationError ?
+                error :
+                new ValidationError(ValidationError.VALIDATION);
+
+            err.details.invalidField = field;
+            err.details.invalidValue = this.item[field];
+
+            throw err;
+        }
+    };
+}
+
+Object.getOwnPropertyNames(ItemValidator.prototype).forEach((key: string) => {
+    let value = ItemValidator.prototype[key];
+    if (typeof value === 'function' && value.name !== 'constructor') {
+        ItemValidator.prototype[key] = wrap(value);
+    }
+});
+
+export {ItemValidator}
