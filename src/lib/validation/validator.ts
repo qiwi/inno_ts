@@ -3,7 +3,11 @@ import {ValidationError} from "../error/validation";
 
 export class Validator {
     /**
-     * Проверяет, что значение - целое число. undefined не принимает.
+     * @see {ItemValidator.isInt}
+     * @param value
+     * @param min
+     * @param max
+     * @returns {any}
      */
     static isInt(value: any,
                  min: number = Number.MIN_SAFE_INTEGER,
@@ -17,55 +21,53 @@ export class Validator {
                 return value;
             }
 
-            throw new ValidationError({
-                code: ValidationError.INT_OUT_OF_BOUNDS
-            });
+            throw new ValidationError(ValidationError.INT_OUT_OF_BOUNDS);
         }
 
-        throw new ValidationError({
-            code: ValidationError.NO_INT
-        });
+        throw new ValidationError(ValidationError.NO_INT);
     }
 
     /**
-     * Эскейпит строку. Не проверяет наличие.
+     * @see {ItemValidator.escape}
+     * @param value
+     * @returns {any}
      */
     static escape(value: string): string {
         return validator.escape(value || '');
     }
 
     /**
-     * Проверяет, что значение - строка, эскейпит, тримит.
+     * @see {ItemValidator.isString}
+     * @param value
+     * @param min
+     * @param max
+     * @returns {string}
      */
-    static isString(value: any, min: number = 0, max: number = 256): any | never {
+    static isString(value: any, min: number = 0, max: number = 256): string | never {
         if (typeof value === 'string') {
             const processedValue = value.trim();
             if (processedValue.length > min && processedValue.length < max) {
                 return Validator.escape(processedValue);
             }
 
-            throw new ValidationError({
-                code: ValidationError.STRING_OUT_OF_BOUNDS
-            });
+            throw new ValidationError(ValidationError.STRING_OUT_OF_BOUNDS);
         }
 
-        throw new ValidationError({
-            code: ValidationError.NO_STRING
-        });
+        throw new ValidationError(ValidationError.NO_STRING);
     }
 
     /**
-     * Проверяет, что передан email + lowercase+trim+escape
+     * @see {ItemValidator.isEmail}
+     * @param value
+     * @returns {any}
      */
     static isEmail(value: any): string | never {
-        const email = Validator.isString(Validator.isString(value)).toLowerCase();
+        const email = Validator.isString(value).toLowerCase();
 
         if (validator.isEmail(email)) {
             return email;
         } else {
-            throw new ValidationError({
-                code: ValidationError.NO_EMAIL
-            });
+            throw new ValidationError(ValidationError.NO_EMAIL);
         }
     }
 }

@@ -12,9 +12,11 @@ export const DB_ORACLE_FETCH_ERROR: string = 'DB_ORACLE_FETCH_ERROR';
 export const DB_ORACLE_CLOSE_ERROR: string = 'DB_ORACLE_CLOSE_ERROR';
 export const DB_ORACLE_RELEASE_ERROR: string = 'DB_ORACLE_RELEASE_ERROR';
 
+// TODO DbError
+
 export class OracleService {
-    private connectionParams: IConnectionAttributes;
-    private connection: IConnection;
+    protected connectionParams: IConnectionAttributes;
+    protected connection: IConnection;
 
     constructor(connectionParams: IConnectionAttributes) {
         this.connectionParams = connectionParams;
@@ -63,7 +65,11 @@ export class OracleService {
         } catch (error) {
             throw new InnoError({
                 code: DB_ORACLE_ERROR,
-                innerDetails: query + '\n' + error.message + '\n' + params.toString()
+                innerDetails: {
+                    query,
+                    message: error.message,
+                    params
+                }
             });
         }
     };
@@ -117,20 +123,24 @@ export class OracleService {
 
     /**
      * Executes sql and returns rows from executed result.
-     * @param sql
-     * @param bindParams
+     * @param query
+     * @param params
      * @param options
      * @return {Promise<Array<any>>}
      */
-    async getRows(sql: string, bindParams: Array<any> = [], options: IExecuteOptions = {}): Promise<Array<any>> {
+    async getRows(query: string, params: Array<any> = [], options: IExecuteOptions = {}): Promise<Array<any>> {
         try {
-            const result: IExecuteReturn = await this.connection.execute(sql, bindParams, options);
+            const result: IExecuteReturn = await this.connection.execute(query, params, options);
 
             return result.rows;
         } catch (error) {
             throw new InnoError({
                 code: DB_ORACLE_ERROR,
-                innerDetails: sql + '\n' + error.message + '\n' + bindParams.toString()
+                innerDetails: {
+                    query,
+                    message: error.message,
+                    params
+                }
             });
         }
     };

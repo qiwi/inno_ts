@@ -59,7 +59,7 @@ function wrap(fn: Function): Function {
         } catch (error) {
             const err = error instanceof ValidationError ?
                 error :
-                new ValidationError({innerDetails: error});
+                new ValidationError(ValidationError.VALIDATION);
 
             err.details.invalidField = field;
             err.details.invalidValue = this.item[field];

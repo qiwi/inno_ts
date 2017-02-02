@@ -4,11 +4,12 @@ import Pool = pgPool.Pool;
 import {QueryResult} from "pg";
 
 export const DB_QUERY = 'DB_QUERY';
-export const ONE_ROW_WARNING = 'WARNING_DB_GET_ROW. Expected 1 row. Got %j %s';
 export const NO_ROW_ERROR = 'DB_NO_SUCH_';
 
+export const ONE_ROW_WARNING = 'WARNING_DB_GET_ROW. Expected 1 row. Got %j %s';
+
 export class PgService {
-    private pool: Pool;
+    protected pool: Pool;
 
     constructor(pgPool: Pool) {
         this.pool = pgPool;
@@ -21,7 +22,7 @@ export class PgService {
      * @return {Promise<QueryResult>}
      */
     async run(query: string, params?: Array<any>): Promise<boolean> {
-        await this.__run(query, params);
+        await this._run(query, params);
         return true;
     }
 
@@ -32,7 +33,7 @@ export class PgService {
      * @return {Promise<Array<any>>}
      */
     async getRows(query: string, params?: Array<any>): Promise<Array<any>> {
-        let items = await this.__run(query, params);
+        let items = await this._run(query, params);
         return items.rows;
     }
 
@@ -43,7 +44,7 @@ export class PgService {
      * @return {Promise<Array<any>>}
      */
     async getRow(query: string, params?: Array<any>): Promise<any> {
-        const items = await this.__run(query, params);
+        const items = await this._run(query, params);
         const rows = items.rows || [];
         if (rows.length === 0) {
             return false;
@@ -81,7 +82,7 @@ export class PgService {
      * @return {Promise<QueryResult>}
      * @private
      */
-    private async __run(query: string, params: Array<any> = []): Promise<QueryResult> {
+    private async _run(query: string, params: Array<any> = []): Promise<QueryResult> {
         try {
             return await this.pool.query(query, params);
         } catch (err) {

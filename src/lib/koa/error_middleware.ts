@@ -6,16 +6,16 @@ export async function errorMiddleware(ctx: Context, next: Function): Promise<voi
     try {
         await next();
     } catch (err) {
-        let error;
-        // koa-jwt request error interceptor
-        if (err.status === 401) {
-            error = new AuthError({
-                innerDetails: {
-                    headers: ctx.request.headers
-                }
-            });
+        let error: InnoError;
+
+        if (err instanceof InnoError) {
+            error = err;
+        } else if (err.status === 401) {
+            // Auth errors (e.g. koa-jwt errors) interceptor
+            error = new AuthError(AuthError.TOKEN_IS_INVALID, ctx);
         } else {
-            error = err instanceof InnoError ? err : new InnoError({
+            // Other errors interceptor
+            error = new InnoError({
                 innerDetails: err
             });
         }

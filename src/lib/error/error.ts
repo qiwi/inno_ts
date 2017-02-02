@@ -34,8 +34,8 @@ export class InnoError extends Error {
         return (new Date()).toISOString() +
             ' \nERROR_CODE: ' + this.code +
             ' \nERROR_HTTP_STATUS: ' + this.status +
-            ' \nERROR_INNER_DETAILS: ' + this._getInnerDetails() +
-            ' \nERROR_DETAILS: ' + this._getDetails();
+            ' \nERROR_INNER_DETAILS: ' + this._getDetails(this.innerDetails) +
+            ' \nERROR_DETAILS: ' + this._getDetails(this.details);
     }
 
     protected innerDetails: any;
@@ -52,6 +52,14 @@ export class InnoError extends Error {
         this.innerDetails = processedOptions.innerDetails;
     }
 
+    /**
+     * Workaround for json stringify.
+     * JSON.stringify do not processes Error instances, so we pass this method to stringify.
+     * @param key
+     * @param value
+     * @returns {any}
+     * @private
+     */
     private _jsonReplacer(key: string, value: any): any {
         if (value instanceof Error) {
             const error = {};
@@ -66,11 +74,7 @@ export class InnoError extends Error {
         return value;
     }
 
-    private _getInnerDetails(): any {
-        return JSON.stringify(this.innerDetails, this._jsonReplacer, 2);
-    }
-
-    private _getDetails(): any {
-        return JSON.stringify(this.details, this._jsonReplacer, 2);
+    private _getDetails(obj: any): string {
+        return JSON.stringify(obj, this._jsonReplacer, 2);
     }
 }

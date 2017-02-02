@@ -82,10 +82,7 @@ router
         throw new Error('Test error');
     })
     .post(publicResourceWithValidationError, async function(ctx: Context, next: Function): Promise<void> {
-        throw new ValidationError({
-            code: ValidationError.NO_EMAIL,
-            details: 'test'
-        });
+        throw new ValidationError(ValidationError.NO_EMAIL, 'testField', 'testValue');
     });
 
 /* tslint:disable:typedef */
@@ -151,7 +148,10 @@ describe('app', async function(): Promise<void> {
                 simple: false
             });
             expect(response.error).to.eq('ERROR_VALIDATION_NO_EMAIL');
-            expect(response.details).to.eq('test');
+            expect(response.details).to.eql({
+                invalidField: 'testField',
+                invalidValue: 'testValue'
+            });
         });
     });
 });
