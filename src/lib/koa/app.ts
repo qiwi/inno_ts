@@ -6,6 +6,7 @@ import {successMiddleware} from './success_middleware';
 import * as Router from 'koa-router';
 import * as config from 'config';
 import IConfig = config.IConfig;
+import * as koaCors from 'koa-cors';
 
 export class App {
     koa: Koa;
@@ -28,6 +29,9 @@ export class App {
                         new RegExp(config.get<string>('jwt.publicPath'))
                     ]
                 }));
+        }
+        if (!config.has('cors') || config.get<boolean>('cors') !== false) {
+            app.use(koaCors({origin: '*'}));
         }
         app.use(router.routes());
         app.use(router.allowedMethods());
