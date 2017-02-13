@@ -19,7 +19,7 @@ export class ValidationError extends BaseError {
         code: ValidationError.VALIDATION,
         innerDetails: {},
         details: {},
-        status: 400
+        status: BaseError.CODE_BAD_REQUEST
     };
 
     public details: IValidationErrorDetails;

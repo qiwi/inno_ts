@@ -19,11 +19,19 @@ export interface IInnoErrorOptions {
 
 export class BaseError extends Error {
     static readonly INTERNAL: string = 'INTERNAL';
+
+    static readonly CODE_BAD_REQUEST: number = 400;
+    static readonly CODE_UNAUTHORIZED: number = 401;
+    static readonly CODE_FORBIDDEN: number = 403;
+    static readonly CODE_NOT_FOUND: number = 404;
+    static readonly CODE_METHOD_NOT_ALLOWED: number = 405;
+    static readonly CODE_INTERNAL_SERVER_ERROR: number = 500;
+
     static defaultOptions: IInnoErrorOptions = {
         code: BaseError.INTERNAL,
         innerDetails: {},
         details: {},
-        status: 500
+        status: BaseError.CODE_INTERNAL_SERVER_ERROR
     };
     errorPrefix: string = 'ERROR_';
     code: string;

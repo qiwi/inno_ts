@@ -10,6 +10,10 @@ export abstract class Controller {
         return cb(this.__validate(ctx.request.body));
     };
 
+    validate(ctx: Context, cb: (ItemValidator: ItemValidator) => any): any {
+        return cb(this.__validate(Object.assign({}, ctx.request.body, ctx.request.query)));
+    }
+
     protected __validate(item: any): ItemValidator {
         return new ItemValidator(item);
     };

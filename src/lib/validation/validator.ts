@@ -18,7 +18,7 @@ export class Validator {
             value = parseInt(value);
 
             if (value < max && value > min) {
-                return value;
+                return value.toString();
             }
 
             throw new ValidationError(ValidationError.INT_OUT_OF_BOUNDS);

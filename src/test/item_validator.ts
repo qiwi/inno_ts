@@ -24,7 +24,7 @@ describe('validator', function() {
 
     describe('isInt', function() {
         it('numeric string', function() {
-            expect(itemValidator.isInt('numericStringWithSpaces')).to.eq(12312312312);
+            expect(itemValidator.isInt('numericStringWithSpaces')).to.eq('12312312312');
         });
 
         it('returns valid error details', function(done) {

@@ -8,7 +8,7 @@ export class AuthError extends BaseError {
 
     static defaultOptions: IInnoErrorOptions = {
         code: AuthError.TOKEN_IS_INVALID,
-        status: 401
+        status: BaseError.CODE_UNAUTHORIZED
     };
 
     /**

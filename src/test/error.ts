@@ -14,18 +14,19 @@ function assertErrorResult(error: BaseError, expectedErrorName: string, expected
 /* tslint:disable:typedef */
 describe('error', function() {
     it('Inno', function (done: Function) {
-        const expected = '\nERROR_CODE: ERROR_TEST_CODE \nERROR_HTTP_STATUS: 400 ' +
+        const expected = `\nERROR_CODE: ERROR_TEST_CODE \nERROR_HTTP_STATUS: ${BaseError.CODE_BAD_REQUEST} ` +
             '\nERROR_INNER_DETAILS: {\n  "foo": 1\n} ' +
             '\nERROR_DETAILS: {}';
         try {
-            throw new InnoError('TEST_CODE', 400, {foo: 1});
+            throw new InnoError('TEST_CODE', BaseError.CODE_BAD_REQUEST, {foo: 1});
         } catch (error) {
             assertErrorResult(error, 'InnoError', expected);
             done();
         }
     });
     it('Auth', function(done: Function) {
-        const expected = '\nERROR_CODE: ERROR_AUTH_TOKEN_IS_INVALID \nERROR_HTTP_STATUS: 401 ' +
+        const expected = `\nERROR_CODE: ERROR_AUTH_TOKEN_IS_INVALID ` +
+            `\nERROR_HTTP_STATUS: ${BaseError.CODE_UNAUTHORIZED} ` +
             '\nERROR_INNER_DETAILS: {} ' +
             '\nERROR_DETAILS: {}';
         try {
@@ -36,7 +37,8 @@ describe('error', function() {
         }
     });
     it('ValidationError', function(done: Function) {
-        const expected = '\nERROR_CODE: ERROR_VALIDATION_NO_STRING \nERROR_HTTP_STATUS: 400 ' +
+        const expected = `\nERROR_CODE: ERROR_VALIDATION_NO_STRING ` +
+            `\nERROR_HTTP_STATUS: ${BaseError.CODE_BAD_REQUEST} ` +
             '\nERROR_INNER_DETAILS: {} ' +
             '\nERROR_DETAILS: {\n  "invalidField": "testField",\n  "invalidValue": true\n}';
         try {
