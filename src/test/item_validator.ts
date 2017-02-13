@@ -10,6 +10,7 @@ let itemValidator: IValidator;
 describe('validator', function() {
     before(function(done) {
         itemValidator = new ItemValidator({
+            number: 10,
             numericStringWithSpaces: ' 12312312312  ',
             longString: testString,
             emptyString: '',
@@ -60,6 +61,10 @@ describe('validator', function() {
     });
 
     describe('isString', function() {
+        it ('number', function() {
+            expect(itemValidator.isString('number')).to.eq('10');
+        });
+
         it('string', function() {
             expect(itemValidator.isString('numericStringWithSpaces')).to.eq('12312312312');
         });

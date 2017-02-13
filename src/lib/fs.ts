@@ -1,16 +1,10 @@
 /**
- * Promise обертка для node fs. Отличается в использовании тем, что нет необходимости
- * передавать callback и методы возвращают promise.
- *
+ * Promise wrapper for fs. We keep this wrap to save backward compatibility.
  * fs.readFile('test.txt', 'utf-8').then((text) => {console.log(text)});
- * или
+ * or
  * const text = await fs.readFile('text.txt', 'utf-8');
  *
  */
-
-import * as fsNative from 'fs';
-import promisify = require('promisify-node');
-
-const fs = promisify(fsNative);
+import * as fs from 'fs-promise';
 
 export {fs};
