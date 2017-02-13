@@ -7,6 +7,7 @@ export * from './lib/koa/error_middleware';
 export * from './lib/koa/controller';
 export * from './lib/koa/app';
 export * from './lib/db/pg';
+export * from './lib/db/pg_pool';
 export * from './lib/db/oracle';
 export * from './lib/error/auth';
 export * from './lib/error/inno';
