@@ -19,12 +19,12 @@ export class ValidationError extends BaseError {
         code: ValidationError.VALIDATION,
         innerDetails: {},
         details: {},
-        status: 400
+        status: BaseError.CODE_BAD_REQUEST
     };
 
     public details: IValidationErrorDetails;
 
-    constructor(code: TValidationErrorCode, invalidField?: string, invalidValue?: any) {
+    constructor(code: TValidationErrorCode = ValidationError.VALIDATION, invalidField?: string, invalidValue?: any) {
         super(Object.assign({}, ValidationError.defaultOptions, {
             code,
             details: {

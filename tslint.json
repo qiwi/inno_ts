@@ -15,6 +15,7 @@
                 "singleline": "never"
             }
         ],
+        "semicolon": [true, "always", "ignore-bound-class-methods"],
         "promise-function-async": true,
         "only-arrow-functions": false,
         "no-shadowed-variable": false,

@@ -4,12 +4,15 @@ import {ValidationError} from "../lib/error/validation";
 import {IValidator} from "../lib/validation/interfaces";
 
 const testString = (new Array(2000)).toString();
+const validationErrorPrefix = new ValidationError().errorPrefix;
+
 let itemValidator: IValidator;
 
 /* tslint:disable:typedef */
 describe('validator', function() {
     before(function(done) {
         itemValidator = new ItemValidator({
+            number: 10,
             numericStringWithSpaces: ' 12312312312  ',
             longString: testString,
             emptyString: '',
@@ -32,7 +35,7 @@ describe('validator', function() {
                 itemValidator.isInt('boolean');
             } catch (error) {
                 expect(error).to.be.instanceof(ValidationError);
-                expect(error.code).to.eq('ERROR_VALIDATION_NO_STRING');
+                expect(error.code).to.eq(validationErrorPrefix + ValidationError.NO_STRING);
                 expect(error.details).to.eql({
                     invalidField: 'boolean',
                     invalidValue: true
@@ -60,6 +63,10 @@ describe('validator', function() {
     });
 
     describe('isString', function() {
+        it ('number', function() {
+            expect(itemValidator.isString('number')).to.eq('10');
+        });
+
         it('string', function() {
             expect(itemValidator.isString('numericStringWithSpaces')).to.eq('12312312312');
         });
@@ -69,7 +76,7 @@ describe('validator', function() {
                 itemValidator.isString('longString');
             } catch (error) {
                 expect(error).to.be.instanceof(ValidationError);
-                expect(error.code).to.eq('ERROR_VALIDATION_STRING_OUT_OF_BOUNDS');
+                expect(error.code).to.eq(validationErrorPrefix + ValidationError.STRING_OUT_OF_BOUNDS);
                 expect(error.details).to.eql({
                     invalidField: 'longString',
                     invalidValue: testString

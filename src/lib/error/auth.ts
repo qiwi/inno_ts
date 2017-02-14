@@ -8,7 +8,7 @@ export class AuthError extends BaseError {
 
     static defaultOptions: IInnoErrorOptions = {
         code: AuthError.TOKEN_IS_INVALID,
-        status: 401
+        status: BaseError.CODE_UNAUTHORIZED
     };
 
     /**
@@ -16,7 +16,7 @@ export class AuthError extends BaseError {
      * @param {TAuthErrorCode} code
      * @param {Context} [headers] If passed, headers from context are saved to error inner details.
      */
-    constructor(code: TAuthErrorCode, headers: any = {}) {
+    constructor(code: TAuthErrorCode = AuthError.AUTH_REJECTED, headers: any = {}) {
         super(Object.assign(
             {},
             AuthError.defaultOptions,

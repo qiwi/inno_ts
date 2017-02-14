@@ -44,6 +44,10 @@ export class Validator {
      * @returns {string}
      */
     static isString(value: any, min: number = 0, max: number = 256): string | never {
+        if (typeof value === 'number') {
+            value = value.toString();
+        }
+
         if (typeof value === 'string') {
             const processedValue = value.trim();
             if (processedValue.length > min && processedValue.length < max) {

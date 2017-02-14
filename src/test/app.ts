@@ -7,6 +7,9 @@ import * as Koa from 'koa';
 import Context = Koa.Context;
 import {ValidationError} from "../lib/error/validation";
 import {AuthError} from "../lib/error/auth";
+import {IValidator} from "../lib/validation/interfaces";
+import {Controller} from "../lib/koa/controller";
+import {InnoError} from "../lib/error/inno";
 
 const router = new Router();
 
@@ -20,8 +23,12 @@ const commonPort = 9891;
 
 const publicResource = '/public/test';
 const publicResourceWithError = '/public/errors/common';
-const publicResourceWithValidationError = '/public/errors/validation';
+const publicResourceWithValidation = '/public/errors/validation';
 const protectedResource = '/test';
+
+const validationErrorPrefix = new ValidationError().errorPrefix;
+const authErrorPrefix = new AuthError().errorPrefix;
+const innoErrorPrefix = new InnoError().errorPrefix;
 
 function makeRequestAddress(port: number, resource: string): string {
     return `${host}:${port}${resource}`;
@@ -69,21 +76,44 @@ const commonConfigMock = {
     }
 };
 
-router
-    .post(publicResource, async function(ctx: Context, next: Function): Promise<void> {
+class TestController extends Controller {
+    publicResource = async (ctx: Context, next: Function): Promise<void> => {
         ctx.body = 1;
         await next();
-    })
-    .post(protectedResource, async function(ctx: Context, next: Function): Promise<void> {
+    };
+
+    protectedResource = async (ctx: Context, next: Function): Promise<void> => {
         ctx.body = 2;
         await next();
-    })
-    .get(publicResourceWithError, async function(ctx: Context, next: Function): Promise<void> {
+    };
+
+    publicResourceWithError = async (ctx: Context, next: Function): Promise<void> => {
         throw new Error('Test error');
-    })
-    .post(publicResourceWithValidationError, async function(ctx: Context, next: Function): Promise<void> {
-        throw new ValidationError(ValidationError.NO_EMAIL, 'testField', 'testValue');
-    });
+    };
+
+    publicResourceWithValidation = async (ctx: Context, next: Function): Promise<void> => {
+        const data = this.validate(ctx, (validator: IValidator) => {
+            return {
+                testField: validator.isEmail('testField'),
+                testQueryField: validator.isInt('testQueryField')
+            };
+        });
+
+        ctx.body = {
+            testField: data.testField,
+            testQueryField: data.testQueryField
+        };
+        await next();
+    }
+}
+
+const testController = new TestController();
+
+router
+    .post(publicResource, testController.publicResource)
+    .post(protectedResource, testController.protectedResource)
+    .get(publicResourceWithError, testController.publicResourceWithError)
+    .post(publicResourceWithValidation, testController.publicResourceWithValidation);
 
 /* tslint:disable:typedef */
 describe('app', async function(): Promise<void> {
@@ -103,13 +133,29 @@ describe('app', async function(): Promise<void> {
             expect(response.result).to.eq(1);
         });
 
+        it('validates requests', async function() {
+            const response = await request.post(makeRequestAddress(jwtPort, publicResourceWithValidation), {
+                qs: {
+                    testQueryField: ' 1111 '
+                },
+                form: {
+                    testField: '   test@test.ru '
+                },
+                json: true
+            });
+            expect(response.result).to.eql({
+                testField: 'test@test.ru',
+                testQueryField: 1111
+            });
+        });
+
         it('returns error when accessing protected resource with no key', async function() {
             const response = await request.post(makeRequestAddress(jwtPort, protectedResource), {
                 form: {},
                 json: true,
                 simple: false
             });
-            expect(response.error).to.eq('ERROR_AUTH_TOKEN_IS_INVALID');
+            expect(response.error).to.eq(authErrorPrefix + AuthError.TOKEN_IS_INVALID);
         });
 
         it('serves protected request with passed key', async function() {
@@ -139,18 +185,37 @@ describe('app', async function(): Promise<void> {
                 json: true,
                 simple: false
             });
-            expect(response.error).to.eq('ERROR_INTERNAL');
+            expect(response.error).to.eq(innoErrorPrefix + InnoError.INTERNAL);
         });
 
         it('should return validation error', async function() {
-            const response = await request.post(makeRequestAddress(commonPort, publicResourceWithValidationError), {
+            let response = await request.post(makeRequestAddress(commonPort, publicResourceWithValidation), {
+                form: {
+                    testField: 'testValue'
+                },
                 json: true,
                 simple: false
             });
-            expect(response.error).to.eq('ERROR_VALIDATION_NO_EMAIL');
+            expect(response.error).to.eq(validationErrorPrefix + ValidationError.NO_EMAIL);
             expect(response.details).to.eql({
                 invalidField: 'testField',
                 invalidValue: 'testValue'
+            });
+
+            response = await request.post(makeRequestAddress(commonPort, publicResourceWithValidation), {
+                qs: {
+                    testQueryField: 'testQueryValue'
+                },
+                form: {
+                    testField: 'test@test.ru'
+                },
+                json: true,
+                simple: false
+            });
+            expect(response.error).to.eq(validationErrorPrefix + ValidationError.NO_INT);
+            expect(response.details).to.eql({
+                invalidField: 'testQueryField',
+                invalidValue: 'testQueryValue'
             });
         });
     });
