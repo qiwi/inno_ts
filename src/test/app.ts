@@ -9,6 +9,7 @@ import {ValidationError} from "../lib/error/validation";
 import {AuthError} from "../lib/error/auth";
 import {IValidator} from "../lib/validation/interfaces";
 import {Controller} from "../lib/koa/controller";
+import {InnoError} from "../lib/error/inno";
 
 const router = new Router();
 
@@ -24,6 +25,10 @@ const publicResource = '/public/test';
 const publicResourceWithError = '/public/errors/common';
 const publicResourceWithValidation = '/public/errors/validation';
 const protectedResource = '/test';
+
+const validationErrorPrefix = new ValidationError().errorPrefix;
+const authErrorPrefix = new AuthError().errorPrefix;
+const innoErrorPrefix = new InnoError().errorPrefix;
 
 function makeRequestAddress(port: number, resource: string): string {
     return `${host}:${port}${resource}`;
@@ -140,7 +145,7 @@ describe('app', async function(): Promise<void> {
             });
             expect(response.result).to.eql({
                 testField: 'test@test.ru',
-                testQueryField: '1111'
+                testQueryField: 1111
             });
         });
 
@@ -150,7 +155,7 @@ describe('app', async function(): Promise<void> {
                 json: true,
                 simple: false
             });
-            expect(response.error).to.eq('ERROR_AUTH_TOKEN_IS_INVALID');
+            expect(response.error).to.eq(authErrorPrefix + AuthError.TOKEN_IS_INVALID);
         });
 
         it('serves protected request with passed key', async function() {
@@ -180,7 +185,7 @@ describe('app', async function(): Promise<void> {
                 json: true,
                 simple: false
             });
-            expect(response.error).to.eq('ERROR_INTERNAL');
+            expect(response.error).to.eq(innoErrorPrefix + InnoError.INTERNAL);
         });
 
         it('should return validation error', async function() {
@@ -191,7 +196,7 @@ describe('app', async function(): Promise<void> {
                 json: true,
                 simple: false
             });
-            expect(response.error).to.eq('ERROR_VALIDATION_NO_EMAIL');
+            expect(response.error).to.eq(validationErrorPrefix + ValidationError.NO_EMAIL);
             expect(response.details).to.eql({
                 invalidField: 'testField',
                 invalidValue: 'testValue'
@@ -207,7 +212,7 @@ describe('app', async function(): Promise<void> {
                 json: true,
                 simple: false
             });
-            expect(response.error).to.eq('ERROR_VALIDATION_NO_INT');
+            expect(response.error).to.eq(validationErrorPrefix + ValidationError.NO_INT);
             expect(response.details).to.eql({
                 invalidField: 'testQueryField',
                 invalidValue: 'testQueryValue'

@@ -12,13 +12,13 @@ export class Validator {
     static isInt(value: any,
                  min: number = Number.MIN_SAFE_INTEGER,
                  max: number = Number.MAX_SAFE_INTEGER
-    ): string | never {
+    ): number | never {
         value = Validator.isString(value);
         if (!isNaN(value) && validator.isInt(value)) {
             value = parseInt(value);
 
             if (value < max && value > min) {
-                return value.toString();
+                return value;
             }
 
             throw new ValidationError(ValidationError.INT_OUT_OF_BOUNDS);

@@ -4,6 +4,9 @@ import {ValidationError} from "../lib/error/validation";
 import {AuthError} from "../lib/error/auth";
 import {InnoError} from "../lib/error/inno";
 
+const validationErrorPrefix = new ValidationError().errorPrefix;
+const authErrorPrefix = new AuthError().errorPrefix;
+
 function assertErrorResult(error: BaseError, expectedErrorName: string, expectedErrorMessage: string): void {
     const date = (new Date()).toISOString();
     expect(error.name).to.eq(expectedErrorName);
@@ -25,8 +28,8 @@ describe('error', function() {
         }
     });
     it('Auth', function(done: Function) {
-        const expected = `\nERROR_CODE: ERROR_AUTH_TOKEN_IS_INVALID ` +
-            `\nERROR_HTTP_STATUS: ${BaseError.CODE_UNAUTHORIZED} ` +
+        const expected = `\nERROR_CODE: ${authErrorPrefix + AuthError.TOKEN_IS_INVALID} ` +
+            `\nERROR_HTTP_STATUS: ${AuthError.CODE_UNAUTHORIZED} ` +
             '\nERROR_INNER_DETAILS: {} ' +
             '\nERROR_DETAILS: {}';
         try {
@@ -37,8 +40,8 @@ describe('error', function() {
         }
     });
     it('ValidationError', function(done: Function) {
-        const expected = `\nERROR_CODE: ERROR_VALIDATION_NO_STRING ` +
-            `\nERROR_HTTP_STATUS: ${BaseError.CODE_BAD_REQUEST} ` +
+        const expected = `\nERROR_CODE: ${validationErrorPrefix + ValidationError.NO_STRING} ` +
+            `\nERROR_HTTP_STATUS: ${ValidationError.CODE_BAD_REQUEST} ` +
             '\nERROR_INNER_DETAILS: {} ' +
             '\nERROR_DETAILS: {\n  "invalidField": "testField",\n  "invalidValue": true\n}';
         try {

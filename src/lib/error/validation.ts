@@ -24,7 +24,7 @@ export class ValidationError extends BaseError {
 
     public details: IValidationErrorDetails;
 
-    constructor(code: TValidationErrorCode, invalidField?: string, invalidValue?: any) {
+    constructor(code: TValidationErrorCode = ValidationError.VALIDATION, invalidField?: string, invalidValue?: any) {
         super(Object.assign({}, ValidationError.defaultOptions, {
             code,
             details: {

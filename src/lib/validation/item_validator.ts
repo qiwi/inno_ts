@@ -17,7 +17,7 @@ class ItemValidator implements IValidator {
      * @param max
      * @returns {number|never}
      */
-    isInt(field: any, min: number = Number.MIN_SAFE_INTEGER, max: number = Number.MAX_SAFE_INTEGER): string | never {
+    isInt(field: any, min: number = Number.MIN_SAFE_INTEGER, max: number = Number.MAX_SAFE_INTEGER): number | never {
         return Validator.isInt(this.item[field], min, max);
     }
 
