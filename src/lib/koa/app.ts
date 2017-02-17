@@ -7,6 +7,7 @@ import * as Router from 'koa-router';
 import * as config from 'config';
 import IConfig = config.IConfig;
 import * as koaCors from 'koa-cors';
+import * as userAgent from 'koa-useragent';
 
 export class App {
     koa: Koa;
@@ -22,6 +23,8 @@ export class App {
 
         app.use(bodyParser());
         app.use(errorMiddleware);
+
+        // Enabling JWT middleware
         if (jwtSecret) {
             app.use(jwt({secret: jwtSecret})
                 .unless({
@@ -30,9 +33,17 @@ export class App {
                     ]
                 }));
         }
+
+        // CORS middleware (enabled by default)
         if (!config.has('cors') || config.get<boolean>('cors') !== false) {
             app.use(koaCors({origin: '*'}));
         }
+
+        // User-Agent middleware
+        if (config.has('userAgent') && config.get<boolean>('userAgent') === true) {
+            app.use(userAgent());
+        }
+
         app.use(router.routes());
         app.use(router.allowedMethods());
         app.use(successMiddleware);
