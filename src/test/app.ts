@@ -24,6 +24,7 @@ const commonPort = 9891;
 const publicResource = '/public/test';
 const publicResourceWithError = '/public/errors/common';
 const publicResourceWithValidation = '/public/errors/validation';
+const publicResourceWithAgent = '/public/agent';
 const protectedResource = '/test';
 
 const validationErrorPrefix = new ValidationError().errorPrefix;
@@ -62,6 +63,8 @@ const commonConfigMock = {
         switch (key) {
             case 'port':
                 return commonPort;
+            case 'userAgent':
+                return true;
             default:
                 return '';
         }
@@ -70,6 +73,8 @@ const commonConfigMock = {
         switch (key) {
             case 'jwt.secret':
                 return false;
+            case 'userAgent':
+                return true;
             default:
                 return '';
         }
@@ -105,6 +110,11 @@ class TestController extends Controller {
         };
         await next();
     }
+
+    publicResourceWithAgent = async (ctx: Context, next: Function): Promise<void> => {
+        ctx.body = ctx.state.userAgent;
+        await next();
+    }
 }
 
 const testController = new TestController();
@@ -113,7 +123,8 @@ router
     .post(publicResource, testController.publicResource)
     .post(protectedResource, testController.protectedResource)
     .get(publicResourceWithError, testController.publicResourceWithError)
-    .post(publicResourceWithValidation, testController.publicResourceWithValidation);
+    .post(publicResourceWithValidation, testController.publicResourceWithValidation)
+    .post(publicResourceWithAgent, testController.publicResourceWithAgent);
 
 /* tslint:disable:typedef */
 describe('app', async function(): Promise<void> {
@@ -176,6 +187,31 @@ describe('app', async function(): Promise<void> {
                 json: true
             });
             expect(response.result).to.eq(2);
+        });
+
+        it('returns userAgent info', async function() {
+            const agentKeys = [ 'isAuthoritative',
+                'isMobile', 'isTablet', 'isiPad',
+                'isiPod', 'isiPhone', 'isAndroid',
+                'isBlackberry', 'isOpera', 'isIE', 'isEdge',
+                'isIECompatibilityMode', 'isSafari',
+                'isFirefox', 'isWebkit', 'isChrome',
+                'isKonqueror', 'isOmniWeb', 'isSeaMonkey',
+                'isFlock', 'isAmaya', 'isPhantomJS', 'isEpiphany',
+                'isDesktop', 'isWindows', 'isLinux', 'isLinux64',
+                'isMac', 'isChromeOS', 'isBada', 'isSamsung',
+                'isRaspberry', 'isBot', 'isCurl', 'isAndroidTablet',
+                'isWinJs', 'isKindleFire', 'isSilk',
+                'isCaptive', 'isSmartTV', 'isUC',
+                'silkAccelerated', 'browser',
+                'os', 'platform', 'geoIp', 'source'
+            ];
+
+            const response = await request.post(makeRequestAddress(commonPort, publicResourceWithAgent), {
+                form: {},
+                json: true
+            });
+            expect(response.result).to.have.all.keys(agentKeys);
         });
     });
 
