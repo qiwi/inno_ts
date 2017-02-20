@@ -26,6 +26,7 @@ const publicResourceWithError = '/public/errors/common';
 const publicResourceWithValidation = '/public/errors/validation';
 const publicResourceWithAgent = '/public/agent';
 const protectedResource = '/test';
+const nonExistingResource = '/public/abcd';
 
 const validationErrorPrefix = new ValidationError().errorPrefix;
 const authErrorPrefix = new AuthError().errorPrefix;
@@ -216,6 +217,18 @@ describe('app', async function(): Promise<void> {
     });
 
     describe('errors', async function() {
+        it('returns error on non-existing resource', async function() {
+            let response: any;
+            try {
+                response = await request.get(makeRequestAddress(commonPort, nonExistingResource), {
+                    json: true
+                });
+            } catch (err) {
+                response = err;
+            }
+            expect(response.statusCode).to.eq(404);
+        });
+
         it('should catch error and return its code', async function() {
             const response = await request.get(makeRequestAddress(commonPort, publicResourceWithError), {
                 json: true,
