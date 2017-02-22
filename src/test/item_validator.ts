@@ -1,12 +1,11 @@
 import {expect} from 'chai';
 import {ItemValidator} from '../lib/validation/item_validator';
 import {ValidationError} from "../lib/error/validation";
-import {IValidator} from "../lib/validation/interfaces";
 
 const testString = (new Array(2000)).toString();
 const validationErrorPrefix = new ValidationError().errorPrefix;
 
-let itemValidator: IValidator;
+let itemValidator: ItemValidator;
 
 /* tslint:disable:typedef */
 describe('validator', function() {
@@ -95,6 +94,10 @@ describe('validator', function() {
 
         it('spaces', function() {
             expect(function() { itemValidator.isString('stringWithSpaces'); }).to.throw(ValidationError);
+        });
+
+        it('optional', function() {
+            expect(itemValidator.optional.isString('nothing')).to.eq(null);
         });
     });
 });
