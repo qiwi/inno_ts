@@ -3,6 +3,11 @@ import {ValidationError} from "../error/validation";
 
 class ItemValidator {
     protected _item: any;
+
+    get item(): any {
+        return this._item;
+    }
+
     protected _optionalInstance: ItemValidator;
 
     get optional(): ItemValidator {
@@ -82,7 +87,7 @@ function wrap(fn: Function): Function {
 }
 
 Object.getOwnPropertyNames(ItemValidator.prototype).forEach((key: string) => {
-    if (key === 'optional') {
+    if (typeof Object.getOwnPropertyDescriptor(ItemValidator.prototype, key).get !== 'undefined') {
         return;
     }
     let value = ItemValidator.prototype[key];
