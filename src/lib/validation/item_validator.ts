@@ -1,13 +1,27 @@
 import {Validator} from './validator';
-import {IValidator} from "./interfaces";
-import {BaseError} from "../error/base";
 import {ValidationError} from "../error/validation";
 
-class ItemValidator implements IValidator {
-    item: any;
+class ItemValidator {
+    protected _item: any;
 
-    constructor(item: any) {
-        this.item = item;
+    get item(): any {
+        return this._item;
+    }
+
+    protected _optionalInstance: ItemValidator;
+
+    get optional(): ItemValidator {
+        if (!this._optionalInstance) {
+            this._optionalInstance = new ItemValidator(this._item, true);
+        }
+        return this._optionalInstance;
+    };
+
+    protected _isOptional: boolean;
+
+    constructor(item: any, isOptional: boolean = false) {
+        this._item = item;
+        this._isOptional = isOptional;
     }
 
     /**
@@ -18,7 +32,7 @@ class ItemValidator implements IValidator {
      * @returns {number|never}
      */
     isInt(field: any, min: number = Number.MIN_SAFE_INTEGER, max: number = Number.MAX_SAFE_INTEGER): number | never {
-        return Validator.isInt(this.item[field], min, max);
+        return Validator.isInt(this._item[field], min, max);
     }
 
     /**
@@ -27,7 +41,7 @@ class ItemValidator implements IValidator {
      * @returns {string}
      */
     escape(field: string): string {
-        return Validator.escape(this.item[field]);
+        return Validator.escape(this._item[field]);
     }
 
     /**
@@ -38,7 +52,7 @@ class ItemValidator implements IValidator {
      * @returns {any|never}
      */
     isString(field: any, min: number = 0, max: number = 256): string | never {
-        return Validator.isString(this.item[field], min, max);
+        return Validator.isString(this._item[field], min, max);
     }
 
     /**
@@ -47,22 +61,25 @@ class ItemValidator implements IValidator {
      * @returns {string|never}
      */
     isEmail(field: any): string | never {
-        return Validator.isEmail(this.item[field]);
+        return Validator.isEmail(this._item[field]);
     }
 }
 // NOTE !!! Wrapper hack for validator - wraps all ItemValidator methods in try/catch
 
 function wrap(fn: Function): Function {
-    return function(field: string): any | never {
+    return function (field: string, ...args: Array<any>): any | never {
         try {
-            return fn.apply(this, [].slice.call(arguments, 0));
+            if (this._isOptional && !this._item.hasOwnProperty(field)) {
+                return null;
+            }
+            return fn.apply(this, [field].concat(args));
         } catch (error) {
             const err = error instanceof ValidationError ?
                 error :
                 new ValidationError(ValidationError.VALIDATION);
 
             err.details.invalidField = field;
-            err.details.invalidValue = this.item[field];
+            err.details.invalidValue = this._item[field];
 
             throw err;
         }
@@ -70,6 +87,9 @@ function wrap(fn: Function): Function {
 }
 
 Object.getOwnPropertyNames(ItemValidator.prototype).forEach((key: string) => {
+    if (typeof Object.getOwnPropertyDescriptor(ItemValidator.prototype, key).get !== 'undefined') {
+        return;
+    }
     let value = ItemValidator.prototype[key];
     if (typeof value === 'function' && value.name !== 'constructor') {
         ItemValidator.prototype[key] = wrap(value);

@@ -1,6 +1,5 @@
 export * from './lib/fs';
 export * from './lib/hash';
-export * from './lib/validation/interfaces';
 export * from './lib/validation/item_validator';
 export * from './lib/validation/validator';
 export * from './lib/koa/error_middleware';
