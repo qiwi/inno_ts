@@ -10,6 +10,10 @@ export * from './lib/db/pg_pool';
 export * from './lib/error/auth';
 export * from './lib/error/inno';
 export * from './lib/error/validation';
+
+import * as logger from './lib/logger'
+export {logger};
+
 function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
