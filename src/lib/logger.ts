@@ -4,7 +4,7 @@ import IConfig = config.IConfig;
 import * as log4js from 'log4js'
 import Logger = log4js.Logger;
 
-const DEFAULT_LOG_LEVEL = 'TRACE';
+export const DEFAULT_LOG_LEVEL = 'TRACE';
 
 log4js.replaceConsole();
 log4js.setGlobalLogLevel(DEFAULT_LOG_LEVEL);
