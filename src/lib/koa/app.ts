@@ -48,10 +48,10 @@ export class App {
         app.use(router.allowedMethods());
         app.use(successMiddleware);
 
-        app.on('error', (err, ctx) => console.log('REQUEST_ERROR', err, ctx));
-        process.on('uncaughtException', (err) => console.log('PROCESS_EXCEPTION', err.stack));
+        app.on('error', (err, ctx) => console.error('REQUEST_ERROR', err, ctx));
+        process.on('uncaughtException', (err) => console.error('PROCESS_EXCEPTION', err.stack));
 
-        app.listen(appPort, () => console.log('Server listening on port ' + appPort));
+        app.listen(appPort, () => console.info('Server listening on port ' + appPort));
         this.koa = app;
     }
 }

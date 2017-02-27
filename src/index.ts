@@ -12,3 +12,6 @@ export * from './lib/db/oracle';
 export * from './lib/error/auth';
 export * from './lib/error/inno';
 export * from './lib/error/validation';
+
+import * as logger from './lib/logger'
+export {logger};
