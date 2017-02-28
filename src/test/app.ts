@@ -91,21 +91,21 @@ const commonConfigMock = {
 };
 
 class TestController extends Controller {
-    publicResource = async (ctx: Context, next: Function): Promise<void> => {
+    publicResource = async(ctx: Context, next: Function): Promise<void> => {
         ctx.body = 1;
         await next();
     };
 
-    protectedResource = async (ctx: Context, next: Function): Promise<void> => {
+    protectedResource = async(ctx: Context, next: Function): Promise<void> => {
         ctx.body = 2;
         await next();
     };
 
-    publicResourceWithError = async (ctx: Context, next: Function): Promise<void> => {
+    publicResourceWithError = async(ctx: Context, next: Function): Promise<void> => {
         throw new Error('Test error');
     };
 
-    publicResourceWithValidation = async (ctx: Context, next: Function): Promise<void> => {
+    publicResourceWithValidation = async(ctx: Context, next: Function): Promise<void> => {
         const data = this.validate(ctx, (validator: ItemValidator) => {
             return {
                 testField: validator.isEmail('testField'),
@@ -120,7 +120,7 @@ class TestController extends Controller {
         await next();
     };
 
-    publicResourceWithAgent = async (ctx: Context, next: Function): Promise<void> => {
+    publicResourceWithAgent = async(ctx: Context, next: Function): Promise<void> => {
         ctx.body = ctx.state.userAgent;
         await next();
     }
@@ -137,16 +137,16 @@ router
     .post(publicResourceWithAgent, testController.publicResourceWithAgent);
 
 /* tslint:disable:typedef */
-describe('app', async function(): Promise<void> {
-    before(function(done: Function) {
+describe('app', async function (): Promise<void> {
+    before(function (done: Function) {
         // TODO !!!!!! DANGER ZONE - refactor me
         const jwtApp = new App(jwtConfigMock, router);
         const app = new App(commonConfigMock, router);
         setTimeout(done, 1000);
     });
 
-    describe('router', async function() {
-        it('serves requests', async function() {
+    describe('router', async function () {
+        it('serves requests', async function () {
             const response = await request.post(makeRequestAddress(jwtPort, publicResource), {
                 form: {},
                 json: true
@@ -154,7 +154,7 @@ describe('app', async function(): Promise<void> {
             expect(response.result).to.eq(1);
         });
 
-        it('validates requests', async function() {
+        it('validates requests', async function () {
             let response = await request.post(makeRequestAddress(jwtPort, publicResourceWithValidation), {
                 qs: {},
                 form: {
@@ -167,9 +167,21 @@ describe('app', async function(): Promise<void> {
                 testField: 'test@test.ru',
                 testQueryField: 1111
             });
+
+            response = await request.get(makeRequestAddress(jwtPort, publicResourceWithValidation), {
+                qs: {
+                    testQueryField: ' 1111 ',
+                    testField: '   test@test.ru '
+                },
+                json: true
+            });
+            expect(response.result).to.eql({
+                testField: 'test@test.ru',
+                testQueryField: 1111
+            });
         });
 
-        it('returns error when accessing protected resource with no key', async function() {
+        it('returns error when accessing protected resource with no key', async function () {
             const response = await request.post(makeRequestAddress(jwtPort, protectedResource), {
                 form: {},
                 json: true,
@@ -178,7 +190,7 @@ describe('app', async function(): Promise<void> {
             expect(response.error).to.eq(authErrorPrefix + AuthError.TOKEN_IS_INVALID);
         });
 
-        it('serves protected request with passed key', async function() {
+        it('serves protected request with passed key', async function () {
             const token = jsonWebToken.sign({foo: 1}, jwtSecret);
             const response = await request.post(makeRequestAddress(jwtPort, protectedResource), {
                 form: {},
@@ -190,7 +202,7 @@ describe('app', async function(): Promise<void> {
             expect(response.result).to.eq(2);
         });
 
-        it('makes all routes unprotected w/o jwt config', async function() {
+        it('makes all routes unprotected w/o jwt config', async function () {
             const response = await request.post(makeRequestAddress(commonPort, protectedResource), {
                 form: {},
                 json: true
@@ -198,8 +210,8 @@ describe('app', async function(): Promise<void> {
             expect(response.result).to.eq(2);
         });
 
-        it('returns userAgent info', async function() {
-            const agentKeys = [ 'isAuthoritative',
+        it('returns userAgent info', async function () {
+            const agentKeys = ['isAuthoritative',
                 'isMobile', 'isTablet', 'isiPad',
                 'isiPod', 'isiPhone', 'isAndroid',
                 'isBlackberry', 'isOpera', 'isIE', 'isEdge',
@@ -224,8 +236,8 @@ describe('app', async function(): Promise<void> {
         });
     });
 
-    describe('errors', async function() {
-        it('returns error on non-existing resource', async function() {
+    describe('errors', async function () {
+        it('returns error on non-existing resource', async function () {
             let response: any;
             try {
                 response = await request.get(makeRequestAddress(commonPort, nonExistingResource), {
@@ -237,7 +249,7 @@ describe('app', async function(): Promise<void> {
             expect(response.statusCode).to.eq(404);
         });
 
-        it('should catch error and return its code', async function() {
+        it('should catch error and return its code', async function () {
             const response = await request.get(makeRequestAddress(commonPort, publicResourceWithError), {
                 json: true,
                 simple: false
@@ -245,7 +257,7 @@ describe('app', async function(): Promise<void> {
             expect(response.error).to.eq(innoErrorPrefix + InnoError.INTERNAL);
         });
 
-        it('should return validation error', async function() {
+        it('should return validation error', async function () {
             let response = await request.post(makeRequestAddress(commonPort, publicResourceWithValidation), {
                 form: {
                     testField: 'testValue'
