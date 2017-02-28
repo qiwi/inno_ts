@@ -8,6 +8,7 @@ import * as config from 'config';
 import IConfig = config.IConfig;
 import * as koaCors from 'koa-cors';
 import * as userAgent from 'koa-useragent';
+import {logMiddleware} from "./log_middleware";
 
 export class App {
     koa: Koa;
@@ -22,6 +23,11 @@ export class App {
         let jwtSecret = config.has('jwt.secret') ? config.get('jwt.secret') : null;
 
         app.use(bodyParser());
+
+        if (config.has('logLevel') && (config.get<string>('logLevel') === 'TRACE' || config.get<string>('logLevel') === 'DEBUG')) {
+            app.use(logMiddleware);
+        }
+
         app.use(errorMiddleware);
 
         // Enabling JWT middleware
