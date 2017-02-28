@@ -51,7 +51,7 @@ export class PgService {
         }
 
         if (rows.length > 1) {
-            console.log(ONE_ROW_WARNING, rows.length, query);
+            console.warn(ONE_ROW_WARNING, rows.length, query);
         }
 
         return rows[0];
