@@ -15,7 +15,6 @@ export async function logMiddleware(ctx: Context, next: Function): Promise<void>
     console.debug(`request ${startTimeString}`);
     console.debug('url href is', ctx.request.href);
     console.debug('ctx request is', ctx.request);
-    console.debug('ctx request headers are', ctx.request.headers);
 
     if (ctx.request.method === 'GET') {
         console.debug('ctx request query is', ctx.request.query);
