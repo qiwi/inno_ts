@@ -41,8 +41,20 @@ export class App {
         }
 
         // CORS middleware (enabled by default)
-        if (!config.has('cors') || config.get<boolean>('cors') !== false) {
-            app.use(koaCors({origin: '*'}));
+        if (!config.has('cors.enabled') || config.get<boolean>('cors.enabled') !== false) {
+            const corsConfig: any = {
+                origin: '*'
+            };
+
+            if (config.has('cors.origin')) {
+                corsConfig.origin = config.get<string>('cors.origin');
+            }
+
+            if (config.has('cors.credentials')) {
+                corsConfig.credentials = config.get<boolean>('cors.credentials');
+            }
+
+            app.use(koaCors(corsConfig));
         }
 
         // User-Agent middleware
