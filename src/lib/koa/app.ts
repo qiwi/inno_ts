@@ -36,7 +36,8 @@ export class App {
                 .unless({
                     path: [
                         new RegExp(config.get<string>('jwt.publicPath'))
-                    ]
+                    ],
+                    method: 'OPTIONS'
                 }));
         }
 
