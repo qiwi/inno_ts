@@ -19,11 +19,10 @@ export class PgService {
      * Executes query (public wrapper).
      * @param query
      * @param params
-     * @return {Promise<QueryResult>}
+     * @return {Promise<void>}
      */
-    async run(query: string, params?: Array<any>): Promise<boolean> {
+    async run(query: string, params?: Array<any>): Promise<void> {
         await this._run(query, params);
-        return true;
     }
 
     /**
