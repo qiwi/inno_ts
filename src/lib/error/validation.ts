@@ -11,6 +11,7 @@ export class ValidationError extends BaseError {
     static readonly NO_STRING: TValidationErrorCode = 'NO_STRING';
     static readonly NO_INT: TValidationErrorCode = 'NO_INT';
     static readonly NO_EMAIL: TValidationErrorCode = 'NO_EMAIL';
+    static readonly NO_ARRAY: TValidationErrorCode = 'NO_ARRAY';
 
     static readonly INT_OUT_OF_BOUNDS: TValidationErrorCode = 'INT_OUT_OF_BOUNDS';
     static readonly STRING_OUT_OF_BOUNDS: TValidationErrorCode = 'STRING_OUT_OF_BOUNDS';
@@ -39,4 +40,4 @@ export class ValidationError extends BaseError {
 }
 
 export type TValidationErrorCode = 'VALIDATION' | 'NO_STRING' |
-    'NO_INT' | 'NO_EMAIL' | 'INT_OUT_OF_BOUNDS' | 'STRING_OUT_OF_BOUNDS';
+    'NO_INT' | 'NO_EMAIL' | 'INT_OUT_OF_BOUNDS' | 'STRING_OUT_OF_BOUNDS' | 'NO_ARRAY';
