@@ -31,7 +31,7 @@ class ItemValidator {
      * @param max
      * @returns {number|never}
      */
-    isInt(field: any, min: number = Number.MIN_SAFE_INTEGER, max: number = Number.MAX_SAFE_INTEGER): number | never {
+    isInt(field: string, min: number = Number.MIN_SAFE_INTEGER, max: number = Number.MAX_SAFE_INTEGER): number | never {
         return Validator.isInt(this._item[field], min, max);
     }
 
@@ -51,7 +51,7 @@ class ItemValidator {
      * @param max
      * @returns {any|never}
      */
-    isString(field: any, min: number = 0, max: number = 256): string | never {
+    isString(field: string, min: number = 0, max: number = 256): string | never {
         return Validator.isString(this._item[field], min, max);
     }
 
@@ -60,8 +60,18 @@ class ItemValidator {
      * @param field
      * @returns {string|never}
      */
-    isEmail(field: any): string | never {
+    isEmail(field: string): string | never {
         return Validator.isEmail(this._item[field]);
+    }
+
+    /**
+     * Array checking.
+     * @param value
+     * @param iterator
+     * @returns {Array}
+     */
+    isArray<T>(field: string, iterator?: (arrayElement: any) => T): Array<T> | never {
+        return Validator.isArray<T>(this._item[field], iterator);
     }
 }
 // NOTE !!! Wrapper hack for validator - wraps all ItemValidator methods in try/catch
