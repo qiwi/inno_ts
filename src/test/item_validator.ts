@@ -143,7 +143,7 @@ describe('validator', function () {
             expect(itemValidator.isArray<string>('stringArray', Validator.isString)).to.eql(['foo', '1', 'bar']);
         });
 
-        it('string array with isString iterator', function () {
+        it('string array with isEmail iterator', function () {
             expect(function () {
                 itemValidator.isArray('stringArray', Validator.isEmail)
             }).to.throw(ValidationError);
