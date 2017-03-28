@@ -70,6 +70,12 @@ export class App {
         app.on('error', (err, ctx) => console.error('REQUEST_ERROR', err, ctx));
         process.on('uncaughtException', (err) => console.error('PROCESS_EXCEPTION', err.stack));
 
+        if (config.has('host')) {
+            const appHost = config.get<any>('host');
+            app.listen(appPort, appHost, () => console.info(
+                `Server listening on port ${appPort} and host ${appHost}`
+            ));
+        }
         app.listen(appPort, () => console.info('Server listening on port ' + appPort));
         this.koa = app;
     }
