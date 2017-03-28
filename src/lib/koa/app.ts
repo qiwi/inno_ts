@@ -75,8 +75,9 @@ export class App {
             app.listen(appPort, appHost, () => console.info(
                 `Server listening on port ${appPort} and host ${appHost}`
             ));
+        } else {
+            app.listen(appPort, () => console.info('Server listening on port ' + appPort));
         }
-        app.listen(appPort, () => console.info('Server listening on port ' + appPort));
         this.koa = app;
     }
 }
