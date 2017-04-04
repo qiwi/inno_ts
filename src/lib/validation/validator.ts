@@ -17,7 +17,7 @@ export class Validator {
         if (!isNaN(value) && validator.isInt(value)) {
             value = parseInt(value);
 
-            if (value < max && value > min) {
+            if (value >= min && value <= max) {
                 return value;
             }
 
@@ -50,7 +50,7 @@ export class Validator {
 
         if (typeof value === 'string') {
             const processedValue = value.trim();
-            if (processedValue.length > min && processedValue.length < max) {
+            if (processedValue.length >= min && processedValue.length <= max) {
                 return Validator.escape(processedValue);
             }
             throw new ValidationError(ValidationError.STRING_OUT_OF_BOUNDS);
