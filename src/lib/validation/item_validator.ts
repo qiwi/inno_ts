@@ -20,7 +20,7 @@ class ItemValidator {
     protected _isOptional: boolean;
 
     constructor(item: any, isOptional: boolean = false) {
-        this._item = item;
+        this._item = Object.assign({}, item);
         this._isOptional = isOptional;
     }
 
