@@ -29,7 +29,7 @@ export class OracleService {
     async connect(): Promise<void> {
         try {
             this.connection = await oracledb.getConnection(this.connectionParams);
-            console.log((new Date()).toString() + ' Oracle connected');
+            console.debug('Oracle connected');
         } catch (error) {
             throw new BaseError({
                 code: DB_CONNECT_ERROR,

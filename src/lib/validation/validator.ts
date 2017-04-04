@@ -53,7 +53,6 @@ export class Validator {
             if (processedValue.length > min && processedValue.length < max) {
                 return Validator.escape(processedValue);
             }
-
             throw new ValidationError(ValidationError.STRING_OUT_OF_BOUNDS);
         }
 
@@ -73,5 +72,23 @@ export class Validator {
         } else {
             throw new ValidationError(ValidationError.NO_EMAIL);
         }
+    }
+
+    /**
+     * @see {ItemValidator.isArray}
+     * @param value
+     * @param iterator
+     * @returns {Array}
+     */
+    static isArray<T>(array, iterator?: (arrayElement: any) => T): Array<T> | never {
+        if (!(array instanceof Array) || array.length === 0) {
+            throw new ValidationError(ValidationError.NO_ARRAY);
+        }
+
+        if (typeof iterator === 'function') {
+            return array.map((el) => iterator(el));
+        }
+
+        return array;
     }
 }

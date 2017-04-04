@@ -45,6 +45,8 @@ const jwtConfigMock = {
                 return jwtSecret;
             case 'jwt.publicPath':
                 return jwtPublicPath;
+            case 'logLevel':
+                return 'TRACE';
             default:
                 return '';
         }
@@ -52,6 +54,8 @@ const jwtConfigMock = {
     has: (key: string) => {
         switch (key) {
             case 'jwt.secret':
+                return true;
+            case 'logLevel':
                 return true;
             default:
                 return '';
@@ -66,6 +70,8 @@ const commonConfigMock = {
                 return commonPort;
             case 'userAgent':
                 return true;
+            case 'logLevel':
+                return 'TRACE';
             default:
                 return '';
         }
@@ -75,6 +81,8 @@ const commonConfigMock = {
             case 'jwt.secret':
                 return false;
             case 'userAgent':
+                return true;
+            case 'logLevel':
                 return true;
             default:
                 return '';
