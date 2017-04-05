@@ -11,13 +11,12 @@ export class Validator {
      */
     static isInt(value: any,
                  min: number = Number.MIN_SAFE_INTEGER,
-                 max: number = Number.MAX_SAFE_INTEGER
-    ): number | never {
+                 max: number = Number.MAX_SAFE_INTEGER): number | never {
         value = Validator.isString(value);
         if (!isNaN(value) && validator.isInt(value)) {
             value = parseInt(value);
 
-            if (value < max && value > min) {
+            if (value >= min && value <= max) {
                 return value;
             }
 
@@ -43,14 +42,14 @@ export class Validator {
      * @param max
      * @returns {string}
      */
-    static isString(value: any, min: number = 0, max: number = 256): string | never {
+    static isString(value: any, min: number = 1, max: number = 256): string | never {
         if (typeof value === 'number') {
             value = value.toString();
         }
 
         if (typeof value === 'string') {
             const processedValue = value.trim();
-            if (processedValue.length > min && processedValue.length < max) {
+            if (processedValue.length >= min && processedValue.length <= max) {
                 return Validator.escape(processedValue);
             }
             throw new ValidationError(ValidationError.STRING_OUT_OF_BOUNDS);
