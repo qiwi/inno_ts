@@ -51,7 +51,7 @@ class ItemValidator {
      * @param max
      * @returns {any|never}
      */
-    isString(field: string, min: number = 0, max: number = 256): string | never {
+    isString(field: string, min: number = 1, max: number = 256): string | never {
         return Validator.isString(this._item[field], min, max);
     }
 

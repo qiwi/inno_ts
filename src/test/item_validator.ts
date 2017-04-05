@@ -83,6 +83,10 @@ describe('validator', function () {
             expect(itemValidator.isString('numericStringWithSpaces')).to.eq('12312312312');
         });
 
+        it('short_string', function () {
+            expect(itemValidator.isString('emptyString', 0)).to.eq('');
+        });
+
         it('returns valid error details', function (done) {
             try {
                 itemValidator.isString('longString');
