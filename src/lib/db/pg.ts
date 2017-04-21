@@ -87,7 +87,7 @@ export class PgService {
         } catch (err) {
             throw new BaseError({
                 code: DB_QUERY,
-                innerDetails: query
+                innerDetails: err
             });
         }
     }
