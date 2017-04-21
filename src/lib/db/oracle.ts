@@ -16,7 +16,7 @@ export const DB_ORACLE_RELEASE_ERROR: string = 'DB_ORACLE_RELEASE_ERROR';
 // TODO DbError
 
 export class OracleService {
-    public poolMax: number = 50;
+    public poolMax: number = 100;
 
     protected connectionParams: IConnectionAttributes;
     protected pool: IConnectionPool;
@@ -89,7 +89,7 @@ export class OracleService {
         }
 
         if (connection) {
-            await this.disconnect(connection);
+            await this._disconnect(connection);
         }
     };
 
@@ -121,7 +121,7 @@ export class OracleService {
      * Performs connection to database using passed connection params.
      * @return {Promise<void>}
      */
-    protected async connect(): Promise<IConnection> {
+    protected async _connect(): Promise<IConnection> {
         try {
             if (!this.pool) {
                 this.pool = await oracledb.createPool(
@@ -141,7 +141,7 @@ export class OracleService {
      * Closes db conn.
      * @return {Promise<void>}
      */
-    protected async disconnect(connection: IConnection): Promise<void> {
+    protected async _disconnect(connection: IConnection): Promise<void> {
         try {
             await connection.close();
         } catch (error) {
@@ -157,14 +157,14 @@ export class OracleService {
                              options?: IExecuteOptions): Promise<IExecuteReturn> {
         let connection;
         try {
-            connection = await this.connect();
+            connection = await this._connect();
             const result = await connection.execute(query, params, options);
-            await this.disconnect(connection);
+            await this._disconnect(connection);
 
             return result;
         } catch (error) {
             if (connection) {
-                await this.disconnect(connection);
+                await this._disconnect(connection);
             }
 
             throw error;
