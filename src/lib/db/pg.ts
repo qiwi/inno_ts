@@ -2,11 +2,10 @@ import {BaseError} from '../error/base';
 import * as pgPool from 'pg-pool';
 import Pool = pgPool.Pool;
 import {QueryResult} from "pg";
+import {ONE_ROW_WARNING} from "./db_service";
 
 export const DB_QUERY = 'DB_QUERY';
 export const NO_ROW_ERROR = 'DB_NO_SUCH_';
-
-export const ONE_ROW_WARNING = 'WARNING_DB_GET_ROW. Expected 1 row. Got %j %s';
 
 export class PgService {
     protected pool: Pool;

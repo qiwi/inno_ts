@@ -6,6 +6,7 @@ import IResultSet = oracledb.IResultSet;
 import IConnectionAttributes = oracledb.IConnectionAttributes;
 import {BaseError} from "../error/base";
 import {IConnectionPool} from "oracledb";
+import {DbService, ONE_ROW_WARNING} from "./db_service";
 
 export const DB_CONNECT_ERROR: string = 'DB_QUERY';
 export const DB_ORACLE_ERROR: string = 'DB_ORACLE_ERROR';
@@ -15,13 +16,15 @@ export const DB_ORACLE_RELEASE_ERROR: string = 'DB_ORACLE_RELEASE_ERROR';
 
 // TODO DbError
 
-export class OracleService {
+export class OracleService implements DbService {
     public poolMax: number = 100;
 
     protected connectionParams: IConnectionAttributes;
+    protected options: IExecuteOptions;
     protected pool: IConnectionPool;
 
-    constructor(connectionParams: IConnectionAttributes) {
+    constructor(connectionParams: IConnectionAttributes, options?: IExecuteOptions) {
+        this.options = options || {};
         this.connectionParams = connectionParams;
     }
 
@@ -33,7 +36,7 @@ export class OracleService {
      */
     async getManyRows(query: string, params: Array<any> = []): Promise<IExecuteReturn> {
         try {
-            return await this._execute(query, params, {resultSet: true, prefetchRows: 500});
+            return await this._run(query, params, {resultSet: true, prefetchRows: 500});
         } catch (error) {
             throw new BaseError({
                 code: DB_ORACLE_ERROR,
@@ -52,7 +55,7 @@ export class OracleService {
      * @param numRows
      * @return {Promise<Array<any>[]>}
      */
-    async fetchRows(resultSet: IResultSet, numRows: number): Promise<Array<any>[]> {
+    async fetchRows(resultSet: IResultSet, numRows: number): Promise<Array<any>> {
         let rows;
         try {
             rows = await resultSet.getRows(numRows);
@@ -102,7 +105,7 @@ export class OracleService {
      */
     async getRows(query: string, params: Array<any> = [], options: IExecuteOptions = {}): Promise<Array<any>> {
         try {
-            const result: IExecuteReturn = await this._execute(query, params, options);
+            const result: IExecuteReturn = await this._run(query, params, options);
 
             return result.rows;
         } catch (error) {
@@ -116,6 +119,48 @@ export class OracleService {
             });
         }
     };
+
+    /**
+     * Executes query and returns result row.
+     * @param query
+     * @param params
+     * @param options
+     * @return {Promise<any>}
+     */
+    async getRow(query: string, params: Array<any> = [],
+                 options: IExecuteOptions = {}): Promise<any> {
+        const rows = await this.getRows(query, params, options);
+        if (rows.length === 0) {
+            return false;
+        }
+
+        if (rows.length > 1) {
+            console.warn(ONE_ROW_WARNING, rows.length, query);
+        }
+
+        return rows[0];
+    }
+
+    /**
+     * Wrapper around {@link getRow} - throws exception if no row fetched.
+     * @param errorCode Error code in thrown error.
+     * @param query
+     * @param params
+     * @param options
+     * @return {Promise<any>}
+     */
+    async mustGetRow(errorCode: string, query: string, params: Array<any> = [],
+                     options: IExecuteOptions = {}): Promise<any> {
+        const row = await this.getRow(query, params, options);
+
+        if (row === false) {
+            throw new BaseError({
+                code: errorCode,
+                innerDetails: {}
+            });
+        }
+        return row;
+    }
 
     /**
      * Performs connection to database using passed connection params.
@@ -152,10 +197,11 @@ export class OracleService {
         }
     };
 
-    protected async _execute(query: string,
-                             params?: Object | Array<any>,
-                             options?: IExecuteOptions): Promise<IExecuteReturn> {
+    protected async _run(query: string,
+                         params?: Object | Array<any>,
+                         options?: IExecuteOptions): Promise<IExecuteReturn> {
         let connection;
+        options = Object.assign({}, this.options, options);
         try {
             connection = await this._connect();
             const result = await connection.execute(query, params, options);
