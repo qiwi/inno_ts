@@ -29,6 +29,16 @@ export class OracleService implements DbService {
     }
 
     /**
+     * Executes query (public wrapper).
+     * @param query
+     * @param params
+     * @return {Promise<void>}
+     */
+    async run(query: string, params?: Array<any>, options: IExecuteOptions = {}): Promise<void> {
+        await this._run(query, params, options);
+    }
+
+    /**
      * Curried {@link getRows} method: getRows with rows prefetch param.
      * @param query
      * @param params
