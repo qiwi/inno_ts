@@ -1,12 +1,13 @@
 {
   "name": "innots",
-  "version": "0.0.30",
+  "version": "0.0.33",
   "description": "Core ecom rnd lib",
   "main": "build/index.js",
   "typings": "build/index",
   "scripts": {
     "build": "tsc",
     "watch": "tsc --watch",
+    "prepublish": "tsc",
     "test": "mocha ./build/test/",
     "lint": "tslint 'src/**/*.ts' --type-check --project tsconfig.json"
   },
