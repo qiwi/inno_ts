@@ -34,8 +34,8 @@ export class OracleService implements DbService {
      * @param params
      * @return {Promise<void>}
      */
-    async run(query: string, params?: Array<any>, options: IExecuteOptions = {}): Promise<void> {
-        await this._run(query, params, options);
+    async run(query: string, params?: Array<any>, options: IExecuteOptions = {}): Promise<IExecuteReturn> {
+        return await this._run(query, params, options);
     }
 
     /**

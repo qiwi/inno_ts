@@ -20,8 +20,8 @@ export class PgService {
      * @param params
      * @return {Promise<void>}
      */
-    async run(query: string, params?: Array<any>): Promise<void> {
-        await this._run(query, params);
+    async run(query: string, params?: Array<any>): Promise<QueryResult> {
+        return await this._run(query, params);
     }
 
     /**
