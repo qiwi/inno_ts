@@ -8,6 +8,7 @@
         "eofline": false,
         "ordered-imports": "any",
         "object-literal-sort-keys": false,
+        "object-literal-shorthand": false,
         "trailing-comma": [
             true,
             {

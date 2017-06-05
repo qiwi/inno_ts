@@ -24,7 +24,10 @@ export class App {
 
         app.use(bodyParser());
 
-        if (config.has('logLevel') && (config.get<string>('logLevel') === 'TRACE' || config.get<string>('logLevel') === 'DEBUG')) {
+        if (config.has('logLevel')
+            && (config.get<string>('logLevel') === 'TRACE'
+            || config.get<string>('logLevel') === 'DEBUG')
+        ) {
             app.use(logMiddleware);
         }
 
@@ -32,13 +35,38 @@ export class App {
 
         // Enabling JWT middleware
         if (jwtSecret) {
-            app.use(jwt({secret: jwtSecret})
-                .unless({
-                    path: [
-                        new RegExp(config.get<string>('jwt.publicPath'))
-                    ],
-                    method: 'OPTIONS'
-                }));
+            const jwtPrefix = config.has('jwt.prefix') ? config.get('jwt.prefix') : 'Bearer';
+
+            app.use(jwt({
+                secret: jwtSecret,
+                getToken: function(opts: any): null | string {
+                    const ctx = this;
+                    if (!ctx.header || !ctx.header.authorization) {
+                        return;
+                    }
+
+                    const parts = ctx.header.authorization.split(' ');
+
+                    if (parts.length === 2) {
+                        const scheme = parts[0];
+                        const credentials = parts[1];
+
+                        console.log('scheme is', scheme);
+
+                        if (scheme === jwtPrefix) {
+                            return credentials;
+                        }
+                    }
+                    if (!opts.passthrough) {
+                        ctx.throw(401, 'Bad Authorization header format. Format is "Authorization: Bearer <token>"');
+                    }
+                }
+            }).unless({
+                path: [
+                    new RegExp(config.get<string>('jwt.publicPath'))
+                ],
+                method: 'OPTIONS'
+            }));
         }
 
         // CORS middleware (enabled by default)
