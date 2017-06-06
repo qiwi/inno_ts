@@ -51,8 +51,6 @@ export class App {
                         const scheme = parts[0];
                         const credentials = parts[1];
 
-                        console.log('scheme is', scheme);
-
                         if (scheme === jwtPrefix) {
                             return credentials;
                         }
