@@ -1,6 +1,6 @@
 import * as Koa from "koa";
 import * as jwt from "koa-jwt";
-import * as bodyParser from 'koa-bodyparser';
+import * as bodyParser from 'koa-body';
 import {errorMiddleware} from './error_middleware';
 import {successMiddleware} from './success_middleware';
 import * as Router from 'koa-router';
@@ -22,7 +22,7 @@ export class App {
         const appPort = config.get('port');
         let jwtSecret = config.has('jwt.secret') ? config.get('jwt.secret') : null;
 
-        app.use(bodyParser());
+        app.use(bodyParser({multipart: true}));
 
         if (config.has('logLevel')
             && (config.get<string>('logLevel') === 'TRACE'
@@ -39,7 +39,7 @@ export class App {
 
             app.use(jwt({
                 secret: jwtSecret,
-                getToken: function(opts: any): null | string {
+                getToken: function (opts: any): null | string {
                     const ctx = this;
                     if (!ctx.header || !ctx.header.authorization) {
                         return;
