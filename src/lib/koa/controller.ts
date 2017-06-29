@@ -7,7 +7,16 @@ export abstract class Controller {
         if (ctx.request.method === 'GET') {
             params = ctx.request.query;
         } else {
-            params = ctx.request.body;
+            const contentType = ctx.req.headers['content-type'];
+            if (!contentType || contentType.indexOf('application/json') > -1) {
+                params = ctx.request.body;
+            }
+            else if (contentType.indexOf('multipart/form-data') > -1 && ctx.request.body.fields) {
+                params = ctx.request.body.fields;
+            }
+            else {
+                params = ctx.request.body;
+            }
         }
         return cb(this._validate(params));
     }
