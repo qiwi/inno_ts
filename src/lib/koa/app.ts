@@ -18,7 +18,7 @@ export class App {
 
     constructor(
         protected config: IAppConfig,
-        protected router: Router
+        protected router: Router = new Router()
     ) {}
 
     /**
@@ -47,6 +47,16 @@ export class App {
         process.on('uncaughtException', this._processUncaughtException);
 
         await this._startApp();
+    }
+
+    /**
+     * Sets http route for application.
+     * @param {String} method HTTP method (e.g. 'post')
+     * @param url
+     * @param action
+     */
+    public route(method: string, url: string, action: (ctx: Router.IRouterContext, next: () => any) => any): void {
+        this.router[method](url, action);
     }
 
     protected _enableBodyParser(multipart: boolean = true): void {

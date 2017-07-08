@@ -9,6 +9,7 @@ export * from './lib/db/pg_pool';
 export * from './lib/error/auth';
 export * from './lib/error/inno';
 export * from './lib/error/validation';
+export {Context} from 'koa';
 
 import * as logger from './lib/logger';
 export {logger};

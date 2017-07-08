@@ -100,7 +100,15 @@ router
 describe('app', async function (): Promise<void> {
     before(async function () {
         const jwtApp = new App(jwtConfigMock, router);
-        const app = new App(commonConfigMock, router);
+
+        const app = new App(commonConfigMock);
+        app.route('post', publicResource, testController.publicResource);
+        app.route('post', protectedResource, testController.protectedResource);
+        app.route('get', publicResourceWithError, testController.publicResourceWithError);
+        app.route('post', publicResourceWithValidation, testController.publicResourceWithValidation);
+        app.route('get', publicResourceWithValidation, testController.publicResourceWithValidation);
+        app.route('post', publicResourceWithAgent, testController.publicResourceWithAgent);
+
         await jwtApp.bootstrap();
         await app.bootstrap();
     });
