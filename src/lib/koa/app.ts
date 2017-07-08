@@ -3,12 +3,12 @@ import * as bodyParser from 'koa-body';
 import {errorMiddleware} from './middleware/error_middleware';
 import {successMiddleware} from './middleware/success_middleware';
 import * as Router from 'koa-router';
-import * as koaCors from 'koa-cors';
-import * as userAgent from 'koa-useragent';
 import {logMiddleware} from "./middleware/log_middleware";
 import {createJwtMiddleware} from './middleware/jwt_middleware';
 import * as _ from 'lodash';
 import {IAppConfig} from './interfaces';
+import {userAgentMiddleware} from './middleware/user_agent_middleware';
+import {createCorsMiddleware} from './middleware/cors_middleware';
 
 /**
  * Main class for koa startup.
@@ -90,27 +90,16 @@ export class App {
     protected _enableCorsMiddleware(): void {
         const enabled = _.get(this.config, 'cors.enabled');
         if (typeof enabled === 'undefined' || enabled !== false) {
-            const corsConfig: any = {
-                origin: '*'
-            };
-
-            const origin = _.get(this.config, 'cors.origin');
-            if (origin) {
-                corsConfig.origin = origin;
-            }
-
-            const credentials = _.get(this.config, 'cors.credentials');
-            if (credentials) {
-                corsConfig.credentials = credentials;
-            }
-
-            this.koaAppInstance.use(koaCors(corsConfig));
+            this.koaAppInstance.use(createCorsMiddleware(
+                _.get(this.config, 'cors.origin'),
+                _.get(this.config, 'cors.credentials')
+            ));
         }
     }
 
     protected _enableUserAgentMiddleware(): void {
         if (this.config.userAgent) {
-            this.koaAppInstance.use(userAgent());
+            this.koaAppInstance.use(userAgentMiddleware);
         }
     }
 

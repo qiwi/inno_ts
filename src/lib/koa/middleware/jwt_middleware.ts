@@ -4,7 +4,7 @@ export function createJwtMiddleware(
     jwtSecret: string,
     appUnprotectedUrlsRegexp: string,
     jwtAuthHeaderPrefix: string = 'Bearer'
-): (...args: any[]) => Promise<void> {
+): (...args: any[]) => any {
     return jwt({
         secret: jwtSecret,
         getToken: function (opts: any): null | string {
