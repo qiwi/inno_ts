@@ -1,6 +1,6 @@
 import {Context} from 'koa';
 
-function clock(start?): any {
+function clock(start?: any): any {
     if (!start) {
         return process.hrtime();
     }
@@ -15,14 +15,12 @@ export async function logMiddleware(ctx: Context, next: Function): Promise<void>
     console.debug(`request ${startTimeString}`);
     console.debug('url href is', ctx.request.href);
     console.debug('ctx request is', ctx.request);
-
-    if (ctx.request.method === 'GET') {
-        console.debug('ctx request query is', ctx.request.query);
-    } else {
-        console.debug('ctx request body is', ctx.request.body);
-    }
+    console.debug('ctx request method is', ctx.request.method);
+    console.debug('ctx request query is', ctx.request.query);
+    console.debug('ctx request body is', ctx.request.body);
 
     const result = await next();
+
     console.debug(`Request ${startTimeString} finished in ${clock(startTime)} ms`);
     return result;
 }
