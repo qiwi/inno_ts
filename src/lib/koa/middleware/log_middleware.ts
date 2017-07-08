@@ -8,7 +8,7 @@ function clock(start?: any): any {
     return (end[0] * 1000) + (end[1] / 1000000);
 }
 
-export async function logMiddleware(ctx: Context, next: Function): Promise<void> {
+export async function logMiddleware(ctx: Context, next: () => any): Promise<void> {
     const startTime = clock();
     const startTimeString = startTime.join('');
 

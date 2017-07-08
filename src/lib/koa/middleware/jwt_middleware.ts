@@ -1,10 +1,11 @@
 import * as jwt from "koa-jwt";
+import {Context} from 'koa';
 
 export function createJwtMiddleware(
     jwtSecret: string,
     appUnprotectedUrlsRegexp: string,
     jwtAuthHeaderPrefix: string = 'Bearer'
-): (...args: any[]) => any {
+): (ctx: Context, next?: () => any) => any {
     return jwt({
         secret: jwtSecret,
         getToken: function (opts: any): null | string {
