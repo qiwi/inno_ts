@@ -1,11 +1,15 @@
 import * as jwt from "koa-jwt";
-import {Context} from 'koa';
+import {Middleware} from 'koa';
+
+export const DEFAULT_SECRET = 'default';
+export const DEFAULT_REGEXP = '/public/';
+export const DEFAULT_PREFIX = 'Bearer';
 
 export function createJwtMiddleware(
-    jwtSecret: string,
-    appUnprotectedUrlsRegexp: string,
-    jwtAuthHeaderPrefix: string = 'Bearer'
-): (ctx: Context, next?: () => any) => any {
+    jwtSecret: string = DEFAULT_SECRET,
+    appUnprotectedUrlsRegexp: string = DEFAULT_REGEXP,
+    jwtAuthHeaderPrefix: string = DEFAULT_PREFIX
+): Middleware {
     return jwt({
         secret: jwtSecret,
         getToken: function (opts: any): null | string {

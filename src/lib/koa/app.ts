@@ -1,25 +1,23 @@
 import * as Koa from "koa";
-import * as bodyParser from 'koa-body';
-import {errorMiddleware} from './middleware/error_middleware';
-import {successMiddleware} from './middleware/success_middleware';
 import * as Router from 'koa-router';
-import {logMiddleware} from "./middleware/log_middleware";
-import {createJwtMiddleware} from './middleware/jwt_middleware';
 import * as _ from 'lodash';
-import {IAppConfig} from './interfaces';
-import {userAgentMiddleware} from './middleware/user_agent_middleware';
-import {createCorsMiddleware} from './middleware/cors_middleware';
+import {IAppConfig, IAppMiddlewares} from './interfaces';
+import {createDefaultMiddlewareCollection} from './middleware/collection';
 
 /**
  * Main class for koa startup.
  */
 export class App {
     protected koaAppInstance: Koa;
+    protected middlewares: IAppMiddlewares;
 
     constructor(
         protected config: IAppConfig,
-        protected router: Router = new Router()
-    ) {}
+        protected router: Router = new Router(),
+        customMiddlewares?: IAppMiddlewares
+    ) {
+        this.middlewares = Object.assign({}, createDefaultMiddlewareCollection(this.config), customMiddlewares);
+    }
 
     /**
      * Inits koa app with default preset middlewares:
@@ -59,8 +57,8 @@ export class App {
         this.router[method](url, action);
     }
 
-    protected _enableBodyParser(multipart: boolean = true): void {
-        this.koaAppInstance.use(bodyParser({multipart}));
+    protected _enableBodyParser(): void {
+        this.koaAppInstance.use(this.middlewares.bodyParser);
     }
 
     protected _enableLogMiddleware(): void {
@@ -68,12 +66,12 @@ export class App {
             && this.config.logLevel === 'TRACE'
             || this.config.logLevel === 'DEBUG'
         ) {
-            this.koaAppInstance.use(logMiddleware);
+            this.koaAppInstance.use(this.middlewares.log);
         }
     }
 
     protected _enableErrorMiddleware(): void {
-        this.koaAppInstance.use(errorMiddleware);
+        this.koaAppInstance.use(this.middlewares.error);
     }
 
     protected _enableJwtMiddleware(): void {
@@ -81,30 +79,25 @@ export class App {
         if (jwtSecret) {
             const jwtPrefix = this.config.jwt.prefix;
 
-            this.koaAppInstance.use(createJwtMiddleware(
-                jwtSecret as string, this.config.jwt.publicPath as string, jwtPrefix)
-            );
+            this.koaAppInstance.use(this.middlewares.jwt);
         }
     }
 
     protected _enableCorsMiddleware(): void {
         const enabled = _.get(this.config, 'cors.enabled');
         if (typeof enabled === 'undefined' || enabled !== false) {
-            this.koaAppInstance.use(createCorsMiddleware(
-                _.get(this.config, 'cors.origin'),
-                _.get(this.config, 'cors.credentials')
-            ));
+            this.koaAppInstance.use(this.middlewares.cors);
         }
     }
 
     protected _enableUserAgentMiddleware(): void {
         if (this.config.userAgent) {
-            this.koaAppInstance.use(userAgentMiddleware);
+            this.koaAppInstance.use(this.middlewares.userAgent);
         }
     }
 
     protected _enableSuccessMiddleware(): void {
-        this.koaAppInstance.use(successMiddleware);
+        this.koaAppInstance.use(this.middlewares.success);
     }
 
     protected _processError(err: any, ctx: Koa.Context): void {

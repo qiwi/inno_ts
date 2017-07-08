@@ -1,3 +1,5 @@
+import {Middleware} from 'koa';
+
 export interface IAppJwtConfig {
     secret: string;
     publicPath: string;
@@ -17,4 +19,14 @@ export interface IAppConfig {
     jwt?: IAppJwtConfig;
     cors?: ICorsConfig;
     userAgent?: boolean;
+}
+
+export interface IAppMiddlewares {
+    bodyParser?: Middleware;
+    log?: Middleware;
+    error?: Middleware;
+    jwt?: Middleware;
+    cors?: Middleware;
+    userAgent?: Middleware;
+    success?: Middleware;
 }

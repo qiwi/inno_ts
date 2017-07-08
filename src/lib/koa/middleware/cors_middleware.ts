@@ -1,10 +1,12 @@
 import * as koaCors from 'koa-cors';
-import {Context} from 'koa';
+import {Middleware} from 'koa';
+
+export const DEFAULT_ORIGIN = '*';
 
 export function createCorsMiddleware(
-    origin: string,
-    credentials: string
-): (ctx: Context, next?: () => any) => any {
+    origin: string = DEFAULT_ORIGIN,
+    credentials?: string
+): Middleware {
     const corsConfig: any = {
         origin: '*'
     };
