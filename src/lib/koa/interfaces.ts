@@ -1,7 +1,7 @@
 export interface IAppJwtConfig {
     secret: string;
     publicPath: string;
-    jwtPrefix: string;
+    prefix?: string;
 }
 
 export interface ICorsConfig {
@@ -16,5 +16,5 @@ export interface IAppConfig {
     logLevel?: string;
     jwt?: IAppJwtConfig;
     cors?: ICorsConfig;
-    userAgent: string;
+    userAgent?: boolean;
 }

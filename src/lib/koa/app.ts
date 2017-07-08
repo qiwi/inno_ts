@@ -8,6 +8,7 @@ import * as userAgent from 'koa-useragent';
 import {logMiddleware} from "./middleware/log_middleware";
 import {createJwtMiddleware} from './middleware/jwt_middleware';
 import * as _ from 'lodash';
+import {IAppConfig} from './interfaces';
 
 /**
  * Main class for koa startup.
@@ -16,7 +17,7 @@ export class App {
     protected koaAppInstance: Koa;
 
     constructor(
-        protected config: any,
+        protected config: IAppConfig,
         protected router: Router
     ) {}
 
