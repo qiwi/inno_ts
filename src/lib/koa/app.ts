@@ -111,18 +111,21 @@ export class App {
     private async _startApp(): Promise<void> {
         const host = this.config.host;
         const port = this.config.port;
+        let promise;
         if (host) {
-            this.koaAppInstance.listen(port, host, async () => {
-                console.info(
-                    `Server listening on port ${port} and host ${host}`
-                );
-                return Promise.resolve();
+            promise = new Promise((resolve, reject) => {
+                this.koaAppInstance.listen(port, host, () => {
+                    resolve();
+                });
             });
         } else {
-            this.koaAppInstance.listen(port, host, async () => {
-                console.info('Server listening on port ' + port);
-                return Promise.resolve();
+            promise = new Promise((resolve, reject) => {
+                this.koaAppInstance.listen(port, () => {
+                    resolve();
+                });
             });
         }
+
+        return promise;
     }
 }
