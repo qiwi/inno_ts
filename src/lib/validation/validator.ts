@@ -79,7 +79,7 @@ export class Validator {
      * @param iterator
      * @returns {Array}
      */
-    static isArray<T>(array, iterator?: (arrayElement: any) => T): Array<T> | never {
+    static isArray<T>(array: any, iterator?: (arrayElement: any) => T): Array<T> | never {
         if (!(array instanceof Array) || array.length === 0) {
             throw new ValidationError(ValidationError.NO_ARRAY);
         }

@@ -37,57 +37,17 @@ function makeRequestAddress(port: number, resource: string): string {
 }
 
 const jwtConfigMock = {
-    get: (key: string) => {
-        switch (key) {
-            case 'port':
-                return jwtPort;
-            case 'jwt.secret':
-                return jwtSecret;
-            case 'jwt.publicPath':
-                return jwtPublicPath;
-            case 'logLevel':
-                return 'TRACE';
-            default:
-                return '';
-        }
-    },
-    has: (key: string) => {
-        switch (key) {
-            case 'jwt.secret':
-                return true;
-            case 'logLevel':
-                return true;
-            default:
-                return '';
-        }
+    port: jwtPort,
+    jwt: {
+        secret: jwtSecret,
+        publicPath: jwtPublicPath
     }
 };
 
 const commonConfigMock = {
-    get: (key: string) => {
-        switch (key) {
-            case 'port':
-                return commonPort;
-            case 'userAgent':
-                return true;
-            case 'logLevel':
-                return 'TRACE';
-            default:
-                return '';
-        }
-    },
-    has: (key: string) => {
-        switch (key) {
-            case 'jwt.secret':
-                return false;
-            case 'userAgent':
-                return true;
-            case 'logLevel':
-                return true;
-            default:
-                return '';
-        }
-    }
+    port: commonPort,
+    userAgent: true,
+    logLevel: 'TRACE'
 };
 
 class TestController extends Controller {
@@ -138,11 +98,19 @@ router
 
 /* tslint:disable:typedef */
 describe('app', async function (): Promise<void> {
-    before(function (done: Function) {
-        // TODO !!!!!! DANGER ZONE - refactor me
+    before(async function () {
         const jwtApp = new App(jwtConfigMock, router);
-        const app = new App(commonConfigMock, router);
-        setTimeout(done, 1000);
+
+        const app = new App(commonConfigMock);
+        app.route('post', publicResource, testController.publicResource);
+        app.route('post', protectedResource, testController.protectedResource);
+        app.route('get', publicResourceWithError, testController.publicResourceWithError);
+        app.route('post', publicResourceWithValidation, testController.publicResourceWithValidation);
+        app.route('get', publicResourceWithValidation, testController.publicResourceWithValidation);
+        app.route('post', publicResourceWithAgent, testController.publicResourceWithAgent);
+
+        await jwtApp.bootstrap();
+        await app.bootstrap();
     });
 
     describe('router', async function () {

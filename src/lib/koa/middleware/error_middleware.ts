@@ -1,8 +1,8 @@
-import {BaseError} from '../error/base';
+import {BaseError} from '../../error/base';
 import {Context} from 'koa';
-import {AuthError} from "../error/auth";
+import {AuthError} from "../../error/auth";
 
-export async function errorMiddleware(ctx: Context, next: Function): Promise<void> {
+export async function errorMiddleware(ctx: Context, next: () => any): Promise<void> {
     try {
         await next();
     } catch (err) {

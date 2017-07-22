@@ -2,6 +2,8 @@ import {Validator} from './validator';
 import {ValidationError} from "../error/validation";
 
 class ItemValidator {
+    // TODO temp, enable after updating tslint and changing rulesm
+    /* tslint:disable */
     protected _item: any;
 
     get item(): any {
@@ -23,6 +25,8 @@ class ItemValidator {
         this._item = Object.assign({}, item);
         this._isOptional = isOptional;
     }
+
+    /* tslint:enable */
 
     /**
      * Numeric string check. Escapes, checks and converts to number.

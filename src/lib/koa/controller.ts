@@ -10,11 +10,9 @@ export abstract class Controller {
             const contentType = ctx.req.headers['content-type'];
             if (!contentType || contentType.indexOf('application/json') > -1) {
                 params = ctx.request.body;
-            }
-            else if (contentType.indexOf('multipart/form-data') > -1 && ctx.request.body.fields) {
+            } else if (contentType.indexOf('multipart/form-data') > -1 && ctx.request.body.fields) {
                 params = ctx.request.body.fields;
-            }
-            else {
+            } else {
                 params = ctx.request.body;
             }
         }

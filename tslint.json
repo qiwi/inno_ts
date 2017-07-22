@@ -1,6 +1,5 @@
 {
     "extends": "tslint:recommended",
-    "rulesDirectory": "node_modules/tslint-eslint-rules/dist/rules",
     "rules": {
         "array-type": false,
         "no-console": false,

@@ -149,7 +149,7 @@ describe('validator', function () {
 
         it('string array with isEmail iterator', function () {
             expect(function () {
-                itemValidator.isArray('stringArray', Validator.isEmail)
+                itemValidator.isArray('stringArray', Validator.isEmail);
             }).to.throw(ValidationError);
         });
 

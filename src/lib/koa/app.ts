@@ -1,109 +1,131 @@
 import * as Koa from "koa";
-import * as jwt from "koa-jwt";
-import * as bodyParser from 'koa-body';
-import {errorMiddleware} from './error_middleware';
-import {successMiddleware} from './success_middleware';
 import * as Router from 'koa-router';
-import * as config from 'config';
-import IConfig = config.IConfig;
-import * as koaCors from 'koa-cors';
-import * as userAgent from 'koa-useragent';
-import {logMiddleware} from "./log_middleware";
+import * as _ from 'lodash';
+import {IAppConfig, IAppMiddlewares} from './interfaces';
+import {createDefaultMiddlewareCollection} from './middleware/collection';
 
+/**
+ * Main class for koa startup.
+ */
 export class App {
-    koa: Koa;
+    protected koaAppInstance: Koa;
+    protected middlewares: IAppMiddlewares;
 
-    constructor(config: IConfig | any, router: Router) {
-        this.initKoa(config, router);
+    constructor(
+        protected config: IAppConfig,
+        protected router: Router = new Router(),
+        customMiddlewares?: IAppMiddlewares
+    ) {
+        this.middlewares = Object.assign({}, createDefaultMiddlewareCollection(this.config), customMiddlewares);
     }
 
-    private initKoa(config: IConfig, router: Router): void {
-        const app = new Koa();
-        const appPort = config.get('port');
-        let jwtSecret = config.has('jwt.secret') ? config.get('jwt.secret') : null;
+    /**
+     * Inits koa app with default preset middlewares:
+     * body parser, log middleware, error, jwt, cors, user agent etc.
+     *
+     * @return {Promise<void>}
+     */
+    public async bootstrap(): Promise<void> {
+        this.koaAppInstance = new Koa();
 
-        app.use(bodyParser({multipart: true}));
+        this._enableBodyParser();
+        this._enableLogMiddleware();
+        this._enableErrorMiddleware();
+        this._enableJwtMiddleware();
+        this._enableCorsMiddleware();
+        this._enableUserAgentMiddleware();
 
-        if (config.has('logLevel')
-            && (config.get<string>('logLevel') === 'TRACE'
-            || config.get<string>('logLevel') === 'DEBUG')
+        this.koaAppInstance.use(this.router.routes());
+        this.koaAppInstance.use(this.router.allowedMethods());
+
+        this._enableSuccessMiddleware();
+
+        this.koaAppInstance.on('error', this._processError);
+
+        process.on('uncaughtException', this._processUncaughtException);
+
+        await this._startApp();
+    }
+
+    /**
+     * Sets http route for application.
+     * @param {String} method HTTP method (e.g. 'post')
+     * @param url
+     * @param action
+     */
+    public route(method: string, url: string, action: (ctx: Router.IRouterContext, next: () => any) => any): void {
+        this.router[method](url, action);
+    }
+
+    protected _enableBodyParser(): void {
+        this.koaAppInstance.use(this.middlewares.bodyParser);
+    }
+
+    protected _enableLogMiddleware(): void {
+        if (this.config.logLevel
+            && this.config.logLevel === 'TRACE'
+            || this.config.logLevel === 'DEBUG'
         ) {
-            app.use(logMiddleware);
+            this.koaAppInstance.use(this.middlewares.log);
         }
+    }
 
-        app.use(errorMiddleware);
+    protected _enableErrorMiddleware(): void {
+        this.koaAppInstance.use(this.middlewares.error);
+    }
 
-        // Enabling JWT middleware
+    protected _enableJwtMiddleware(): void {
+        let jwtSecret = _.get(this.config, 'jwt.secret');
         if (jwtSecret) {
-            const jwtPrefix = config.has('jwt.prefix') ? config.get('jwt.prefix') : 'Bearer';
+            const jwtPrefix = this.config.jwt.prefix;
 
-            app.use(jwt({
-                secret: jwtSecret,
-                getToken: function (opts: any): null | string {
-                    const ctx = this;
-                    if (!ctx.header || !ctx.header.authorization) {
-                        return;
-                    }
-
-                    const parts = ctx.header.authorization.split(' ');
-
-                    if (parts.length === 2) {
-                        const scheme = parts[0];
-                        const credentials = parts[1];
-
-                        if (scheme === jwtPrefix) {
-                            return credentials;
-                        }
-                    }
-                    if (!opts.passthrough) {
-                        ctx.throw(401, 'Bad Authorization header format. Format is "Authorization: Bearer <token>"');
-                    }
-                }
-            }).unless({
-                path: [
-                    new RegExp(config.get<string>('jwt.publicPath'))
-                ],
-                method: 'OPTIONS'
-            }));
+            this.koaAppInstance.use(this.middlewares.jwt);
         }
+    }
 
-        // CORS middleware (enabled by default)
-        if (!config.has('cors.enabled') || config.get<boolean>('cors.enabled') !== false) {
-            const corsConfig: any = {
-                origin: '*'
-            };
-
-            if (config.has('cors.origin')) {
-                corsConfig.origin = config.get<string>('cors.origin');
-            }
-
-            if (config.has('cors.credentials')) {
-                corsConfig.credentials = config.get<boolean>('cors.credentials');
-            }
-
-            app.use(koaCors(corsConfig));
+    protected _enableCorsMiddleware(): void {
+        const enabled = _.get(this.config, 'cors.enabled');
+        if (typeof enabled === 'undefined' || enabled !== false) {
+            this.koaAppInstance.use(this.middlewares.cors);
         }
+    }
 
-        // User-Agent middleware
-        if (config.has('userAgent') && config.get<boolean>('userAgent') === true) {
-            app.use(userAgent());
+    protected _enableUserAgentMiddleware(): void {
+        if (this.config.userAgent) {
+            this.koaAppInstance.use(this.middlewares.userAgent);
         }
+    }
 
-        app.use(router.routes());
-        app.use(router.allowedMethods());
-        app.use(successMiddleware);
+    protected _enableSuccessMiddleware(): void {
+        this.koaAppInstance.use(this.middlewares.success);
+    }
 
-        app.on('error', (err, ctx) => console.error('REQUEST_ERROR', err, ctx));
-        process.on('uncaughtException', (err) => console.error('PROCESS_EXCEPTION', err.stack));
+    protected _processError(err: any, ctx: Koa.Context): void {
+        console.error('REQUEST_ERROR', err, ctx);
+    }
 
-        if (config.has('host')) {
-            const appHost = config.get<any>('host');
-            app.listen(appPort, appHost, () => console.info(
-                `Server listening on port ${appPort} and host ${appHost}`
-            ));
+    protected _processUncaughtException(err: any): void {
+        console.error('PROCESS_EXCEPTION', err.stack);
+    }
+
+    private async _startApp(): Promise<void> {
+        const host = this.config.host;
+        const port = this.config.port;
+        let promise;
+        if (host) {
+            promise = new Promise((resolve, reject) => {
+                this.koaAppInstance.listen(port, host, () => {
+                    resolve();
+                });
+            });
         } else {
-            app.listen(appPort, () => console.info('Server listening on port ' + appPort));
+            promise = new Promise((resolve, reject) => {
+                this.koaAppInstance.listen(port, () => {
+                    resolve();
+                });
+            });
         }
-        this.koa = app;
+
+        return promise;
     }
 }

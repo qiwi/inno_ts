@@ -6,7 +6,7 @@ import IResultSet = oracledb.IResultSet;
 import IConnectionAttributes = oracledb.IConnectionAttributes;
 import {BaseError} from "../error/base";
 import {IConnectionPool} from "oracledb";
-import {DbService, ONE_ROW_WARNING} from "./db_service";
+import {IDbService, ONE_ROW_WARNING} from "./db_service";
 
 export const DB_CONNECT_ERROR: string = 'DB_QUERY';
 export const DB_ORACLE_ERROR: string = 'DB_ORACLE_ERROR';
@@ -16,7 +16,7 @@ export const DB_ORACLE_RELEASE_ERROR: string = 'DB_ORACLE_RELEASE_ERROR';
 
 // TODO DbError
 
-export class OracleService implements DbService {
+export class OracleService implements IDbService {
     public poolMax: number = 100;
 
     protected connectionParams: IConnectionAttributes;
