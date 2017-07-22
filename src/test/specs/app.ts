@@ -54,7 +54,7 @@ describe('app', async function (): Promise<void> {
                 return joi.object().keys({
                     testField: joi.string().trim().email().required(),
                     testQueryField: joi.number().integer()
-                }).with('testField', 'testQueryField');
+                });
             }),
             testController.publicResourceWithMiddlewareValidation
         );
@@ -65,7 +65,7 @@ describe('app', async function (): Promise<void> {
                 return joi.object().keys({
                     testField: joi.string().trim().email().required(),
                     testQueryField: joi.number().integer()
-                }).with('testField', 'testQueryField');
+                });
             }),
             testController.publicResourceWithMiddlewareValidation
         );
@@ -88,7 +88,8 @@ describe('app', async function (): Promise<void> {
                 qs: {},
                 form: {
                     testQueryField: ' 1111 ',
-                    testField: '   test@test.ru '
+                    testField: '   test@test.ru ',
+                    someOtherData: 122
                 },
                 json: true
             });
@@ -100,7 +101,9 @@ describe('app', async function (): Promise<void> {
             response = await request.get(makeRequestAddress(jwtPort, publicResourceWithValidation), {
                 qs: {
                     testQueryField: ' 1111 ',
-                    testField: '   test@test.ru '
+                    testField: '   test@test.ru ',
+                    someOtherData: 122,
+                    someYetOtherData: 12211
                 },
                 json: true
             });

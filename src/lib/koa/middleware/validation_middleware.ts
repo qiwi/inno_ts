@@ -4,6 +4,10 @@ import * as koa from 'koa';
 import {ValidationError} from '../../error/validation';
 import * as _ from 'lodash';
 
+const defaultOptions = {
+    stripUnknown: true
+};
+
 export function createValidationMiddleware(schema: joi.ObjectSchema): IMiddleware {
     return function(ctx: koa.Context, next: () => any): void {
         let params: any;
@@ -20,7 +24,7 @@ export function createValidationMiddleware(schema: joi.ObjectSchema): IMiddlewar
             }
         }
 
-        const result = schema.validate<any>(params);
+        const result = joi.validate(params, schema, defaultOptions);
 
         if (result.error) {
             const invalidKey = _.get<string>(result.error, 'details.0.path');
@@ -34,7 +38,8 @@ export function createValidationMiddleware(schema: joi.ObjectSchema): IMiddlewar
             );
         }
 
-        Object.assign(params, result.value);
+        // TODO fix any
+        (ctx as any).validatedData = Object.assign({}, params, result.value);
 
         next();
     };

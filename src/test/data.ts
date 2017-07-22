@@ -62,7 +62,8 @@ export class TestController extends Controller {
     };
 
     publicResourceWithMiddlewareValidation = async(ctx: Context, next: Function): Promise<void> => {
-        ctx.body = Object.keys(ctx.request.query).length ? ctx.request.query : ctx.request.body;
+        // TODO
+        ctx.body = (ctx as any).validatedData;
         await next();
     };
 

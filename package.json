@@ -12,7 +12,7 @@
     "lint": "tslint 'src/**/*.ts' --type-check --project tsconfig.json"
   },
   "dependencies": {
-    "joi": "https://registry.npmjs.org/joi/-/joi-6.10.1.tgz",
+    "joi": "^10.6.0",
     "koa": "^2.0.0",
     "koa-body": "^2.3.0",
     "koa-cors": "0.0.16",
