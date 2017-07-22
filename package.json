@@ -8,7 +8,7 @@
     "build": "tsc",
     "watch": "tsc --watch",
     "prepublish": "tsc",
-    "test": "mocha ./build/test/",
+    "test": "mocha ./build/test/ --recursive",
     "lint": "tslint 'src/**/*.ts' --type-check --project tsconfig.json"
   },
   "dependencies": {

@@ -6,6 +6,7 @@ export interface IValidationErrorDetails {
 }
 
 export class ValidationError extends BaseError {
+    static readonly DEFAULT: TValidationErrorCode = 'FAILED';
     static readonly VALIDATION: TValidationErrorCode = 'VALIDATION';
 
     static readonly NO_STRING: TValidationErrorCode = 'NO_STRING';
@@ -25,13 +26,19 @@ export class ValidationError extends BaseError {
 
     public details: IValidationErrorDetails;
 
-    constructor(code: TValidationErrorCode = ValidationError.VALIDATION, invalidField?: string, invalidValue?: any) {
+    constructor(
+        code: TValidationErrorCode = ValidationError.DEFAULT,
+        invalidField?: string,
+        invalidValue?: any,
+        message?: string
+    ) {
+        const details: any = {invalidField, invalidValue};
+        if (message) {
+            details.message = message;
+        }
         super(Object.assign({}, ValidationError.defaultOptions, {
             code,
-            details: {
-                invalidField,
-                invalidValue
-            }
+            details
         }));
 
         this.errorPrefix = 'ERROR_VALIDATION_';
@@ -39,5 +46,5 @@ export class ValidationError extends BaseError {
     }
 }
 
-export type TValidationErrorCode = 'VALIDATION' | 'NO_STRING' |
+export type TValidationErrorCode = 'FAILED' | 'VALIDATION' | 'NO_STRING' |
     'NO_INT' | 'NO_EMAIL' | 'INT_OUT_OF_BOUNDS' | 'STRING_OUT_OF_BOUNDS' | 'NO_ARRAY';

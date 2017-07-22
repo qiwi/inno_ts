@@ -1,8 +1,8 @@
 import {expect} from 'chai';
-import {BaseError} from "../lib/error/base";
-import {ValidationError} from "../lib/error/validation";
-import {AuthError} from "../lib/error/auth";
-import {InnoError} from "../lib/error/inno";
+import {BaseError} from "../../lib/error/base";
+import {ValidationError} from "../../lib/error/validation";
+import {AuthError} from "../../lib/error/auth";
+import {InnoError} from "../../lib/error/inno";
 
 const validationErrorPrefix = new ValidationError().errorPrefix;
 const authErrorPrefix = new AuthError().errorPrefix;

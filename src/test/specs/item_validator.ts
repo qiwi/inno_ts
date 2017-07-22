@@ -1,7 +1,7 @@
 import {expect} from 'chai';
-import {ItemValidator} from '../lib/validation/item_validator';
-import {ValidationError} from "../lib/error/validation";
-import {Validator} from "../lib/validation/validator";
+import {ItemValidator} from '../../lib/validation/item_validator';
+import {ValidationError} from "../../lib/error/validation";
+import {Validator} from "../../lib/validation/validator";
 
 const testString = (new Array(2000)).toString();
 const validationErrorPrefix = new ValidationError().errorPrefix;
