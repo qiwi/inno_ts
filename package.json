@@ -12,6 +12,7 @@
     "lint": "tslint 'src/**/*.ts' --type-check --project tsconfig.json"
   },
   "dependencies": {
+    "joi": "https://registry.npmjs.org/joi/-/joi-6.10.1.tgz",
     "koa": "^2.0.0",
     "koa-body": "^2.3.0",
     "koa-cors": "0.0.16",
@@ -40,6 +41,7 @@
   "devDependencies": {
     "@types/chai": "^3.4.34",
     "@types/config": "0.0.31",
+    "@types/joi": "^10.4.0",
     "@types/jsonwebtoken": "^7.2.0",
     "@types/koa": "^2.0.39",
     "@types/koa-bodyparser": "^3.0.22",

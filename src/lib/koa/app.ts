@@ -3,6 +3,7 @@ import * as Router from 'koa-router';
 import * as _ from 'lodash';
 import {IAppConfig, IAppMiddlewares} from './interfaces';
 import {createDefaultMiddlewareCollection} from './middleware/collection';
+import {IMiddleware} from 'koa-router';
 
 /**
  * Main class for koa startup.
@@ -51,10 +52,10 @@ export class App {
      * Sets http route for application.
      * @param {String} method HTTP method (e.g. 'post')
      * @param url
-     * @param action
+     * @param ...actions
      */
-    public route(method: string, url: string, action: (ctx: Router.IRouterContext, next: () => any) => any): void {
-        this.router[method](url, action);
+    public route(method: string, url: string, ...actions: IMiddleware[]): void {
+        this.router[method].apply(this.router, ([url] as any).concat(actions));
     }
 
     protected _enableBodyParser(): void {
