@@ -1,4 +1,4 @@
-build
+build/*
 !build/declarations.d.ts
 src/*.js
 *.js.map

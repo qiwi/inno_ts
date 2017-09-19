@@ -234,7 +234,7 @@ describe('app', async function(): Promise<void> {
         it('should return validation error (middleware)', async function() {
             const response = await request.post(
                 makeRequestAddress(commonPort, publicResourceWithMiddlewareValidation
-            ``), {
+            ), {
                 form: {
                     testField: 'testValue'
                 },
