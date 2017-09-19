@@ -21,5 +21,5 @@ export abstract class Controller {
 
     protected _validate(item: any): ItemValidator {
         return new ItemValidator(item);
-    };
+    }
 }

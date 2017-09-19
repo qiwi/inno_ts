@@ -12,7 +12,7 @@ export function createJwtMiddleware(
 ): Middleware {
     return jwt({
         secret: jwtSecret,
-        getToken: function (opts: any): null | string {
+        getToken: function(opts: any): null | string {
             const ctx = this;
             if (!ctx.header || !ctx.header.authorization) {
                 return;

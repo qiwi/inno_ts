@@ -57,7 +57,7 @@ export class OracleService implements IDbService {
                 }
             });
         }
-    };
+    }
 
     /**
      * Fetches rows from result set.
@@ -83,7 +83,7 @@ export class OracleService implements IDbService {
         }
 
         return rows;
-    };
+    }
 
     /**
      * Closes result set (optional - closes db connection).
@@ -104,7 +104,7 @@ export class OracleService implements IDbService {
         if (connection) {
             await this._disconnect(connection);
         }
-    };
+    }
 
     /**
      * Executes sql and returns rows from executed result.
@@ -128,7 +128,7 @@ export class OracleService implements IDbService {
                 }
             });
         }
-    };
+    }
 
     /**
      * Executes query and returns result row.
@@ -190,7 +190,7 @@ export class OracleService implements IDbService {
                 innerDetails: error.message
             });
         }
-    };
+    }
 
     /**
      * Closes db conn.
@@ -205,10 +205,10 @@ export class OracleService implements IDbService {
                 innerDetails: error.message
             });
         }
-    };
+    }
 
     protected async _run(query: string,
-                         params?: Object | Array<any>,
+                         params?: object | Array<any>,
                          options?: IExecuteOptions): Promise<IExecuteReturn> {
         let connection;
         options = Object.assign({}, this.options, options);

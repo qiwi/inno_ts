@@ -80,8 +80,8 @@ class ItemValidator {
 }
 // NOTE !!! Wrapper hack for validator - wraps all ItemValidator methods in try/catch
 
-function wrap(fn: Function): Function {
-    return function (field: string, ...args: Array<any>): any | never {
+function wrap(fn: (...args: any[]) => any): (...args: any[]) => any {
+    return function(field: string, ...args: Array<any>): any | never {
         try {
             if (this._isOptional && !this._item.hasOwnProperty(field)) {
                 return null;
@@ -104,10 +104,10 @@ Object.getOwnPropertyNames(ItemValidator.prototype).forEach((key: string) => {
     if (typeof Object.getOwnPropertyDescriptor(ItemValidator.prototype, key).get !== 'undefined') {
         return;
     }
-    let value = ItemValidator.prototype[key];
+    const value = ItemValidator.prototype[key];
     if (typeof value === 'function' && value.name !== 'constructor') {
         ItemValidator.prototype[key] = wrap(value);
     }
 });
 
-export {ItemValidator}
+export {ItemValidator};

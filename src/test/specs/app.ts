@@ -35,8 +35,8 @@ router
     .post(publicResourceWithAgent, testController.publicResourceWithAgent);
 
 /* tslint:disable:typedef */
-describe('app', async function (): Promise<void> {
-    before(async function () {
+describe('app', async function(): Promise<void> {
+    before(async function() {
         const jwtApp = new App(jwtConfigMock, router);
 
         const app = new App(commonConfigMock);
@@ -74,8 +74,8 @@ describe('app', async function (): Promise<void> {
         await app.bootstrap();
     });
 
-    describe('router', async function () {
-        it('serves requests', async function () {
+    describe('router', async function() {
+        it('serves requests', async function() {
             const response = await request.post(makeRequestAddress(jwtPort, publicResource), {
                 form: {},
                 json: true
@@ -83,7 +83,7 @@ describe('app', async function (): Promise<void> {
             expect(response.result).to.eq(1);
         });
 
-        it('validates and processes request data', async function () {
+        it('validates and processes request data', async function() {
             let response = await request.post(makeRequestAddress(jwtPort, publicResourceWithValidation), {
                 qs: {},
                 form: {
@@ -113,7 +113,7 @@ describe('app', async function (): Promise<void> {
             });
         });
 
-        it('validates and processes request data (middleware)', async function () {
+        it('validates and processes request data (middleware)', async function() {
             let response = await request.post(makeRequestAddress(commonPort, publicResourceWithMiddlewareValidation), {
                 qs: {},
                 form: {
@@ -140,7 +140,7 @@ describe('app', async function (): Promise<void> {
             });
         });
 
-        it('returns error when accessing protected resource with no key', async function () {
+        it('returns error when accessing protected resource with no key', async function() {
             const response = await request.post(makeRequestAddress(jwtPort, protectedResource), {
                 form: {},
                 json: true,
@@ -149,7 +149,7 @@ describe('app', async function (): Promise<void> {
             expect(response.error).to.eq(authErrorPrefix + AuthError.TOKEN_IS_INVALID);
         });
 
-        it('serves protected request with passed key', async function () {
+        it('serves protected request with passed key', async function() {
             const token = jsonWebToken.sign({foo: 1}, jwtSecret);
             const response = await request.post(makeRequestAddress(jwtPort, protectedResource), {
                 form: {},
@@ -161,7 +161,7 @@ describe('app', async function (): Promise<void> {
             expect(response.result).to.eq(2);
         });
 
-        it('makes all routes unprotected w/o jwt config', async function () {
+        it('makes all routes unprotected w/o jwt config', async function() {
             const response = await request.post(makeRequestAddress(commonPort, protectedResource), {
                 form: {},
                 json: true
@@ -169,7 +169,7 @@ describe('app', async function (): Promise<void> {
             expect(response.result).to.eq(2);
         });
 
-        it('returns userAgent info', async function () {
+        it('returns userAgent info', async function() {
             const agentKeys = ['isAuthoritative',
                 'isMobile', 'isTablet', 'isiPad',
                 'isiPod', 'isiPhone', 'isAndroid',
@@ -195,8 +195,8 @@ describe('app', async function (): Promise<void> {
         });
     });
 
-    describe('errors', async function () {
-        it('returns error on non-existing resource', async function () {
+    describe('errors', async function() {
+        it('returns error on non-existing resource', async function() {
             let response: any;
             try {
                 response = await request.get(makeRequestAddress(commonPort, nonExistingResource), {
@@ -208,7 +208,7 @@ describe('app', async function (): Promise<void> {
             expect(response.statusCode).to.eq(404);
         });
 
-        it('should catch error and return its code', async function () {
+        it('should catch error and return its code', async function() {
             const response = await request.get(makeRequestAddress(commonPort, publicResourceWithError), {
                 json: true,
                 simple: false
@@ -216,8 +216,8 @@ describe('app', async function (): Promise<void> {
             expect(response.error).to.eq(innoErrorPrefix + InnoError.INTERNAL);
         });
 
-        it('should return validation error', async function () {
-            let response = await request.post(makeRequestAddress(commonPort, publicResourceWithValidation), {
+        it('should return validation error', async function() {
+            const response = await request.post(makeRequestAddress(commonPort, publicResourceWithValidation), {
                 form: {
                     testField: 'testValue'
                 },
@@ -231,8 +231,10 @@ describe('app', async function (): Promise<void> {
             });
         });
 
-        it('should return validation error (middleware)', async function () {
-            let response = await request.post(makeRequestAddress(commonPort, publicResourceWithMiddlewareValidation), {
+        it('should return validation error (middleware)', async function() {
+            const response = await request.post(
+                makeRequestAddress(commonPort, publicResourceWithMiddlewareValidation
+            ``), {
                 form: {
                     testField: 'testValue'
                 },

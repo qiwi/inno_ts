@@ -32,21 +32,21 @@ const protectedResource = '/test';
 const nonExistingResource = '/public/abcd';
 
 export class TestController extends Controller {
-    publicResource = async(ctx: Context, next: Function): Promise<void> => {
+    publicResource = async (ctx: Context, next: () => any): Promise<void> => {
         ctx.body = 1;
         await next();
     };
 
-    protectedResource = async(ctx: Context, next: Function): Promise<void> => {
+    protectedResource = async (ctx: Context, next: () => any): Promise<void> => {
         ctx.body = 2;
         await next();
     };
 
-    publicResourceWithError = async(ctx: Context, next: Function): Promise<void> => {
+    publicResourceWithError = async (ctx: Context, next: () => any): Promise<void> => {
         throw new Error('Test error');
     };
 
-    publicResourceWithValidation = async(ctx: Context, next: Function): Promise<void> => {
+    publicResourceWithValidation = async (ctx: Context, next: () => any): Promise<void> => {
         const data = this.validate(ctx, (validator: ItemValidator) => {
             return {
                 testField: validator.isEmail('testField'),
@@ -61,13 +61,13 @@ export class TestController extends Controller {
         await next();
     };
 
-    publicResourceWithMiddlewareValidation = async(ctx: Context, next: Function): Promise<void> => {
+    publicResourceWithMiddlewareValidation = async (ctx: Context, next: () => any): Promise<void> => {
         // TODO
         ctx.body = (ctx as any).validatedData;
         await next();
     };
 
-    publicResourceWithAgent = async(ctx: Context, next: Function): Promise<void> => {
+    publicResourceWithAgent = async (ctx: Context, next: () => any): Promise<void> => {
         ctx.body = ctx.state.userAgent;
         await next();
     }
@@ -78,4 +78,4 @@ const testController = new TestController();
 export {host, jwtPort, jwtSecret, jwtPublicPath, commonPort, jwtConfigMock, commonConfigMock, testController,
     publicResource, publicResourceWithError, publicResourceWithValidation, publicResourceWithAgent,
     protectedResource, nonExistingResource, publicResourceWithMiddlewareValidation
-}
+};

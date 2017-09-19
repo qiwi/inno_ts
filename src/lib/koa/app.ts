@@ -79,7 +79,7 @@ export class App {
     }
 
     protected _enableJwtMiddleware(): void {
-        let jwtSecret = _.get(this.config, 'jwt.secret');
+        const jwtSecret = _.get(this.config, 'jwt.secret');
         if (jwtSecret) {
             this.koaAppInstance.use(this.middlewares.jwt);
         }
