@@ -11,8 +11,10 @@ export * from './lib/error/inno';
 export * from './lib/error/validation';
 export {Context, Middleware} from 'koa';
 
+import * as Joi from 'joi';
 import * as logger from './lib/logger';
-export {logger};
+
+export {logger, Joi};
 
 /* tslint:disable */
 function __export(m) {

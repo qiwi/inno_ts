@@ -19,6 +19,7 @@ export interface IAppConfig {
     jwt?: IAppJwtConfig;
     cors?: ICorsConfig;
     userAgent?: boolean;
+    enableLogMiddleware?: boolean;
 }
 
 export interface IAppMiddlewares {
