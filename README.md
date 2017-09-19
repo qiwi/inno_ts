@@ -1,36 +1,19 @@
-# inno_ts
-Стандартная либа (файлы, использовавшиеся в ecom rnd проектах), оформленная в виде модуля.
+# Overview
+innots is a wrapper around koa framework and some popular koa middlewares for 
+quick app init and bootstrap.
 
-## TODO
-- own tslint
-- refactoring, tests, etc ...
-
-## Использование
-Для сборки:
-```
-npm run build
-```
-Или
-```
-npm run watch
-```
-Sources: `/src/lib`
-## Tests
+First of all module is designed to use with typescript and it's async await implementation
+but you can also use it with plain javascript.
 
 ```
-npm run build
-```
-```
-npm run test
-```
-Sources: `/src/test`
+import {App, Context} from 'innots';
 
-## Использование в коде
- 
- Например:
- 
- `import {Controller} from 'inno_ts'`
+const app = new App({
+    port: 9080
+});
 
-Важный момент: для использование OracleService на данный момент необходима
-зависимость на oracledb (тестилось на 11 версии) в родительском проекте.
- 
+app.route('post', '/test', async (ctx: Context, next: () => any): Promise<void> => {
+   ctx.body = 1;
+   await next();
+});
+```
