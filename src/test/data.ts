@@ -62,8 +62,7 @@ export class TestController extends Controller {
     };
 
     publicResourceWithMiddlewareValidation = async (ctx: Context, next: () => any): Promise<void> => {
-        // TODO
-        ctx.body = (ctx as any).validatedData;
+        ctx.body = ctx.validatedData;
         await next();
     };
 

@@ -38,8 +38,7 @@ export function createValidationMiddleware(schema: joi.ObjectSchema): IMiddlewar
             );
         }
 
-        // TODO fix any
-        (ctx as any).validatedData = Object.assign({}, params, result.value);
+        ctx.validatedData = Object.assign({}, params, result.value);
 
         next();
     };
