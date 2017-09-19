@@ -69,10 +69,7 @@ export class App {
     }
 
     protected _enableLogMiddleware(): void {
-        if (this.config.logLevel
-            && this.config.logLevel === 'TRACE'
-            || this.config.logLevel === 'DEBUG'
-        ) {
+        if (this.config.enableLogMiddleware) {
             this.koaAppInstance.use(this.middlewares.log);
         }
     }
