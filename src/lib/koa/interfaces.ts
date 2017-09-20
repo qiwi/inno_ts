@@ -15,7 +15,6 @@ export interface ICorsConfig {
 export interface IAppConfig {
     host?: string;
     port: number;
-    logLevel?: string;
     jwt?: IAppJwtConfig;
     cors?: ICorsConfig;
     userAgent?: boolean;
