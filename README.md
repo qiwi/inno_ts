@@ -1,6 +1,10 @@
-# Overview
 innots is a wrapper around [koa framework](https://www.npmjs.com/package/koa) 
 and some popular koa middlewares for quick app init and bootstrap.
+
+[![Build Status](https://travis-ci.org/qiwi/inno_ts.svg?branch=master)](https://travis-ci.org/qiwi/inno_ts)
+
+# Overview
+
 
 First of all module is designed to use with typescript and it's async await implementation
 but you can also use it with plain javascript.
