@@ -6,7 +6,7 @@ import IResultSet = oracledb.IResultSet;
 import IConnectionAttributes = oracledb.IConnectionAttributes;
 import {BaseError} from "../error/base";
 import {IConnectionPool} from "oracledb";
-import {DbService, ONE_ROW_WARNING} from "./db_service";
+import {IDbService, ONE_ROW_WARNING} from "./db_service";
 
 export const DB_CONNECT_ERROR: string = 'DB_QUERY';
 export const DB_ORACLE_ERROR: string = 'DB_ORACLE_ERROR';
@@ -16,7 +16,7 @@ export const DB_ORACLE_RELEASE_ERROR: string = 'DB_ORACLE_RELEASE_ERROR';
 
 // TODO DbError
 
-export class OracleService implements DbService {
+export class OracleService implements IDbService {
     public poolMax: number = 100;
 
     protected connectionParams: IConnectionAttributes;
@@ -57,7 +57,7 @@ export class OracleService implements DbService {
                 }
             });
         }
-    };
+    }
 
     /**
      * Fetches rows from result set.
@@ -83,7 +83,7 @@ export class OracleService implements DbService {
         }
 
         return rows;
-    };
+    }
 
     /**
      * Closes result set (optional - closes db connection).
@@ -104,7 +104,7 @@ export class OracleService implements DbService {
         if (connection) {
             await this._disconnect(connection);
         }
-    };
+    }
 
     /**
      * Executes sql and returns rows from executed result.
@@ -128,7 +128,7 @@ export class OracleService implements DbService {
                 }
             });
         }
-    };
+    }
 
     /**
      * Executes query and returns result row.
@@ -190,7 +190,7 @@ export class OracleService implements DbService {
                 innerDetails: error.message
             });
         }
-    };
+    }
 
     /**
      * Closes db conn.
@@ -205,10 +205,10 @@ export class OracleService implements DbService {
                 innerDetails: error.message
             });
         }
-    };
+    }
 
     protected async _run(query: string,
-                         params?: Object | Array<any>,
+                         params?: object | Array<any>,
                          options?: IExecuteOptions): Promise<IExecuteReturn> {
         let connection;
         options = Object.assign({}, this.options, options);

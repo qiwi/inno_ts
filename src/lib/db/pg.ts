@@ -31,7 +31,7 @@ export class PgService {
      * @return {Promise<Array<any>>}
      */
     async getRows(query: string, params?: Array<any>): Promise<Array<any>> {
-        let items = await this._run(query, params);
+        const items = await this._run(query, params);
         return items.rows;
     }
 

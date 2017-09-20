@@ -1,32 +1,22 @@
 import * as Router from 'koa-router';
-import {App} from '../index';
+import {App} from '../../index';
 import * as request from 'request-promise';
 import {expect} from 'chai';
 import * as jsonWebToken from 'jsonwebtoken';
 import * as Koa from 'koa';
 import Context = Koa.Context;
-import {ValidationError} from "../lib/error/validation";
-import {AuthError} from "../lib/error/auth";
-import {Controller} from "../lib/koa/controller";
-import {InnoError} from "../lib/error/inno";
-import {ItemValidator} from "../lib/validation/item_validator";
+import {ValidationError} from "../../lib/error/validation";
+import {AuthError} from "../../lib/error/auth";
+import {InnoError} from "../../lib/error/inno";
+import {
+    host, jwtConfigMock, commonConfigMock, jwtPort, jwtSecret, commonPort, testController,
+    publicResource,
+    protectedResource,
+    publicResourceWithError, publicResourceWithValidation, publicResourceWithAgent, nonExistingResource,
+    publicResourceWithMiddlewareValidation
+} from '../data';
 
 const router = new Router();
-
-const host = 'http://localhost';
-
-const jwtPort = 9890;
-const jwtSecret = 'test-secret';
-const jwtPublicPath = '^\/public';
-
-const commonPort = 9891;
-
-const publicResource = '/public/test';
-const publicResourceWithError = '/public/errors/common';
-const publicResourceWithValidation = '/public/errors/validation';
-const publicResourceWithAgent = '/public/agent';
-const protectedResource = '/test';
-const nonExistingResource = '/public/abcd';
 
 const validationErrorPrefix = new ValidationError().errorPrefix;
 const authErrorPrefix = new AuthError().errorPrefix;
@@ -35,98 +25,6 @@ const innoErrorPrefix = new InnoError().errorPrefix;
 function makeRequestAddress(port: number, resource: string): string {
     return `${host}:${port}${resource}`;
 }
-
-const jwtConfigMock = {
-    get: (key: string) => {
-        switch (key) {
-            case 'port':
-                return jwtPort;
-            case 'jwt.secret':
-                return jwtSecret;
-            case 'jwt.publicPath':
-                return jwtPublicPath;
-            case 'logLevel':
-                return 'TRACE';
-            default:
-                return '';
-        }
-    },
-    has: (key: string) => {
-        switch (key) {
-            case 'jwt.secret':
-                return true;
-            case 'logLevel':
-                return true;
-            default:
-                return '';
-        }
-    }
-};
-
-const commonConfigMock = {
-    get: (key: string) => {
-        switch (key) {
-            case 'port':
-                return commonPort;
-            case 'userAgent':
-                return true;
-            case 'logLevel':
-                return 'TRACE';
-            default:
-                return '';
-        }
-    },
-    has: (key: string) => {
-        switch (key) {
-            case 'jwt.secret':
-                return false;
-            case 'userAgent':
-                return true;
-            case 'logLevel':
-                return true;
-            default:
-                return '';
-        }
-    }
-};
-
-class TestController extends Controller {
-    publicResource = async(ctx: Context, next: Function): Promise<void> => {
-        ctx.body = 1;
-        await next();
-    };
-
-    protectedResource = async(ctx: Context, next: Function): Promise<void> => {
-        ctx.body = 2;
-        await next();
-    };
-
-    publicResourceWithError = async(ctx: Context, next: Function): Promise<void> => {
-        throw new Error('Test error');
-    };
-
-    publicResourceWithValidation = async(ctx: Context, next: Function): Promise<void> => {
-        const data = this.validate(ctx, (validator: ItemValidator) => {
-            return {
-                testField: validator.isEmail('testField'),
-                testQueryField: validator.isInt('testQueryField')
-            };
-        });
-
-        ctx.body = {
-            testField: data.testField,
-            testQueryField: data.testQueryField
-        };
-        await next();
-    };
-
-    publicResourceWithAgent = async(ctx: Context, next: Function): Promise<void> => {
-        ctx.body = ctx.state.userAgent;
-        await next();
-    }
-}
-
-const testController = new TestController();
 
 router
     .post(publicResource, testController.publicResource)
@@ -137,16 +35,47 @@ router
     .post(publicResourceWithAgent, testController.publicResourceWithAgent);
 
 /* tslint:disable:typedef */
-describe('app', async function (): Promise<void> {
-    before(function (done: Function) {
-        // TODO !!!!!! DANGER ZONE - refactor me
+describe('app', async function(): Promise<void> {
+    before(async function() {
         const jwtApp = new App(jwtConfigMock, router);
-        const app = new App(commonConfigMock, router);
-        setTimeout(done, 1000);
+
+        const app = new App(commonConfigMock);
+
+        app.route('post', publicResource, testController.publicResource);
+        app.route('post', protectedResource, testController.protectedResource);
+        app.route('get', publicResourceWithError, testController.publicResourceWithError);
+        app.route('post', publicResourceWithValidation, testController.publicResourceWithValidation);
+        app.route('get', publicResourceWithValidation, testController.publicResourceWithValidation);
+        app.route('post', publicResourceWithAgent, testController.publicResourceWithAgent);
+        app.route(
+            'post',
+            publicResourceWithMiddlewareValidation,
+            ((joi) => {
+                return joi.object().keys({
+                    testField: joi.string().trim().email().required(),
+                    testQueryField: joi.number().integer()
+                });
+            }),
+            testController.publicResourceWithMiddlewareValidation
+        );
+        app.route(
+            'get',
+            publicResourceWithMiddlewareValidation,
+            ((joi) => {
+                return joi.object().keys({
+                    testField: joi.string().trim().email().required(),
+                    testQueryField: joi.number().integer()
+                });
+            }),
+            testController.publicResourceWithMiddlewareValidation
+        );
+
+        await jwtApp.bootstrap();
+        await app.bootstrap();
     });
 
-    describe('router', async function () {
-        it('serves requests', async function () {
+    describe('router', async function() {
+        it('serves requests', async function() {
             const response = await request.post(makeRequestAddress(jwtPort, publicResource), {
                 form: {},
                 json: true
@@ -154,8 +83,38 @@ describe('app', async function (): Promise<void> {
             expect(response.result).to.eq(1);
         });
 
-        it('validates requests', async function () {
+        it('validates and processes request data', async function() {
             let response = await request.post(makeRequestAddress(jwtPort, publicResourceWithValidation), {
+                qs: {},
+                form: {
+                    testQueryField: ' 1111 ',
+                    testField: '   test@test.ru ',
+                    someOtherData: 122
+                },
+                json: true
+            });
+            expect(response.result).to.eql({
+                testField: 'test@test.ru',
+                testQueryField: 1111
+            });
+
+            response = await request.get(makeRequestAddress(jwtPort, publicResourceWithValidation), {
+                qs: {
+                    testQueryField: ' 1111 ',
+                    testField: '   test@test.ru ',
+                    someOtherData: 122,
+                    someYetOtherData: 12211
+                },
+                json: true
+            });
+            expect(response.result).to.eql({
+                testField: 'test@test.ru',
+                testQueryField: 1111
+            });
+        });
+
+        it('validates and processes request data (middleware)', async function() {
+            let response = await request.post(makeRequestAddress(commonPort, publicResourceWithMiddlewareValidation), {
                 qs: {},
                 form: {
                     testQueryField: ' 1111 ',
@@ -168,7 +127,7 @@ describe('app', async function (): Promise<void> {
                 testQueryField: 1111
             });
 
-            response = await request.get(makeRequestAddress(jwtPort, publicResourceWithValidation), {
+            response = await request.get(makeRequestAddress(commonPort, publicResourceWithMiddlewareValidation), {
                 qs: {
                     testQueryField: ' 1111 ',
                     testField: '   test@test.ru '
@@ -181,7 +140,7 @@ describe('app', async function (): Promise<void> {
             });
         });
 
-        it('returns error when accessing protected resource with no key', async function () {
+        it('returns error when accessing protected resource with no key', async function() {
             const response = await request.post(makeRequestAddress(jwtPort, protectedResource), {
                 form: {},
                 json: true,
@@ -190,7 +149,7 @@ describe('app', async function (): Promise<void> {
             expect(response.error).to.eq(authErrorPrefix + AuthError.TOKEN_IS_INVALID);
         });
 
-        it('serves protected request with passed key', async function () {
+        it('serves protected request with passed key', async function() {
             const token = jsonWebToken.sign({foo: 1}, jwtSecret);
             const response = await request.post(makeRequestAddress(jwtPort, protectedResource), {
                 form: {},
@@ -202,7 +161,7 @@ describe('app', async function (): Promise<void> {
             expect(response.result).to.eq(2);
         });
 
-        it('makes all routes unprotected w/o jwt config', async function () {
+        it('makes all routes unprotected w/o jwt config', async function() {
             const response = await request.post(makeRequestAddress(commonPort, protectedResource), {
                 form: {},
                 json: true
@@ -210,7 +169,7 @@ describe('app', async function (): Promise<void> {
             expect(response.result).to.eq(2);
         });
 
-        it('returns userAgent info', async function () {
+        it('returns userAgent info', async function() {
             const agentKeys = ['isAuthoritative',
                 'isMobile', 'isTablet', 'isiPad',
                 'isiPod', 'isiPhone', 'isAndroid',
@@ -236,8 +195,8 @@ describe('app', async function (): Promise<void> {
         });
     });
 
-    describe('errors', async function () {
-        it('returns error on non-existing resource', async function () {
+    describe('errors', async function() {
+        it('returns error on non-existing resource', async function() {
             let response: any;
             try {
                 response = await request.get(makeRequestAddress(commonPort, nonExistingResource), {
@@ -249,7 +208,7 @@ describe('app', async function (): Promise<void> {
             expect(response.statusCode).to.eq(404);
         });
 
-        it('should catch error and return its code', async function () {
+        it('should catch error and return its code', async function() {
             const response = await request.get(makeRequestAddress(commonPort, publicResourceWithError), {
                 json: true,
                 simple: false
@@ -257,8 +216,8 @@ describe('app', async function (): Promise<void> {
             expect(response.error).to.eq(innoErrorPrefix + InnoError.INTERNAL);
         });
 
-        it('should return validation error', async function () {
-            let response = await request.post(makeRequestAddress(commonPort, publicResourceWithValidation), {
+        it('should return validation error', async function() {
+            const response = await request.post(makeRequestAddress(commonPort, publicResourceWithValidation), {
                 form: {
                     testField: 'testValue'
                 },
@@ -269,6 +228,24 @@ describe('app', async function (): Promise<void> {
             expect(response.details).to.eql({
                 invalidField: 'testField',
                 invalidValue: 'testValue'
+            });
+        });
+
+        it('should return validation error (middleware)', async function() {
+            const response = await request.post(
+                makeRequestAddress(commonPort, publicResourceWithMiddlewareValidation
+            ), {
+                form: {
+                    testField: 'testValue'
+                },
+                json: true,
+                simple: false
+            });
+            expect(response.error).to.eq(validationErrorPrefix + ValidationError.DEFAULT);
+            expect(response.details).to.eql({
+                invalidField: 'testField',
+                invalidValue: 'testValue',
+                message: '"testField" must be a valid email'
             });
         });
     });

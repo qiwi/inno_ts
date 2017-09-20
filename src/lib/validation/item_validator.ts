@@ -2,6 +2,8 @@ import {Validator} from './validator';
 import {ValidationError} from "../error/validation";
 
 class ItemValidator {
+    // TODO temp, enable after updating tslint and changing rulesm
+    /* tslint:disable */
     protected _item: any;
 
     get item(): any {
@@ -23,6 +25,8 @@ class ItemValidator {
         this._item = Object.assign({}, item);
         this._isOptional = isOptional;
     }
+
+    /* tslint:enable */
 
     /**
      * Numeric string check. Escapes, checks and converts to number.
@@ -76,8 +80,8 @@ class ItemValidator {
 }
 // NOTE !!! Wrapper hack for validator - wraps all ItemValidator methods in try/catch
 
-function wrap(fn: Function): Function {
-    return function (field: string, ...args: Array<any>): any | never {
+function wrap(fn: (...args: any[]) => any): (...args: any[]) => any {
+    return function(field: string, ...args: Array<any>): any | never {
         try {
             if (this._isOptional && !this._item.hasOwnProperty(field)) {
                 return null;
@@ -100,10 +104,10 @@ Object.getOwnPropertyNames(ItemValidator.prototype).forEach((key: string) => {
     if (typeof Object.getOwnPropertyDescriptor(ItemValidator.prototype, key).get !== 'undefined') {
         return;
     }
-    let value = ItemValidator.prototype[key];
+    const value = ItemValidator.prototype[key];
     if (typeof value === 'function' && value.name !== 'constructor') {
         ItemValidator.prototype[key] = wrap(value);
     }
 });
 
-export {ItemValidator}
+export {ItemValidator};

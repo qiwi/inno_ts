@@ -1,8 +1,8 @@
 import {expect} from 'chai';
-import {BaseError} from "../lib/error/base";
-import {ValidationError} from "../lib/error/validation";
-import {AuthError} from "../lib/error/auth";
-import {InnoError} from "../lib/error/inno";
+import {BaseError} from "../../lib/error/base";
+import {ValidationError} from "../../lib/error/validation";
+import {AuthError} from "../../lib/error/auth";
+import {InnoError} from "../../lib/error/inno";
 
 const validationErrorPrefix = new ValidationError().errorPrefix;
 const authErrorPrefix = new AuthError().errorPrefix;
@@ -16,7 +16,7 @@ function assertErrorResult(error: BaseError, expectedErrorName: string, expected
 
 /* tslint:disable:typedef */
 describe('error', function() {
-    it('Inno', function (done: Function) {
+    it('Inno', function(done: MochaDone) {
         const expected = `\nERROR_CODE: ERROR_TEST_CODE \nERROR_HTTP_STATUS: ${BaseError.CODE_BAD_REQUEST} ` +
             '\nERROR_INNER_DETAILS: {\n  "foo": 1\n} ' +
             '\nERROR_DETAILS: {}';
@@ -27,7 +27,7 @@ describe('error', function() {
             done();
         }
     });
-    it('Auth', function(done: Function) {
+    it('Auth', function(done: MochaDone) {
         const expected = `\nERROR_CODE: ${authErrorPrefix + AuthError.TOKEN_IS_INVALID} ` +
             `\nERROR_HTTP_STATUS: ${AuthError.CODE_UNAUTHORIZED} ` +
             '\nERROR_INNER_DETAILS: {} ' +
@@ -39,7 +39,7 @@ describe('error', function() {
             done();
         }
     });
-    it('ValidationError', function(done: Function) {
+    it('ValidationError', function(done: MochaDone) {
         const expected = `\nERROR_CODE: ${validationErrorPrefix + ValidationError.NO_STRING} ` +
             `\nERROR_HTTP_STATUS: ${ValidationError.CODE_BAD_REQUEST} ` +
             '\nERROR_INNER_DETAILS: {} ' +
