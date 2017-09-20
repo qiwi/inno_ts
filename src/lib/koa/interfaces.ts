@@ -19,6 +19,7 @@ export interface IAppConfig {
     cors?: ICorsConfig;
     userAgent?: boolean;
     enableLogMiddleware?: boolean;
+    logLevel?: string;
 }
 
 export interface IAppMiddlewares {

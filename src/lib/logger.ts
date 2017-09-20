@@ -4,10 +4,10 @@ import {IAppConfig} from './koa/interfaces';
 
 export const DEFAULT_LOG_LEVEL = 'TRACE';
 
-log4js.replaceConsole();
-log4js.setGlobalLogLevel(DEFAULT_LOG_LEVEL);
-
 export function getLogger(config: IAppConfig): Logger {
+    log4js.replaceConsole();
+    log4js.setGlobalLogLevel(DEFAULT_LOG_LEVEL);
+
     const logger: Logger = log4js.getLogger();
 
     let logLevel = DEFAULT_LOG_LEVEL;
