@@ -16,6 +16,10 @@ app.route('post', '/test', async (ctx: Context, next: () => any): Promise<void> 
    ctx.body = 1;
    await next();
 });
+
+app.bootstrap().then(() => {
+    console.log('Server started');
+});
 ```
 
 You can also define validation middleware in route method 

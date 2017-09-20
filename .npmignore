@@ -6,3 +6,4 @@ build/test
 npm-shrinkwrap.json
 yarn.lock
 node_modules
+.travis.yml
