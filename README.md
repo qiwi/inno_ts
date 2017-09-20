@@ -86,4 +86,4 @@ built in middlewares):
 }
 ```
 
-You can see middleware implementations here: https://github.com/qiwi/inno_ts/tree/latest/src/lib/koa/middleware
+You can see middleware implementations here: https://github.com/qiwi/inno_ts/tree/master/src/lib/koa/middleware
