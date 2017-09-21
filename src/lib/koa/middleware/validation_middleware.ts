@@ -9,7 +9,7 @@ const defaultOptions = {
 };
 
 export function createValidationMiddleware(schema: joi.ObjectSchema): IMiddleware {
-    return function(ctx: koa.Context, next: () => any): void {
+    return async function(ctx: koa.Context, next: () => any): Promise<void> {
         let params: any;
         if (ctx.request.method === 'GET') {
             params = ctx.request.query;
@@ -40,6 +40,6 @@ export function createValidationMiddleware(schema: joi.ObjectSchema): IMiddlewar
 
         ctx.validatedData = Object.assign({}, params, result.value);
 
-        next();
+        await next();
     };
 }
