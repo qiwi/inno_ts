@@ -38,7 +38,7 @@ export function createValidationMiddleware(schema: joi.ObjectSchema): IMiddlewar
             );
         }
 
-        ctx.validatedData = Object.assign({}, params, result.value);
+        ctx.validatedData = result.value;
 
         await next();
     };
