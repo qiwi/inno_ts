@@ -12,7 +12,7 @@ export type TJoiSchemaGenerator = (joiObject: any) => joi.ObjectSchema;
 /**
  * Main class for koa startup.
  */
-export class App {
+export class InnotsApp {
     protected koaAppInstance: Koa;
     protected middlewares: IAppMiddlewares;
 

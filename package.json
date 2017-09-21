@@ -3,7 +3,7 @@
   "version": "1.0.2",
   "description": "Core ecom rnd lib",
   "main": "build/index.js",
-  "typings": "build/index",
+  "typings": ["build/index", "build/declarations"],
   "scripts": {
     "build": "tsc",
     "watch": "tsc --watch",

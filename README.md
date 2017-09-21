@@ -10,9 +10,9 @@ First of all module is designed to use with typescript and it's async await impl
 but you can also use it with plain javascript.
 
 ```
-import {App, Context} from 'innots';
+import {InnotsApp, Context} from 'innots';
 
-const app = new App({
+const app = new InnotsApp({
     port: 9080
 });
 
@@ -32,7 +32,7 @@ You can also define validation middleware in route method
 ```
 app.route(
     'get',
-    publicResourceWithMiddlewareValidation,
+    '/foo,
     ((joi) => {
         return joi.object().keys({
             testField: joi.string().trim().email().required(),
@@ -48,9 +48,9 @@ app.route(
 
 # Usage
 
-## App class
+## InnotsApp class
 
-### new App(config: IAppConfig, router?: Router, customMiddlewares?: IAppMiddlewares)
+### new InnotsApp(config: IAppConfig, router?: Router, customMiddlewares?: IAppMiddlewares)
 Constructs new http server (powered by [koa framework](https://www.npmjs.com/package/koa)) with pre-defined built in router and middlewares.
 
 #### config: IAppConfig
@@ -94,4 +94,39 @@ built in middlewares):
 }
 ```
 
-You can see middleware implementations here: https://github.com/qiwi/inno_ts/tree/master/src/lib/koa/middleware
+### app.route(method: string, url: string, joiSchemaGenerator: TJoiSchemaGenerator, ...actions: IMiddleware[]): void
+### app.route(method: string, url: string, ...actions: IMiddleware[]): void
+
+Defines middleware for processing request.
+```
+app.route(
+    'get',
+    '/foo,
+    async (ctx: Context, next: () => any): Promise<void> => {
+       ctx.body = true
+       await next();
+    })
+);
+```
+
+You can also make validation middleware here:
+
+```
+app.route(
+    'get',
+    '/foo,
+    ((joi) => {
+        return joi.object().keys({
+            testField: joi.string().trim().email().required(),
+            testQueryField: joi.number().integer()
+        });
+    }),
+    async (ctx: Context, next: () => any): Promise<void> => {
+       // you can access your data by ctx.validatedData parameter
+       await next();
+    })
+);
+```
+
+### app.bootstrap(method: string, url: string, ...actions: IMiddleware[]): Promise<void>
+Starts your app with defined routes and middlewares.

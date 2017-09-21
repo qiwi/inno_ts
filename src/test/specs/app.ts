@@ -1,5 +1,5 @@
 import * as Router from 'koa-router';
-import {App} from '../../index';
+import {InnotsApp} from '../../index';
 import * as request from 'request-promise';
 import {expect} from 'chai';
 import * as jsonWebToken from 'jsonwebtoken';
@@ -37,9 +37,9 @@ router
 /* tslint:disable:typedef */
 describe('app', async function(): Promise<void> {
     before(async function() {
-        const jwtApp = new App(jwtConfigMock, router);
+        const jwtApp = new InnotsApp(jwtConfigMock, router);
 
-        const app = new App(commonConfigMock);
+        const app = new InnotsApp(commonConfigMock);
 
         app.route('post', publicResource, testController.publicResource);
         app.route('post', protectedResource, testController.protectedResource);
