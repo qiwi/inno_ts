@@ -30,11 +30,16 @@ export class ValidationError extends BaseError {
         code: TValidationErrorCode = ValidationError.DEFAULT,
         invalidField?: string,
         invalidValue?: any,
-        message?: string
+        message?: string,
+        type?: string
     ) {
         const details: any = {invalidField, invalidValue};
         if (message) {
             details.message = message;
+        }
+
+        if (type) {
+            details.type = type;
         }
         super(Object.assign({}, ValidationError.defaultOptions, {
             code,

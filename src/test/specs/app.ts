@@ -257,7 +257,8 @@ describe('app', async function(): Promise<void> {
             expect(response.details).to.eql({
                 invalidField: 'test_field',
                 invalidValue: 'testValue',
-                message: '"test_field" must be a valid email'
+                message: '"test_field" must be a valid email',
+                type: 'string.email'
             });
         });
     });

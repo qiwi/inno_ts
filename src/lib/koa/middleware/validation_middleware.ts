@@ -28,6 +28,7 @@ export function createValidationMiddleware(schema: joi.ObjectSchema): IMiddlewar
         const result = joi.validate(params, schema, defaultOptions);
 
         if (result.error) {
+            const type = _.get<string>(result.error, 'details.0.type');
             const invalidKey = _.get<string>(result.error, 'details.0.path');
             const invalidValue = params[invalidKey];
             const message = _.get<string>(result.error, 'details.0.message');
@@ -35,7 +36,8 @@ export function createValidationMiddleware(schema: joi.ObjectSchema): IMiddlewar
                 ValidationError.DEFAULT,
                 invalidKey,
                 invalidValue,
-                message
+                message,
+                type
             );
         }
 
