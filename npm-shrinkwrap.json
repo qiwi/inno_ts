@@ -1,6 +1,6 @@
 {
   "name": "innots",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "dependencies": {
     "@types/accepts": {
       "version": "1.3.3",
