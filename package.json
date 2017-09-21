@@ -15,6 +15,9 @@
     "lint": "tslint 'src/**/*.ts' --type-check --project tsconfig.json"
   },
   "dependencies": {
+    "@types/koa": "^2.0.39",
+    "@types/koa-router": "^7.0.21",
+    "camelcase": "^4.1.0",
     "joi": "^10.6.0",
     "koa": "^2.0.0",
     "koa-body": "^2.3.0",
@@ -27,9 +30,7 @@
     "pg": "^6.1.2",
     "pg-camelcase": "0.0.3",
     "pg-pool": "^1.6.0",
-    "validator": "^6.2.1",
-    "@types/koa": "^2.0.39",
-    "@types/koa-router": "^7.0.21"
+    "validator": "^6.2.1"
   },
   "repository": {
     "type": "git",

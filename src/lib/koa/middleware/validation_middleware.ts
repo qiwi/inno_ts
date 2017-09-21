@@ -3,6 +3,7 @@ import * as joi from 'joi';
 import * as koa from 'koa';
 import {ValidationError} from '../../error/validation';
 import * as _ from 'lodash';
+import * as camelCase from 'camelcase';
 
 const defaultOptions = {
     stripUnknown: true
@@ -38,7 +39,16 @@ export function createValidationMiddleware(schema: joi.ObjectSchema): IMiddlewar
             );
         }
 
-        ctx.validatedData = result.value;
+        const camelCaseObj = {};
+
+        Object.keys(result.value).forEach((key) => {
+            camelCaseObj[camelCase(key)] = result.value[key];
+        });
+
+        ctx.validatedData = {
+            originalCase: result.value,
+            camelCase: camelCaseObj
+        };
 
         await next();
     };

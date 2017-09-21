@@ -40,7 +40,7 @@ app.route(
         });
     }),
     async (ctx: Context, next: () => any): Promise<void> => {
-       // you can access your data by ctx.validatedData parameter
+       // you can access your data by ctx.validatedData (.camelCase or .originalCase) parameter
        await next();
     })
 );

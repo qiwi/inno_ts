@@ -52,7 +52,7 @@ describe('app', async function(): Promise<void> {
             publicResourceWithMiddlewareValidation,
             ((joi) => {
                 return joi.object().keys({
-                    testField: joi.string().trim().email().required(),
+                    test_field: joi.string().trim().email().required(),
                     testQueryField: joi.number().integer()
                 });
             }),
@@ -63,7 +63,7 @@ describe('app', async function(): Promise<void> {
             publicResourceWithMiddlewareValidation,
             ((joi) => {
                 return joi.object().keys({
-                    testField: joi.string().trim().email().required(),
+                    test_field: joi.string().trim().email().required(),
                     testQueryField: joi.number().integer()
                 });
             }),
@@ -118,25 +118,37 @@ describe('app', async function(): Promise<void> {
                 qs: {},
                 form: {
                     testQueryField: ' 1111 ',
-                    testField: '   test@test.ru '
+                    test_field: '   test@test.ru '
                 },
                 json: true
             });
             expect(response.result).to.eql({
-                testField: 'test@test.ru',
-                testQueryField: 1111
+                originalCase: {
+                    test_field: 'test@test.ru',
+                    testQueryField: 1111
+                },
+                camelCase: {
+                    testField: 'test@test.ru',
+                    testQueryField: 1111
+                }
             });
 
             response = await request.get(makeRequestAddress(commonPort, publicResourceWithMiddlewareValidation), {
                 qs: {
                     testQueryField: ' 1111 ',
-                    testField: '   test@test.ru '
+                    test_field: '   test@test.ru '
                 },
                 json: true
             });
             expect(response.result).to.eql({
-                testField: 'test@test.ru',
-                testQueryField: 1111
+                originalCase: {
+                    test_field: 'test@test.ru',
+                    testQueryField: 1111
+                },
+                camelCase: {
+                    testField: 'test@test.ru',
+                    testQueryField: 1111
+                }
             });
         });
 
@@ -236,16 +248,16 @@ describe('app', async function(): Promise<void> {
                 makeRequestAddress(commonPort, publicResourceWithMiddlewareValidation
             ), {
                 form: {
-                    testField: 'testValue'
+                    test_field: 'testValue'
                 },
                 json: true,
                 simple: false
             });
             expect(response.error).to.eq(validationErrorPrefix + ValidationError.DEFAULT);
             expect(response.details).to.eql({
-                invalidField: 'testField',
+                invalidField: 'test_field',
                 invalidValue: 'testValue',
-                message: '"testField" must be a valid email'
+                message: '"test_field" must be a valid email'
             });
         });
     });
