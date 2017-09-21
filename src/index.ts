@@ -1,3 +1,13 @@
+import * as koa from "koa";
+declare module "koa" {
+    interface Context {
+        validatedData: {
+            originalCase: any;
+            camelCase: any;
+        };
+    }
+}
+
 export * from './lib/validation/item_validator';
 export * from './lib/validation/validator';
 export * from './lib/koa/middleware/error_middleware';
