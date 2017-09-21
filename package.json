@@ -1,9 +1,12 @@
 {
   "name": "innots",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Core ecom rnd lib",
   "main": "build/index.js",
-  "typings": ["build/index", "build/declarations"],
+  "typings": [
+    "build/index",
+    "build/declarations"
+  ],
   "scripts": {
     "build": "tsc",
     "watch": "tsc --watch",
