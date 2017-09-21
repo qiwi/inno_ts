@@ -1,6 +1,8 @@
 import * as koa from "koa";
 declare module "koa" {
+    /* tslint:disable */
     interface Context {
+    /* tslint:enable */
         validatedData: {
             originalCase: any;
             camelCase: any;
