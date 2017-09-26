@@ -21,7 +21,7 @@ export * from './lib/db/pg_pool';
 export * from './lib/error/auth';
 export * from './lib/error/inno';
 export * from './lib/error/validation';
-export {Context, Middleware} from 'koa';
+export {Context, Middleware, Request, Response} from 'koa';
 
 import * as Joi from 'joi';
 import * as logger from './lib/logger';
