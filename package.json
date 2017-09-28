@@ -14,6 +14,7 @@
   "dependencies": {
     "@types/koa": "^2.0.39",
     "@types/koa-router": "^7.0.21",
+    "@types/koa-bodyparser": "^3.0.22",
     "camelcase": "^4.1.0",
     "joi": "^10.6.0",
     "koa": "^2.0.0",
@@ -46,7 +47,6 @@
     "@types/config": "0.0.31",
     "@types/joi": "^10.4.0",
     "@types/jsonwebtoken": "^7.2.0",
-    "@types/koa-bodyparser": "^3.0.22",
     "@types/lodash": "^4.14.68",
     "@types/log4js": "0.0.32",
     "@types/mocha": "^2.2.38",
