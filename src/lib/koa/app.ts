@@ -52,8 +52,6 @@ export class InnotsApp {
         await this._startApp();
     }
 
-    public route(method: string, url: string, joiSchemaGenerator: TJoiSchemaGenerator, ...actions: IMiddleware[]): void;
-    public route(method: string, url: string, ...actions: IMiddleware[]): void;
     public route(method: string, url: string, ...args: any[]): void {
         args.forEach((arg, index) => {
             if (arg.length === 1) { // check for joiSchemaGenerator
