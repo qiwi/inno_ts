@@ -55,11 +55,12 @@ export class InnotsApp {
     public route(method: string, url: string, joiSchemaGenerator: TJoiSchemaGenerator, ...actions: IMiddleware[]): void;
     public route(method: string, url: string, ...actions: IMiddleware[]): void;
     public route(method: string, url: string, ...args: any[]): void {
-        if (args[0].length === 1) { // check for joiSchemaGenerator
-            const joiSchemaGenerator = args[0];
-            const validationSchema = joiSchemaGenerator.call(this, joi);
-            args[0] = this._createValidationMiddleware(validationSchema);
-        }
+        args.forEach((arg, index) => {
+            if (arg.length === 1) { // check for joiSchemaGenerator
+                const validationSchema = arg.call(this, joi);
+                args[index] = this._createValidationMiddleware(validationSchema);
+            }
+        });
 
         this.router[method].apply(this.router, ([url] as any).concat(args));
     }
