@@ -13,10 +13,10 @@
   },
   "dependencies": {
     "@types/koa": "^2.0.39",
-    "@types/koa-router": "^7.0.21",
     "@types/koa-bodyparser": "^3.0.22",
+    "@types/koa-router": "^7.0.21",
     "@types/log4js": "0.0.32",
-    "camelcase": "^4.1.0",
+    "camelcase-object": "^1.0.0",
     "joi": "^10.6.0",
     "koa": "^2.0.0",
     "koa-body": "^2.3.0",
