@@ -4,6 +4,21 @@ import * as koa from 'koa';
 import {ValidationError} from '../../error/validation';
 import * as _ from 'lodash';
 import * as camelCase from 'camelcase-object';
+import * as validator from 'validator';
+
+const customJoi: any = joi.extend((joi) => ({
+    base: joi.string(),
+    name: 'string',
+    pre(value: any, state: any, options: any): any {
+        if (options.convert) {
+            return validator.escape(value);
+        }
+
+        return value;
+    }
+}));
+
+export {customJoi};
 
 const defaultOptions = {
     stripUnknown: true
@@ -25,7 +40,7 @@ export function createValidationMiddleware(schema: joi.ObjectSchema): IMiddlewar
             }
         }
 
-        const result = joi.validate(params, schema, defaultOptions);
+        const result = customJoi.validate(params, schema, defaultOptions);
 
         if (result.error) {
             const type = _.get<string>(result.error, 'details.0.type');
