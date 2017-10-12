@@ -5,7 +5,7 @@ import {IAppConfig, IAppMiddlewares} from './interfaces';
 import {createDefaultMiddlewareCollection} from './middleware/collection';
 import {IMiddleware} from 'koa-router';
 import * as joi from 'joi';
-import {createValidationMiddleware} from './middleware/validation_middleware';
+import {createValidationMiddleware, customJoi} from './middleware/validation_middleware';
 
 export type TJoiSchemaGenerator = (joiObject: any) => joi.ObjectSchema;
 
@@ -55,7 +55,7 @@ export class InnotsApp {
     public route(method: string, url: string, ...args: any[]): void {
         args.forEach((arg, index) => {
             if (arg.length === 1) { // check for joiSchemaGenerator
-                const validationSchema = arg.call(this, joi);
+                const validationSchema = arg.call(this, customJoi);
                 args[index] = this._createValidationMiddleware(validationSchema);
             }
         });

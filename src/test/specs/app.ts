@@ -53,7 +53,8 @@ describe('app', async function(): Promise<void> {
             ((joi) => {
                 return joi.object().keys({
                     test_field: joi.string().trim().email().required(),
-                    testQueryField: joi.number().integer()
+                    testQueryField: joi.number().integer(),
+                    test_field_to_escape: joi.string().trim().max(100)
                 });
             }),
             testController.publicResourceWithMiddlewareValidation
@@ -64,7 +65,8 @@ describe('app', async function(): Promise<void> {
             ((joi) => {
                 return joi.object().keys({
                     test_field: joi.string().trim().email().required(),
-                    testQueryField: joi.number().integer()
+                    testQueryField: joi.number().integer(),
+                    test_field_to_escape: joi.string().trim().max(100)
                 });
             }),
             testController.publicResourceWithMiddlewareValidation
@@ -118,36 +120,42 @@ describe('app', async function(): Promise<void> {
                 qs: {},
                 form: {
                     testQueryField: ' 1111 ',
-                    test_field: '   test@test.ru '
+                    test_field: '   test@test.ru ',
+                    test_field_to_escape: "'alert(1);<a>"
                 },
                 json: true
             });
             expect(response.result).to.eql({
                 originalCase: {
                     test_field: 'test@test.ru',
-                    testQueryField: 1111
+                    testQueryField: 1111,
+                    test_field_to_escape: '&#x27;alert(1);&lt;a&gt;'
                 },
                 camelCase: {
                     testField: 'test@test.ru',
-                    testQueryField: 1111
+                    testQueryField: 1111,
+                    testFieldToEscape: '&#x27;alert(1);&lt;a&gt;'
                 }
             });
 
             response = await request.get(makeRequestAddress(commonPort, publicResourceWithMiddlewareValidation), {
                 qs: {
                     testQueryField: ' 1111 ',
-                    test_field: '   test@test.ru '
+                    test_field: '   test@test.ru ',
+                    test_field_to_escape: "'alert(1);<a>"
                 },
                 json: true
             });
             expect(response.result).to.eql({
                 originalCase: {
                     test_field: 'test@test.ru',
-                    testQueryField: 1111
+                    testQueryField: 1111,
+                    test_field_to_escape: '&#x27;alert(1);&lt;a&gt;'
                 },
                 camelCase: {
                     testField: 'test@test.ru',
-                    testQueryField: 1111
+                    testQueryField: 1111,
+                    testFieldToEscape: '&#x27;alert(1);&lt;a&gt;'
                 }
             });
         });
