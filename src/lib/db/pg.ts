@@ -67,6 +67,7 @@ export class PgService {
         if (row === false) {
             throw new BaseError({
                 code: errorCode,
+                status: BaseError.CODE_NOT_FOUND,
                 innerDetails: {}
             });
         }

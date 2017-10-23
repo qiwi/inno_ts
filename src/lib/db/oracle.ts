@@ -166,6 +166,7 @@ export class OracleService implements IDbService {
         if (row === false) {
             throw new BaseError({
                 code: errorCode,
+                status: BaseError.CODE_NOT_FOUND,
                 innerDetails: {}
             });
         }
