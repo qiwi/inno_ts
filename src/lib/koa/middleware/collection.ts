@@ -17,8 +17,8 @@ export function createDefaultMiddlewareCollection(config: IAppConfig): IAppMiddl
             _.get(config, 'jwt.secret'), _.get(config, 'jwt.publicPath'), _.get(config, 'jwt.prefix')
         ),
         cors: createCorsMiddleware(
-            _.get(this.config, 'cors.origin'),
-            _.get(this.config, 'cors.credentials')
+            _.get(config, 'cors.origin'),
+            _.get(config, 'cors.credentials')
         ),
         userAgent: userAgentMiddleware,
         success: successMiddleware
