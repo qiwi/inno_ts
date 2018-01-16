@@ -1,5 +1,5 @@
 import * as jwt from "koa-jwt";
-import {Middleware} from 'koa';
+import { Context, Middleware } from 'koa';
 
 export const DEFAULT_SECRET = 'default';
 export const DEFAULT_REGEXP = '/public/';
@@ -12,8 +12,7 @@ export function createJwtMiddleware(
 ): Middleware {
     return jwt({
         secret: jwtSecret,
-        getToken: function(opts: any): null | string {
-            const ctx = this;
+        getToken: function(ctx: Context, opts: any): null | string {
             if (!ctx.header || !ctx.header.authorization) {
                 return;
             }
