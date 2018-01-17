@@ -7,12 +7,14 @@ import IConnectionAttributes = oracledb.IConnectionAttributes;
 import {BaseError} from "../error/base";
 import {IConnectionPool} from "oracledb";
 import {IDbService, ONE_ROW_WARNING} from "./db_service";
+import {DbError} from "../error/db";
 
 export const DB_CONNECT_ERROR: string = 'DB_QUERY';
 export const DB_ORACLE_ERROR: string = 'DB_ORACLE_ERROR';
 export const DB_ORACLE_FETCH_ERROR: string = 'DB_ORACLE_FETCH_ERROR';
 export const DB_ORACLE_CLOSE_ERROR: string = 'DB_ORACLE_CLOSE_ERROR';
 export const DB_ORACLE_RELEASE_ERROR: string = 'DB_ORACLE_RELEASE_ERROR';
+export const DB_ORACLE_EXECUTE_ERROR: string = 'DB_ORACLE_EXECUTE_ERROR';
 
 // TODO DbError
 
@@ -48,7 +50,7 @@ export class OracleService implements IDbService {
         try {
             return await this._run(query, params, {resultSet: true, prefetchRows: 500});
         } catch (error) {
-            throw new BaseError({
+            throw new DbError({
                 code: DB_ORACLE_ERROR,
                 innerDetails: {
                     query,
@@ -71,7 +73,7 @@ export class OracleService implements IDbService {
             rows = await resultSet.getRows(numRows);
         } catch (error) {
             await this.closeResultSet(resultSet);
-            throw new BaseError({
+            throw new DbError({
                 code: DB_ORACLE_FETCH_ERROR,
                 innerDetails: error.message
             });
@@ -95,7 +97,7 @@ export class OracleService implements IDbService {
         try {
             await resultSet.close();
         } catch (error) {
-            throw new BaseError({
+            throw new DbError({
                 code: DB_ORACLE_FETCH_ERROR,
                 innerDetails: error.message
             });
@@ -119,7 +121,7 @@ export class OracleService implements IDbService {
 
             return result.rows;
         } catch (error) {
-            throw new BaseError({
+            throw new DbError({
                 code: DB_ORACLE_ERROR,
                 innerDetails: {
                     query,
@@ -164,7 +166,7 @@ export class OracleService implements IDbService {
         const row = await this.getRow(query, params, options);
 
         if (row === false) {
-            throw new BaseError({
+            throw new DbError({
                 code: errorCode,
                 status: BaseError.CODE_NOT_FOUND,
                 innerDetails: {}
@@ -186,7 +188,7 @@ export class OracleService implements IDbService {
             }
             return await this.pool.getConnection();
         } catch (error) {
-            throw new BaseError({
+            throw new DbError({
                 code: DB_CONNECT_ERROR,
                 innerDetails: error.message
             });
@@ -201,7 +203,7 @@ export class OracleService implements IDbService {
         try {
             await connection.close();
         } catch (error) {
-            throw new BaseError({
+            throw new DbError({
                 code: DB_ORACLE_RELEASE_ERROR,
                 innerDetails: error.message
             });
@@ -224,7 +226,10 @@ export class OracleService implements IDbService {
                 await this._disconnect(connection);
             }
 
-            throw error;
+            throw new DbError({
+                publicMessage: error.message,
+                innerDetails: error
+            });
         }
     }
 }
