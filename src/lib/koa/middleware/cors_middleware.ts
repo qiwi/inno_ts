@@ -1,4 +1,4 @@
-import * as koaCors from 'koa-cors';
+import * as koaCors from '@koa/cors';
 import {Middleware} from 'koa';
 
 export const DEFAULT_ORIGIN = '*';
