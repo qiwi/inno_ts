@@ -36,8 +36,8 @@ export class InnotsApp {
         this._enableBodyParser();
         this._enableLogMiddleware();
         this._enableErrorMiddleware();
-        this._enableJwtMiddleware();
         this._enableCorsMiddleware();
+        this._enableJwtMiddleware();
         this._enableUserAgentMiddleware();
 
         this.koaAppInstance.use(this.router.routes());
