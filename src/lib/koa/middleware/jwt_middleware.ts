@@ -12,7 +12,8 @@ export function createJwtMiddleware(
 ): Middleware {
     return jwt({
         secret: jwtSecret,
-        getToken: function(ctx: Context, opts: any): null | string {
+        // typedef is broken in koa-jwt so any here is
+        getToken: <any>function(ctx: Context, opts: any): null | string {
             if (!ctx.header || !ctx.header.authorization) {
                 return;
             }
