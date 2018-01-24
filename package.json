@@ -1,6 +1,6 @@
 {
   "name": "innots",
-  "version": "1.0.21",
+  "version": "1.0.22",
   "description": "Core ecom rnd lib",
   "main": "build/index.js",
   "typings": "build/index",
