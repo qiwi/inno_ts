@@ -54,7 +54,8 @@ describe('app', async function(): Promise<void> {
                 return joi.object().keys({
                     test_field: joi.string().trim().email().required(),
                     testQueryField: joi.number().integer(),
-                    test_field_to_escape: joi.string().trim().max(100)
+                    test_field_to_escape: joi.string().trim().max(100),
+                    test_field_not_to_escape: joi.unescapedString().trim().max(100).required()
                 });
             }),
             testController.publicResourceWithMiddlewareValidation
@@ -121,7 +122,8 @@ describe('app', async function(): Promise<void> {
                 form: {
                     testQueryField: ' 1111 ',
                     test_field: '   test@test.ru ',
-                    test_field_to_escape: "'alert(1);<a>"
+                    test_field_to_escape: "'alert(1);<a>",
+                    test_field_not_to_escape: "'alert(1);<a>"
                 },
                 json: true
             });
@@ -129,12 +131,14 @@ describe('app', async function(): Promise<void> {
                 originalCase: {
                     test_field: 'test@test.ru',
                     testQueryField: 1111,
-                    test_field_to_escape: '&#x27;alert(1);&lt;a&gt;'
+                    test_field_to_escape: '&#x27;alert(1);&lt;a&gt;',
+                    test_field_not_to_escape: "'alert(1);<a>"
                 },
                 camelCase: {
                     testField: 'test@test.ru',
                     testQueryField: 1111,
-                    testFieldToEscape: '&#x27;alert(1);&lt;a&gt;'
+                    testFieldToEscape: '&#x27;alert(1);&lt;a&gt;',
+                    testFieldNotToEscape: "'alert(1);<a>"
                 }
             });
 

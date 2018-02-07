@@ -16,6 +16,12 @@ const customJoi: any = joi.extend((joi) => ({
 
         return value;
     }
+})).extend((joi) => ({
+    base: joi.string(),
+    name: 'unescapedString',
+    pre(value: any, state: any, options: any): any {
+        return validator.unescape(value);
+    }
 }));
 
 export {customJoi};
