@@ -13,7 +13,7 @@ export function createJwtMiddleware(
     return jwt({
         secret: jwtSecret,
         // typedef is broken in koa-jwt so any here is
-        getToken: <any>function(ctx: Context, opts: any): null | string {
+        getToken: function(ctx: Context, opts: any): null | string {
             if (!ctx.header || !ctx.header.authorization) {
                 return;
             }
@@ -31,7 +31,7 @@ export function createJwtMiddleware(
             if (!opts.passthrough) {
                 ctx.throw(401, 'Bad Authorization header format. Format is "Authorization: Bearer <token>"');
             }
-        }
+        } as any
     }).unless({
         path: [
             new RegExp(appUnprotectedUrlsRegexp)
