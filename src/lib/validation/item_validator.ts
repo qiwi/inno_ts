@@ -47,7 +47,7 @@ class ItemValidator {
      * @returns {number|never}
      */
     isNumber(
-        field: string, min: number = Number.MIN_SAFE_INTEGER, max: number = Number.MAX_SAFE_INTEGER
+        field: string, min: number = Number.MIN_SAFE_INTEGER / 128, max: number = Number.MAX_SAFE_INTEGER / 128
     ): number | never {
 
         return Validator.isNumber(this._item[field], min, max);
