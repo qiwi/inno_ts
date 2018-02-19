@@ -23,8 +23,8 @@ export class Validator {
     }
 
     static isNumber(value: any,
-                    min: number = Number.MIN_SAFE_INTEGER,
-                    max: number = Number.MAX_SAFE_INTEGER): number | never {
+                    min: number = Number.MIN_SAFE_INTEGER / 128,
+                    max: number = Number.MAX_SAFE_INTEGER / 128): number | never {
 
         value = parseFloat(Validator.isString(value));
 

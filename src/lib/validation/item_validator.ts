@@ -47,6 +47,7 @@ class ItemValidator {
      * @returns {number|never}
      */
     isNumber(
+        // NOTE we restrict too long values by default for float number for floating point use
         field: string, min: number = Number.MIN_SAFE_INTEGER / 128, max: number = Number.MAX_SAFE_INTEGER / 128
     ): number | never {
 
