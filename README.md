@@ -128,5 +128,5 @@ app.route(
 );
 ```
 
-### app.bootstrap(method: string, url: string, ...actions: IMiddleware[]): Promise<void>
+### app.bootstrap(): Promise<void>
 Starts your app with defined routes and middlewares.
