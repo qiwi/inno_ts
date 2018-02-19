@@ -12,18 +12,31 @@ export class Validator {
     static isInt(value: any,
                  min: number = Number.MIN_SAFE_INTEGER,
                  max: number = Number.MAX_SAFE_INTEGER): number | never {
-        value = Validator.isString(value);
-        if (!isNaN(value) && validator.isInt(value)) {
-            value = parseInt(value);
+        value = Validator.isNumber(value, min, max);
 
+        // NOTE we convert to string because of validator.js that accepts only strings
+        if (!validator.isInt(value.toString())) {
+            throw new ValidationError(ValidationError.NO_INT);
+        }
+
+        return value;
+    }
+
+    static isNumber(value: any,
+                    min: number = Number.MIN_SAFE_INTEGER / 128,
+                    max: number = Number.MAX_SAFE_INTEGER / 128): number | never {
+
+        value = parseFloat(Validator.isString(value));
+
+        if (!isNaN(value)) {
             if (value >= min && value <= max) {
                 return value;
             }
 
-            throw new ValidationError(ValidationError.INT_OUT_OF_BOUNDS);
+            throw new ValidationError(ValidationError.NUMBER_OUT_OF_BOUNDS);
         }
 
-        throw new ValidationError(ValidationError.NO_INT);
+        throw new ValidationError(ValidationError.NO_NUMBER);
     }
 
     /**
