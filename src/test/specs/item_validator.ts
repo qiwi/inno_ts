@@ -22,7 +22,8 @@ describe('validator', function() {
             plusInf: Infinity,
             minusInf: -Infinity,
             emptyArray: [],
-            stringArray: ['foo', '1', ' bar ']
+            stringArray: ['foo', '1', ' bar '],
+            floatString: '10212.12'
         });
         done();
     });
@@ -70,6 +71,57 @@ describe('validator', function() {
             }).to.throw(ValidationError);
             expect(function() {
                 itemValidator.isInt('minusInf');
+            }).to.throw(ValidationError);
+        });
+    });
+
+    describe('isNumber', function() {
+        it('numeric string', function() {
+            expect(itemValidator.isNumber('numericStringWithSpaces')).to.eq(12312312312);
+        });
+
+        it('float string', function() {
+            expect(itemValidator.isNumber('floatString')).to.eq(10212.12);
+        });
+
+        it('returns valid error details', function(done) {
+            try {
+                itemValidator.isNumber('boolean');
+            } catch (error) {
+                expect(error).to.be.instanceof(ValidationError);
+                expect(error.code).to.eq(validationErrorPrefix + ValidationError.NO_STRING);
+                expect(error.details).to.eql({
+                    invalidField: 'boolean',
+                    invalidValue: true
+                });
+                done();
+            }
+        });
+
+        it('numeric string with small bounds', function() {
+            expect(function() {
+                itemValidator.isNumber('numericStringWithSpaces', 0, 5);
+            }).to.throw(ValidationError);
+        });
+
+        it('boolean', function() {
+            expect(function() {
+                itemValidator.isNumber('boolean');
+            }).to.throw(ValidationError);
+        });
+
+        it('object', function() {
+            expect(function() {
+                itemValidator.isNumber('object');
+            }).to.throw(ValidationError);
+        });
+
+        it('Infinity', function() {
+            expect(function() {
+                itemValidator.isNumber('plusInf');
+            }).to.throw(ValidationError);
+            expect(function() {
+                itemValidator.isNumber('minusInf');
             }).to.throw(ValidationError);
         });
     });

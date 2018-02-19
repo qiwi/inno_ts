@@ -29,7 +29,7 @@ class ItemValidator {
     /* tslint:enable */
 
     /**
-     * Numeric string check. Escapes, checks and converts to number.
+     * Int string check. Escapes, checks and converts to number.
      * @param field
      * @param min
      * @param max
@@ -37,6 +37,20 @@ class ItemValidator {
      */
     isInt(field: string, min: number = Number.MIN_SAFE_INTEGER, max: number = Number.MAX_SAFE_INTEGER): number | never {
         return Validator.isInt(this._item[field], min, max);
+    }
+
+    /**
+     * Number string check. Escapes, checks and converts to number.
+     * @param field
+     * @param min
+     * @param max
+     * @returns {number|never}
+     */
+    isNumber(
+        field: string, min: number = Number.MIN_SAFE_INTEGER, max: number = Number.MAX_SAFE_INTEGER
+    ): number | never {
+
+        return Validator.isNumber(this._item[field], min, max);
     }
 
     /**

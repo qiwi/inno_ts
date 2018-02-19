@@ -2,6 +2,10 @@
 # yarn lockfile v1
 
 
+"@koa/cors@^2.2.1":
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/@koa/cors/-/cors-2.2.1.tgz#c06a1c34d787e3cee79c0d4c20e8952d1b6d75c5"
+
 "@types/accepts@*":
   version "1.3.2"
   resolved "https://registry.yarnpkg.com/@types/accepts/-/accepts-1.3.2.tgz#52897ad5a51f05ea2f57f8e8136085c7d1c385a5"
@@ -272,9 +276,16 @@ bytes@2.4.0:
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/bytes/-/bytes-2.4.0.tgz#7d97196f9d5baf7f6935e25985549edd2a6c2339"
 
-camelcase@^4.1.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/camelcase/-/camelcase-4.1.0.tgz#d545635be1e33c542649c69173e5de6acfae34dd"
+camelcase-object@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/camelcase-object/-/camelcase-object-1.0.0.tgz#850b84e9e3585703e516ad2b1f5bdc64b53044c2"
+  dependencies:
+    camelcase "^2.0.0"
+    map-obj "^1.0.0"
+
+camelcase@^2.0.0:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/camelcase/-/camelcase-2.1.1.tgz#7c1d16d679a1bbe59ca02cacecfb011e201f5a1f"
 
 caseless@~0.12.0:
   version "0.12.0"
@@ -667,15 +678,7 @@ jsonify@~0.0.0:
   version "0.0.0"
   resolved "https://registry.yarnpkg.com/jsonify/-/jsonify-0.0.0.tgz#2c74b6ee41d93ca51b7b5aaee8f503631d252a73"
 
-jsonwebtoken@5.x.x:
-  version "5.7.0"
-  resolved "https://registry.yarnpkg.com/jsonwebtoken/-/jsonwebtoken-5.7.0.tgz#1c90f9a86ce5b748f5f979c12b70402b4afcddb4"
-  dependencies:
-    jws "^3.0.0"
-    ms "^0.7.1"
-    xtend "^4.0.1"
-
-jsonwebtoken@^7.2.1:
+jsonwebtoken@7.4.1, jsonwebtoken@^7.2.1:
   version "7.4.1"
   resolved "https://registry.yarnpkg.com/jsonwebtoken/-/jsonwebtoken-7.4.1.tgz#7ca324f5215f8be039cd35a6c45bb8cb74a448fb"
   dependencies:
@@ -703,7 +706,7 @@ jwa@^1.1.4:
     ecdsa-sig-formatter "1.0.9"
     safe-buffer "^5.0.1"
 
-jws@^3.0.0, jws@^3.1.4:
+jws@^3.1.4:
   version "3.1.4"
   resolved "https://registry.yarnpkg.com/jws/-/jws-3.1.4.tgz#f9e8b9338e8a847277d6444b1464f61880e050a2"
   dependencies:
@@ -739,21 +742,16 @@ koa-convert@^1.2.0:
     co "^4.6.0"
     koa-compose "^3.0.0"
 
-koa-cors@0.0.16:
-  version "0.0.16"
-  resolved "https://registry.yarnpkg.com/koa-cors/-/koa-cors-0.0.16.tgz#98107993a7909e34c042986c5ec6156d77f3432e"
-
 koa-is-json@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/koa-is-json/-/koa-is-json-1.0.0.tgz#273c07edcdcb8df6a2c1ab7d59ee76491451ec14"
 
-koa-jwt@^1.3.1:
-  version "1.3.2"
-  resolved "https://registry.yarnpkg.com/koa-jwt/-/koa-jwt-1.3.2.tgz#3f57bb4ae8979fc100f16c81fe7b97a7386a7636"
+koa-jwt@^3.3.0:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/koa-jwt/-/koa-jwt-3.3.0.tgz#52c298df7d80e7b8ea27f9aac9916c615abb99c8"
   dependencies:
-    jsonwebtoken "5.x.x"
-    koa-unless "0.0.1"
-    thunkify "~2.1.x"
+    jsonwebtoken "7.4.1"
+    koa-unless "1.0.0"
 
 koa-router@^7.1.0:
   version "7.2.1"
@@ -765,9 +763,9 @@ koa-router@^7.1.0:
     methods "^1.0.1"
     path-to-regexp "^1.1.1"
 
-koa-unless@0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/koa-unless/-/koa-unless-0.0.1.tgz#cfcdd1cdfbaf066e05d843e6a412df8a7c69b218"
+koa-unless@1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/koa-unless/-/koa-unless-1.0.0.tgz#5aa57384bc882568afc90ac04852a3d58658aeeb"
 
 koa-useragent@^0.1.5:
   version "0.1.5"
@@ -867,6 +865,10 @@ log4js@^1.1.0:
     semver "^5.3.0"
     streamroller "^0.4.0"
 
+map-obj@^1.0.0:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/map-obj/-/map-obj-1.0.1.tgz#d933ceb9205d82bdcf4886f6742bdc2b4dea146d"
+
 media-typer@0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/media-typer/-/media-typer-0.3.0.tgz#8710d7af0aa626f8fffa1ce00168545263255748"
@@ -928,10 +930,6 @@ ms@0.7.2:
 ms@2.0.0, ms@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.0.0.tgz#5608aeadfc00be6c2901df5f9861788de0d597c8"
-
-ms@^0.7.1:
-  version "0.7.3"
-  resolved "https://registry.yarnpkg.com/ms/-/ms-0.7.3.tgz#708155a5e44e33f5fd0fc53e81d0d40a91be1fff"
 
 negotiator@0.6.1:
   version "0.6.1"
@@ -1245,10 +1243,6 @@ supports-color@^2.0.0:
 through@2:
   version "2.3.8"
   resolved "https://registry.yarnpkg.com/through/-/through-2.3.8.tgz#0dd4c9ffaabc357960b1b724115d7e0e86a2e1f5"
-
-thunkify@~2.1.x:
-  version "2.1.2"
-  resolved "https://registry.yarnpkg.com/thunkify/-/thunkify-2.1.2.tgz#faa0e9d230c51acc95ca13a361ac05ca7e04553d"
 
 topo@1.x.x:
   version "1.1.0"
