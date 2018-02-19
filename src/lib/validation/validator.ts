@@ -33,7 +33,7 @@ export class Validator {
                 return value;
             }
 
-            throw new ValidationError(ValidationError.NUMBER_OUT_OF_DOUNDS);
+            throw new ValidationError(ValidationError.NUMBER_OUT_OF_BOUNDS);
         }
 
         throw new ValidationError(ValidationError.NO_NUMBER);
