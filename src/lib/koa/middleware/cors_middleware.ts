@@ -2,7 +2,7 @@ import * as Koa from "koa";
 import { Middleware } from 'koa';
 import * as koaCorsMiddleware from "@koa/cors";
 
-export interface CorsOptions {
+export interface ICorsOptions {
     origin?: string | ((ctx: Koa.Context) => boolean | string);
     exposeHeaders?: string[];
     maxAge?: number;
@@ -11,6 +11,6 @@ export interface CorsOptions {
     allowHeaders?: string[];
 }
 
-export function createCorsMiddleware(corsOptions: CorsOptions): Middleware {
+export function createCorsMiddleware(corsOptions: ICorsOptions): Middleware {
     return koaCorsMiddleware(corsOptions);
 }
