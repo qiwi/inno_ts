@@ -1,6 +1,6 @@
 {
   "name": "innots",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Core ecom rnd lib",
   "main": "build/index.js",
   "typings": "build/index",
@@ -25,21 +25,7 @@
     "pg": "^7.4.1",
     "pg-camelcase": "0.0.3",
     "pg-pool": "^2.0.3",
-    "validator": "^8.2.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/qiwi/inno_ts.git"
-  },
-  "keywords": [
-    "typescript"
-  ],
-  "author": "dylukanin@gmail.com",
-  "bugs": {
-    "url": "https://github.com/qiwi/inno_ts/issues"
-  },
-  "homepage": "https://github.com/qiwi/inno_ts/issues",
-  "devDependencies": {
+    "validator": "^8.2.0",
     "@types/chai": "^3.4.34",
     "@types/config": "0.0.31",
     "@types/joi": "^10.4.0",
@@ -54,7 +40,21 @@
     "@types/pg": "^7.4.5",
     "@types/request": "^0.0.45",
     "@types/request-promise": "^4.1.35",
-    "@types/validator": "^5.7.35",
+    "@types/validator": "^5.7.35"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qiwi/inno_ts.git"
+  },
+  "keywords": [
+    "typescript"
+  ],
+  "author": "dylukanin@gmail.com",
+  "bugs": {
+    "url": "https://github.com/qiwi/inno_ts/issues"
+  },
+  "homepage": "https://github.com/qiwi/inno_ts/issues",
+  "devDependencies": {
     "chai": "^3.5.0",
     "jsonwebtoken": "^7.2.1",
     "mocha": "^3.2.0",
