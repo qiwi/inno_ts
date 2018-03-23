@@ -1,8 +1,10 @@
-import * as koa from "koa";
+import * as Joi from 'joi';
+import * as logger from './lib/logger';
+
 declare module "koa" {
     /* tslint:disable */
     interface Context {
-    /* tslint:enable */
+        /* tslint:enable */
         validatedData: {
             originalCase: any;
             camelCase: any;
@@ -21,12 +23,9 @@ export * from './lib/db/pg_pool';
 export * from './lib/error/auth';
 export * from './lib/error/inno';
 export * from './lib/error/validation';
-export {Context, Middleware, Request, Response} from 'koa';
+export { Context, Middleware, Request, Response } from 'koa';
 
-import * as Joi from 'joi';
-import * as logger from './lib/logger';
-
-export {logger, Joi};
+export { logger, Joi };
 
 /* tslint:disable */
 function __export(m) {
@@ -36,6 +35,7 @@ function __export(m) {
         }
     }
 }
+
 try {
     // shitty workaround for an optional dependencies
     // TODO replace with module.resolve
