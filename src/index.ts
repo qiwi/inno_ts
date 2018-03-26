@@ -16,6 +16,7 @@ export * from './lib/validation/item_validator';
 export * from './lib/validation/validator';
 export * from './lib/koa/middleware/error_middleware';
 export * from './lib/koa/controller';
+export * from './lib/koa/services/jwt_service';
 export * from './lib/koa/interfaces';
 export * from './lib/koa/app';
 export * from './lib/db/pg';
