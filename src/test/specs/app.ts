@@ -1,19 +1,26 @@
-import * as Router from 'koa-router';
-import {InnotsApp} from '../../index';
-import * as request from 'request-promise';
-import {expect} from 'chai';
+import { expect } from 'chai';
 import * as jsonWebToken from 'jsonwebtoken';
-import * as Koa from 'koa';
-import Context = Koa.Context;
-import {ValidationError} from "../../lib/error/validation";
-import {AuthError} from "../../lib/error/auth";
-import {InnoError} from "../../lib/error/inno";
+import * as Router from 'koa-router';
+import * as request from 'request-promise';
+import { InnotsApp } from '../../index';
+import { AuthError } from "../../lib/error/auth";
+import { InnoError } from "../../lib/error/inno";
+import { ValidationError } from "../../lib/error/validation";
 import {
-    host, jwtConfigMock, commonConfigMock, jwtPort, jwtSecret, commonPort, testController,
-    publicResource,
+    commonConfigMock,
+    commonPort,
+    host,
+    jwtConfigMock,
+    jwtPort,
+    jwtSecret,
+    nonExistingResource,
     protectedResource,
-    publicResourceWithError, publicResourceWithValidation, publicResourceWithAgent, nonExistingResource,
-    publicResourceWithMiddlewareValidation
+    publicResource,
+    publicResourceWithAgent,
+    publicResourceWithError,
+    publicResourceWithMiddlewareValidation,
+    publicResourceWithValidation,
+    testController
 } from '../data';
 
 const router = new Router();
