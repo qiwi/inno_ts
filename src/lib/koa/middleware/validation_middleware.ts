@@ -50,7 +50,7 @@ export function createValidationMiddleware(schema: joi.ObjectSchema): IMiddlewar
 
         if (result.error) {
             const type = _.get<string>(result.error, 'details.0.type');
-            const invalidKey = _.get<string>(result.error, 'details.0.path');
+            const invalidKey = _.get<string>(result.error, 'details.0.path.0');
             const invalidValue = params[invalidKey];
             const message = _.get<string>(result.error, 'details.0.message');
             throw new ValidationError(
