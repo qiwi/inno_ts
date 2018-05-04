@@ -20,3 +20,5 @@ jspm_packages
 .node_repl_history
 .idea
 application/configs/app.js
+.vscode/tasks.json
+.vscode/tasks.json

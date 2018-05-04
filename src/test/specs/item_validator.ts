@@ -23,7 +23,9 @@ describe('validator', function() {
             minusInf: -Infinity,
             emptyArray: [],
             stringArray: ['foo', '1', ' bar '],
-            floatString: '10212.12'
+            floatString: '10212.12',
+            validDate: '01.01.1970 00:00:00.000Z',
+            invalidDate: '01.01.1970:00:00.000Z'
         });
         done();
     });
@@ -207,6 +209,30 @@ describe('validator', function() {
 
         it('optional', function() {
             expect(itemValidator.optional.isString('nothing')).to.eq(null);
+        });
+    });
+
+    describe('isDate', function() {
+        it('returns valid error details', function(done) {
+            try {
+                itemValidator.isDate('invalidDate');
+            } catch (error) {
+                expect(error).to.be.instanceof(ValidationError);
+                expect(error.code).to.eq(validationErrorPrefix + ValidationError.NO_DATE);
+                expect(error.details).to.eql({
+                    invalidField: 'invalidDate',
+                    invalidValue: '01.01.1970:00:00.000Z'
+                });
+                done();
+            }
+        });
+
+        it('returns valid date', function() {
+            expect(itemValidator.isDate('validDate')).to.eql(new Date('Thu Jan 01 1970 03:00:00 GMT+0300'));
+        });
+
+        it('optional', function() {
+            expect(itemValidator.optional.isDate('nothing')).to.eq(null);
         });
     });
 });

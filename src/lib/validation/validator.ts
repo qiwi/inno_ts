@@ -109,16 +109,18 @@ export class Validator {
      * @param value
      * @returns {Date | never}
      */
-    static isDate(value: string): Date | never {
-        if (value) {
-            const date = new Date(value);
+    static isDate(value: any): Date | never {
+        const strDate = Validator.isString(value);
+
+        if (strDate) {
+            const date = new Date(strDate);
             if (!isNaN(date.getTime())) {
                 return date;
             } else {
                 throw new ValidationError(ValidationError.NO_DATE);
             }
         }
-        
+
         throw new ValidationError(ValidationError.NO_DATE);
     }
 }
