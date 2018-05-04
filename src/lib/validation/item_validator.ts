@@ -92,6 +92,15 @@ class ItemValidator {
     isArray<T>(field: string, iterator?: (arrayElement: any) => T): Array<T> | never {
         return Validator.isArray<T>(this._item[field], iterator);
     }
+
+    /**
+     * Date checking.
+     * @param field
+     * @returns {Date | never}
+     */
+    isDate(field: string): Date | never {
+        return Validator.isDate(this._item[field]);
+    }
 }
 // NOTE !!! Wrapper hack for validator - wraps all ItemValidator methods in try/catch
 
