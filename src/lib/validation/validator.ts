@@ -103,4 +103,24 @@ export class Validator {
 
         return array;
     }
+
+    /**
+     * @see {ItemValidator.isDate}
+     * @param value
+     * @returns {Date | never}
+     */
+    static isDate(value: any): Date | never {
+        const strDate = Validator.isString(value);
+
+        if (strDate) {
+            const date = new Date(strDate);
+            if (!isNaN(date.getTime())) {
+                return date;
+            } else {
+                throw new ValidationError(ValidationError.NO_DATE);
+            }
+        }
+
+        throw new ValidationError(ValidationError.NO_DATE);
+    }
 }
