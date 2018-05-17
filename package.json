@@ -8,7 +8,7 @@
     "build": "rm -rf build && tsc",
     "watch": "tsc --watch",
     "prepublish": "rm -rf build && tsc",
-    "test": "mocha ./build/test/ --recursive",
+    "test": "mocha ./build/test/ --recursive  --exit",
     "lint": "tslint 'src/**/*.ts' --type-check --project tsconfig.json"
   },
   "dependencies": {
