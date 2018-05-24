@@ -1,8 +1,8 @@
-import {Context} from 'koa';
-import {ItemValidator} from '../validation/item_validator';
+import { Context } from 'koa';
+import { ItemValidator } from '../validation/item_validator';
 
 export abstract class Controller {
-    validate(ctx: Context, cb: (ItemValidator: ItemValidator) => any): any {
+    validate(ctx: Context, cb: (itemValidator: ItemValidator) => any): any {
         let params: any;
         if (ctx.request.method === 'GET') {
             params = ctx.request.query;

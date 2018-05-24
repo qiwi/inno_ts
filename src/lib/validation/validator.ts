@@ -1,5 +1,5 @@
 import * as validator from 'validator';
-import {ValidationError} from "../error/validation";
+import { ValidationError } from "../error/validation";
 
 export class Validator {
     /**
@@ -8,6 +8,7 @@ export class Validator {
      * @param min
      * @param max
      * @returns {any}
+     * @throws ValidationError
      */
     static isInt(value: any,
                  min: number = Number.MIN_SAFE_INTEGER,
@@ -43,6 +44,7 @@ export class Validator {
      * @see {ItemValidator.escape}
      * @param value
      * @returns {any}
+     * @throws ValidationError
      */
     static escape(value: string): string {
         return validator.escape(value || '');
@@ -54,6 +56,7 @@ export class Validator {
      * @param min
      * @param max
      * @returns {string}
+     * @throws ValidationError
      */
     static isString(value: any, min: number = 1, max: number = 256): string | never {
         if (typeof value === 'number') {
@@ -74,7 +77,8 @@ export class Validator {
     /**
      * @see {ItemValidator.isEmail}
      * @param value
-     * @returns {any}
+     * @returns {string}
+     * @throws ValidationError
      */
     static isEmail(value: any): string | never {
         const email = Validator.isString(value).toLowerCase();
@@ -88,9 +92,10 @@ export class Validator {
 
     /**
      * @see {ItemValidator.isArray}
-     * @param value
+     * @param array
      * @param iterator
      * @returns {Array}
+     * @throws ValidationError
      */
     static isArray<T>(array: any, iterator?: (arrayElement: any) => T): Array<T> | never {
         if (!(array instanceof Array) || array.length === 0) {
@@ -107,20 +112,33 @@ export class Validator {
     /**
      * @see {ItemValidator.isDate}
      * @param value
-     * @returns {Date | never}
+     * @param min
+     * @param max
+     * @returns {Date}
+     * @throws ValidationError
      */
-    static isDate(value: any): Date | never {
+    static isDate(value: any, min?: Date, max?: Date): Date | never {
         const strDate = Validator.isString(value);
-
-        if (strDate) {
-            const date = new Date(strDate);
-            if (!isNaN(date.getTime())) {
-                return date;
-            } else {
-                throw new ValidationError(ValidationError.NO_DATE);
-            }
+        if (!strDate) {
+            throw new ValidationError(ValidationError.NO_DATE);
         }
 
-        throw new ValidationError(ValidationError.NO_DATE);
+        const isISO8601 = validator.isISO8601(strDate);
+        if (!isISO8601) {
+            throw new ValidationError(ValidationError.NO_DATE);
+        }
+
+        const date = new Date(strDate);
+        if (isNaN(date.getTime())) {
+            throw new ValidationError(ValidationError.NO_DATE);
+        }
+        if (min instanceof Date && date.getTime() < min.getTime()) {
+            throw new ValidationError(ValidationError.DATE_OUT_OF_BOUNDS);
+        }
+        if (max instanceof Date && date.getTime() > max.getTime()) {
+            throw new ValidationError(ValidationError.DATE_OUT_OF_BOUNDS);
+        }
+
+        return date;
     }
 }

@@ -1,9 +1,7 @@
-import {Validator} from './validator';
-import {ValidationError} from "../error/validation";
+import { ValidationError } from "../error/validation";
+import { Validator } from './validator';
 
 class ItemValidator {
-    // TODO temp, enable after updating tslint and changing rulesm
-    /* tslint:disable */
     protected _item: any;
 
     get item(): any {
@@ -17,7 +15,7 @@ class ItemValidator {
             this._optionalInstance = new ItemValidator(this._item, true);
         }
         return this._optionalInstance;
-    };
+    }
 
     protected _isOptional: boolean;
 
@@ -26,14 +24,13 @@ class ItemValidator {
         this._isOptional = isOptional;
     }
 
-    /* tslint:enable */
-
     /**
      * Int string check. Escapes, checks and converts to number.
      * @param field
      * @param min
      * @param max
-     * @returns {number|never}
+     * @returns {number}
+     * @throws ValidationError
      */
     isInt(field: string, min: number = Number.MIN_SAFE_INTEGER, max: number = Number.MAX_SAFE_INTEGER): number | never {
         return Validator.isInt(this._item[field], min, max);
@@ -44,12 +41,12 @@ class ItemValidator {
      * @param field
      * @param min
      * @param max
-     * @returns {number|never}
+     * @returns {number}
+     * @throws ValidationError
      */
-    isNumber(
-        // NOTE we restrict too long values by default for float number for floating point use
-        field: string, min: number = Number.MIN_SAFE_INTEGER / 128, max: number = Number.MAX_SAFE_INTEGER / 128
-    ): number | never {
+    isNumber(// NOTE we restrict too long values by default for float number for floating point use
+             field: string, min: number = Number.MIN_SAFE_INTEGER / 128,
+             max: number = Number.MAX_SAFE_INTEGER / 128): number | never {
 
         return Validator.isNumber(this._item[field], min, max);
     }
@@ -68,7 +65,8 @@ class ItemValidator {
      * @param field
      * @param min
      * @param max
-     * @returns {any|never}
+     * @returns {string}
+     * @throws ValidationError
      */
     isString(field: string, min: number = 1, max: number = 256): string | never {
         return Validator.isString(this._item[field], min, max);
@@ -77,31 +75,37 @@ class ItemValidator {
     /**
      * String email check. Escapes, checks and returns value with string type.
      * @param field
-     * @returns {string|never}
+     * @returns {string}
+     * @throws ValidationError
      */
     isEmail(field: string): string | never {
         return Validator.isEmail(this._item[field]);
     }
 
     /**
+     * Date checking.
+     * @param field
+     * @param min
+     * @param max
+     * @returns {Date}
+     * @throws ValidationError
+     */
+    isDate(field: string, min?: Date, max?: Date): Date | never {
+        return Validator.isDate(this._item[field], min, max);
+    }
+
+    /**
      * Array checking.
-     * @param value
+     * @param field
      * @param iterator
      * @returns {Array}
+     * @throws ValidationError
      */
     isArray<T>(field: string, iterator?: (arrayElement: any) => T): Array<T> | never {
         return Validator.isArray<T>(this._item[field], iterator);
     }
-
-    /**
-     * Date checking.
-     * @param field
-     * @returns {Date | never}
-     */
-    isDate(field: string): Date | never {
-        return Validator.isDate(this._item[field]);
-    }
 }
+
 // NOTE !!! Wrapper hack for validator - wraps all ItemValidator methods in try/catch
 
 function wrap(fn: (...args: any[]) => any): (...args: any[]) => any {
@@ -134,4 +138,4 @@ Object.getOwnPropertyNames(ItemValidator.prototype).forEach((key: string) => {
     }
 });
 
-export {ItemValidator};
+export { ItemValidator };

@@ -19,6 +19,7 @@ export class ValidationError extends BaseError {
     static readonly INT_OUT_OF_BOUNDS: TValidationErrorCode = 'INT_OUT_OF_BOUNDS';
     static readonly NUMBER_OUT_OF_BOUNDS: TValidationErrorCode = 'NUMBER_OUT_OF_BOUNDS';
     static readonly STRING_OUT_OF_BOUNDS: TValidationErrorCode = 'STRING_OUT_OF_BOUNDS';
+    static readonly DATE_OUT_OF_BOUNDS: TValidationErrorCode = 'DATE_OUT_OF_BOUNDS';
 
     static defaultOptions: IInnoErrorOptions = {
         code: ValidationError.VALIDATION,
@@ -56,4 +57,4 @@ export class ValidationError extends BaseError {
 
 export type TValidationErrorCode = 'FAILED' | 'VALIDATION' | 'NO_STRING' |
     'NO_INT' | 'NO_EMAIL' | 'INT_OUT_OF_BOUNDS' | 'STRING_OUT_OF_BOUNDS' | 'NO_ARRAY' | 'NO_NUMBER'
-    | 'NUMBER_OUT_OF_BOUNDS' | 'NO_DATE';
+    | 'NUMBER_OUT_OF_BOUNDS' | 'NO_DATE' | 'DATE_OUT_OF_BOUNDS';

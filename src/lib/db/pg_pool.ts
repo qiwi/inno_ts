@@ -8,9 +8,11 @@ import * as pgCamelCase from 'pg-camelcase';
 pgCamelCase.inject(pg);
 
 export class PgPool extends Pool {
+    /* tslint:disable */
     Client: any;
     constructor(options: any) {
         super(options);
         this.Client = pg.Client;
     }
+    /* tslint:enable */
 }
