@@ -1,12 +1,14 @@
 import {BaseError} from '../error/base';
 import * as pgPool from 'pg-pool';
 import Pool = pgPool.Pool;
-import {QueryResult} from "pg";
+import {QueryResult, defaults as pgDefaults} from "pg";
 import {ONE_ROW_WARNING} from "./db_service";
 import {DbError} from "../error/db";
 
 export const DB_QUERY = 'DB_QUERY';
 export const NO_ROW_ERROR = 'DB_NO_SUCH_';
+
+pgDefaults.parseInt8 = true;
 
 export class PgService {
     protected pool: Pool;
