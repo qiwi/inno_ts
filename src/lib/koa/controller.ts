@@ -15,6 +15,8 @@ export abstract class Controller {
             } else {
                 params = ctx.request.body;
             }
+            // handle route params too
+            params = Object.assign({}, params, ctx.params);
         }
         return cb(this._validate(params));
     }
