@@ -1,24 +1,11 @@
-import { Context } from 'koa';
-import { ItemValidator } from '../validation/item_validator';
+import {Context} from 'koa';
+import {ItemValidator} from '../validation/item_validator';
+import {getRequestParamsFromContext} from "./middleware/validation_middleware";
 
 export abstract class Controller {
     validate(ctx: Context, cb: (itemValidator: ItemValidator) => any): any {
-        let params: any;
-        if (ctx.request.method === 'GET') {
-            params = ctx.request.query;
-        } else {
-            const contentType = ctx.req.headers['content-type'];
-            if (!contentType || contentType.indexOf('application/json') > -1) {
-                params = ctx.request.body;
-            } else if (contentType.indexOf('multipart/form-data') > -1 && ctx.request.body.fields) {
-                params = ctx.request.body.fields;
-            } else {
-                params = ctx.request.body;
-            }
-            // handle route params too
-            params = Object.assign({}, params, ctx.params);
-        }
-        return cb(this._validate(params));
+        const requestParams = getRequestParamsFromContext(ctx);
+        return cb(this._validate(requestParams));
     }
 
     protected _validate(item: any): ItemValidator {

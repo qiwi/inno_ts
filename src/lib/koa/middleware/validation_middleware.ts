@@ -5,6 +5,7 @@ import {ValidationError} from '../../error/validation';
 import * as _ from 'lodash';
 import * as camelCase from 'camelcase-object';
 import * as validator from 'validator';
+import {Context} from "koa";
 
 const customJoi: any = joi.extend((joi) => ({
     base: joi.string(),
@@ -30,28 +31,35 @@ const defaultOptions = {
     stripUnknown: true
 };
 
-export function createValidationMiddleware(schema: joi.ObjectSchema): IMiddleware {
-    return async function(ctx: koa.Context, next: () => any): Promise<void> {
-        let params: any;
-        if (ctx.request.method === 'GET') {
-            params = ctx.request.query;
+export function getRequestParamsFromContext(ctx: Context): any {
+    let params: any;
+    if (ctx.request.method === 'GET') {
+        params = ctx.request.query;
+    } else {
+        const contentType = ctx.req.headers['content-type'];
+        if (!contentType || contentType.indexOf('application/json') > -1) {
+            params = ctx.request.body;
+        } else if (contentType.indexOf('multipart/form-data') > -1 && ctx.request.body.fields) {
+            params = ctx.request.body.fields;
         } else {
-            const contentType = ctx.req.headers['content-type'];
-            if (!contentType || contentType.indexOf('application/json') > -1) {
-                params = ctx.request.body;
-            } else if (contentType.indexOf('multipart/form-data') > -1 && ctx.request.body.fields) {
-                params = ctx.request.body.fields;
-            } else {
-                params = ctx.request.body;
-            }
+            params = ctx.request.body;
         }
+        // handle route params too
+        params = Object.assign({}, params, ctx.params);
+    }
+    return params;
+}
 
-        const result = customJoi.validate(params, schema, defaultOptions);
+export function createValidationMiddleware(schema: joi.ObjectSchema): IMiddleware {
+    return async function (ctx: koa.Context, next: () => any): Promise<void> {
+        const requestParams = getRequestParamsFromContext(ctx);
+
+        const result = customJoi.validate(requestParams, schema, defaultOptions);
 
         if (result.error) {
             const type = _.get<string>(result.error, 'details.0.type');
             const invalidKey = _.get<string>(result.error, 'details.0.path.0');
-            const invalidValue = params[invalidKey];
+            const invalidValue = requestParams[invalidKey];
             const message = _.get<string>(result.error, 'details.0.message');
             throw new ValidationError(
                 ValidationError.DEFAULT,
