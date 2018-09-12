@@ -51,7 +51,7 @@ export function getRequestParamsFromContext(ctx: Context): any {
 }
 
 export function createValidationMiddleware(schema: joi.ObjectSchema): IMiddleware {
-    return async function (ctx: koa.Context, next: () => any): Promise<void> {
+    return async function(ctx: koa.Context, next: () => any): Promise<void> {
         const requestParams = getRequestParamsFromContext(ctx);
 
         const result = customJoi.validate(requestParams, schema, defaultOptions);
