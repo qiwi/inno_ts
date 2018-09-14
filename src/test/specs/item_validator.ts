@@ -170,7 +170,7 @@ describe('validator', () => {
         });
 
         it('optional', () => {
-            expect(itemValidator.optional.isString('nothing')).to.eq(null);
+            expect(itemValidator.optional.isString('nothing')).to.eq(undefined);
         });
     });
 
@@ -203,7 +203,7 @@ describe('validator', () => {
         });
 
         it('optional', () => {
-            expect(itemValidator.optional.isString('nothing')).to.eq(null);
+            expect(itemValidator.optional.isString('nothing')).to.eq(undefined);
         });
     });
 
@@ -240,7 +240,7 @@ describe('validator', () => {
         });
 
         it('optional', () => {
-            expect(itemValidator.optional.isDate('nothing')).to.eq(null);
+            expect(itemValidator.optional.isDate('nothing')).to.eq(undefined);
         });
     });
 });

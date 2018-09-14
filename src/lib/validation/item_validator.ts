@@ -112,7 +112,7 @@ function wrap(fn: (...args: any[]) => any): (...args: any[]) => any {
     return function(field: string, ...args: Array<any>): any | never {
         try {
             if (this._isOptional && !this._item.hasOwnProperty(field)) {
-                return null;
+                return undefined;
             }
             return fn.apply(this, [field].concat(args));
         } catch (error) {
