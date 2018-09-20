@@ -6,6 +6,7 @@ export async function errorMiddleware(ctx: Context, next: () => any): Promise<vo
     try {
         await next();
     } catch (err) {
+        console.error('Error middleware caught an error:', err.toString());
         let error: BaseError;
 
         if (err instanceof BaseError) {
@@ -23,7 +24,7 @@ export async function errorMiddleware(ctx: Context, next: () => any): Promise<vo
             });
         }
 
-        console.error(error.toString());
+        console.error('Error middleware mapped an error:', error.toString());
         ctx.status = error.status;
 
         const result: any = {
