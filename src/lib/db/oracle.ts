@@ -251,7 +251,7 @@ export class OracleService implements IDbService {
         if (!error || !error.message) {
             return false;
         }
-        const retryErrorsRegexp = /^(ORA-03113|ORA-04068|ORA-00028)/ig;
+        const retryErrorsRegexp = /^(ORA-03113|ORA-04068|ORA-00028|ORA-02020)/ig;
         if (!retryErrorsRegexp.test(error.message)) {
             return false;
         }
