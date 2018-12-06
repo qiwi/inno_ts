@@ -21,9 +21,18 @@ export const DB_ORACLE_EXECUTE_ERROR: string = 'DB_ORACLE_EXECUTE_ERROR';
 export class OracleService implements IDbService {
     public poolMax: number = 100;
 
+    /**
+     * Максимальное число попыток выполнить запрос,
+     * если он отвалился по причине убитого с другого конца соединения или изменившегося состояния объектов в бд.
+     * @type {number}
+     */
+    public maxQueryAttempts: number = 10;
+
     protected connectionParams: IConnectionAttributes;
     protected options: IExecuteOptions;
     protected pool: IConnectionPool;
+
+    protected _queryFailsCounter: any = {};
 
     constructor(connectionParams: IConnectionAttributes, options?: IExecuteOptions) {
         this.options = options || {};
@@ -225,11 +234,32 @@ export class OracleService implements IDbService {
             if (connection) {
                 await this._disconnect(connection);
             }
-
-            throw new DbError({
-                publicMessage: error.message,
-                innerDetails: error
-            });
+            if (this._needRetry(arguments, error)) {
+                await this.pool.close();
+                this.pool = null;
+                return this._run(query, params, options);
+            } else {
+                throw new DbError({
+                    publicMessage: error.message,
+                    innerDetails: error
+                });
+            }
         }
+    }
+
+    protected _needRetry(runArguments: IArguments, error: any): boolean {
+        if (!error || !error.message) {
+            return false;
+        }
+        const retryErrorsRegexp = /^(ORA-03113|ORA-04068|ORA-00028)/ig;
+        if (!retryErrorsRegexp.test(error.message)) {
+            return false;
+        }
+        const failsCounterKey = JSON.stringify(runArguments);
+        if (!this._queryFailsCounter[failsCounterKey]) {
+            this._queryFailsCounter[failsCounterKey] = 0;
+        }
+        this._queryFailsCounter[failsCounterKey]++;
+        return this._queryFailsCounter[failsCounterKey] < this.maxQueryAttempts;
     }
 }
