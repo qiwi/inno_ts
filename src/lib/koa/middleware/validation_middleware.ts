@@ -1,11 +1,11 @@
 import {IMiddleware} from 'koa-router';
 import * as joi from 'joi';
 import * as koa from 'koa';
+import {Context} from 'koa';
 import {ValidationError} from '../../error/validation';
 import * as _ from 'lodash';
 import * as camelCase from 'camelcase-object';
 import * as validator from 'validator';
-import {Context} from "koa";
 
 const customJoi: any = joi.extend((joi) => ({
     base: joi.string(),
@@ -57,10 +57,10 @@ export function createValidationMiddleware(schema: joi.ObjectSchema): IMiddlewar
         const result = customJoi.validate(requestParams, schema, defaultOptions);
 
         if (result.error) {
-            const type = _.get<string>(result.error, 'details.0.type');
-            const invalidKey = _.get<string>(result.error, 'details.0.path.0');
+            const type = _.get(result.error, 'details.0.type') as string;
+            const invalidKey = _.get(result.error, 'details.0.path.0') as string;
             const invalidValue = requestParams[invalidKey];
-            const message = _.get<string>(result.error, 'details.0.message');
+            const message = _.get(result.error, 'details.0.message') as string;
             throw new ValidationError(
                 ValidationError.DEFAULT,
                 invalidKey,
