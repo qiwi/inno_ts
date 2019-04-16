@@ -31,7 +31,9 @@ export class InnotsApp {
      * @return {Promise<void>}
      */
     public async bootstrap(): Promise<void> {
-        this.koaAppInstance = new Koa();
+        if (!this.koaAppInstance) {
+            this.koaAppInstance = new Koa();
+        }
 
         this._enableBodyParser();
         this._enableLogMiddleware();
