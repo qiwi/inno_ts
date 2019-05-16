@@ -1,9 +1,9 @@
 import * as Koa from "koa";
 import * as Router from 'koa-router';
+import {IMiddleware} from 'koa-router';
 import * as _ from 'lodash';
 import {IAppConfig, IAppMiddlewares} from './interfaces';
 import {createDefaultMiddlewareCollection} from './middleware/collection';
-import {IMiddleware} from 'koa-router';
 import * as joi from 'joi';
 import {createValidationMiddleware, customJoi} from './middleware/validation_middleware';
 
@@ -34,7 +34,7 @@ export class InnotsApp {
         if (!this.koaAppInstance) {
             this.koaAppInstance = new Koa();
         }
-
+        this._enableTraceMiddleware();
         this._enableBodyParser();
         this._enableLogMiddleware();
         this._enableErrorMiddleware();
@@ -63,6 +63,10 @@ export class InnotsApp {
         });
 
         this.router[method].apply(this.router, ([url] as any).concat(args));
+    }
+
+    protected _enableTraceMiddleware(): void {
+        this.koaAppInstance.use(this.middlewares.trace);
     }
 
     protected _enableBodyParser(): void {

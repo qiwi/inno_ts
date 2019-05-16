@@ -23,6 +23,7 @@ export interface IAppConfig {
 }
 
 export interface IAppMiddlewares {
+    trace?: Middleware;
     bodyParser?: Middleware;
     log?: Middleware;
     error?: Middleware;

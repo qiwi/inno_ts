@@ -12,6 +12,7 @@ declare module "koa" {
     }
 }
 
+export * from './lib/continuation_local_storage';
 export * from './lib/validation/item_validator';
 export * from './lib/validation/validator';
 export * from './lib/koa/middleware/error_middleware';
