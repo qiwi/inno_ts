@@ -7,9 +7,11 @@ import { createJwtMiddleware } from './jwt_middleware';
 import { logMiddleware } from './log_middleware';
 import { successMiddleware } from './success_middleware';
 import { userAgentMiddleware } from './user_agent_middleware';
+import { traceMiddleware} from "./trace_middleware";
 
 export function createDefaultMiddlewareCollection(config: IAppConfig): IAppMiddlewares {
     return {
+        trace: traceMiddleware,
         bodyParser: bodyParser({multipart: true}),
         log: logMiddleware,
         error: errorMiddleware,

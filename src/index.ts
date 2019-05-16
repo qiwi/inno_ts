@@ -12,6 +12,7 @@ declare module "koa" {
     }
 }
 
+export * from './lib/services/cls_service';
 export * from './lib/validation/item_validator';
 export * from './lib/validation/validator';
 export * from './lib/koa/middleware/error_middleware';
