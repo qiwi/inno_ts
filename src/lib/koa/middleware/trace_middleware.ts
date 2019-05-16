@@ -1,35 +1,10 @@
 import {Context} from "koa";
-import {appClsNamespace, MDC_KEY} from "../../continuation_local_storage";
+import {ClsService} from "../../services/cls_service";
+import {Trace} from "../../trace";
 
 const X_B3_TRACE_ID_HEADER = 'X-B3-TraceId';
 const X_B3_SPAN_ID_HEADER = 'X-B3-SpanId';
 const X_B3_PARENT_SPAN_ID_HEADER = 'X-B3-ParentSpanId';
-
-export class Trace {
-    constructor(
-        public traceId: string = Trace._generateId(),
-        public spanId: string = traceId,
-        public parentSpanId: string = traceId) {
-
-    }
-
-    span() {
-        this.parentSpanId = this.spanId;
-        this.spanId = Trace._generateId();
-    }
-
-    toJSON() {
-        return {
-            traceId: this.traceId,
-            spanId: this.spanId,
-            parentSpanId: this.parentSpanId
-        };
-    }
-
-    protected static _generateId(): string {
-        return Date.now() + (Math.floor(Math.random() * 10)).toString(16);
-    }
-}
 
 export async function traceMiddleware(ctx: Context, next: () => Promise<void>): Promise<void> {
     const startTrace: Trace = new Trace(
@@ -38,11 +13,11 @@ export async function traceMiddleware(ctx: Context, next: () => Promise<void>): 
         ctx.req.headers[X_B3_PARENT_SPAN_ID_HEADER] as string
     );
 
-    return await appClsNamespace.runPromise(async () => {
-        appClsNamespace.set(MDC_KEY, startTrace);
+    return await ClsService.createCls(async () => {
+        ClsService.setTrace(startTrace);
         const result = await next();
 
-        const endTrace = appClsNamespace.get(MDC_KEY) as Trace;
+        const endTrace = ClsService.getTrace();
 
         ctx.set({
             [X_B3_TRACE_ID_HEADER]: endTrace.traceId,
@@ -51,5 +26,5 @@ export async function traceMiddleware(ctx: Context, next: () => Promise<void>): 
         });
 
         return result;
-    })
+    });
 }
