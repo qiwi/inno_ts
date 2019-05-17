@@ -1,5 +1,7 @@
 import {Middleware} from 'koa';
 
+export const DEFAULT_PORT = 3000;
+
 export interface IAppJwtConfig {
     secret: string;
     publicPath: string;
@@ -14,7 +16,7 @@ export interface ICorsConfig {
 
 export interface IAppConfig {
     host?: string;
-    port: number;
+    port?: number;
     jwt?: IAppJwtConfig;
     cors?: ICorsConfig;
     userAgent?: boolean;

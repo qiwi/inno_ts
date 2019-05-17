@@ -2,7 +2,7 @@ import * as Koa from "koa";
 import * as Router from 'koa-router';
 import {IMiddleware} from 'koa-router';
 import * as _ from 'lodash';
-import {IAppConfig, IAppMiddlewares} from './interfaces';
+import {DEFAULT_PORT, IAppConfig, IAppMiddlewares} from './interfaces';
 import {createDefaultMiddlewareCollection} from './middleware/collection';
 import * as joi from 'joi';
 import {createValidationMiddleware, customJoi} from './middleware/validation_middleware';
@@ -121,7 +121,7 @@ export class InnotsApp {
 
     private async _startApp(): Promise<void> {
         const host = this.config.host;
-        const port = this.config.port;
+        const port = this.config.port || DEFAULT_PORT;
         let promise;
         if (host) {
             promise = new Promise((resolve, reject) => {
