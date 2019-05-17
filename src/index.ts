@@ -14,6 +14,8 @@ declare module "koa" {
 
 export * from './lib/services/cls_service';
 export * from './lib/trace';
+export * from './lib/decorators/graphite';
+export * from './lib/decorators/trace_span';
 export * from './lib/validation/item_validator';
 export * from './lib/validation/validator';
 export * from './lib/koa/middleware/error_middleware';

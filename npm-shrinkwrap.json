@@ -743,6 +743,22 @@
       "integrity": "sha1-TK+tdrxi8C+gObL5Tpo906ORpyU=",
       "dev": true
     },
+    "graphite": {
+      "version": "0.0.7",
+      "resolved": "https://registry.npmjs.org/graphite/-/graphite-0.0.7.tgz",
+      "integrity": "sha1-pcOS3LffVEh8SQ/i8zXK8BUCg0U=",
+      "requires": {
+        "lazy-socket": "0.0.3",
+        "request": "2.1.1"
+      },
+      "dependencies": {
+        "request": {
+          "version": "2.1.1",
+          "resolved": "https://registry.npmjs.org/request/-/request-2.1.1.tgz",
+          "integrity": "sha1-VXDgxzfWVuvW0dPICqUQ08+Gxvo="
+        }
+      }
+    },
     "growl": {
       "version": "1.10.3",
       "resolved": "https://registry.npmjs.org/growl/-/growl-1.10.3.tgz",
@@ -1138,6 +1154,11 @@
         "object-assign": "^4.1.0"
       }
     },
+    "lazy-socket": {
+      "version": "0.0.3",
+      "resolved": "https://registry.npmjs.org/lazy-socket/-/lazy-socket-0.0.3.tgz",
+      "integrity": "sha1-IY35pYDxVE2LuEwxSd8EesDP/To="
+    },
     "lodash": {
       "version": "4.17.11",
       "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.17.11.tgz",
@@ -1390,8 +1411,7 @@
     "performance-now": {
       "version": "2.1.0",
       "resolved": "https://registry.npmjs.org/performance-now/-/performance-now-2.1.0.tgz",
-      "integrity": "sha1-Ywn04OX6kT7BxpMHrjZLSzd8nns=",
-      "dev": true
+      "integrity": "sha1-Ywn04OX6kT7BxpMHrjZLSzd8nns="
     },
     "pg": {
       "version": "7.4.1",
@@ -1796,6 +1816,15 @@
       "dev": true,
       "requires": {
         "punycode": "^1.4.1"
+      }
+    },
+    "ts-graphite-decorator": {
+      "version": "0.0.10",
+      "resolved": "https://registry.npmjs.org/ts-graphite-decorator/-/ts-graphite-decorator-0.0.10.tgz",
+      "integrity": "sha512-V+xNQRBMhh1CKfdOoSXMgmPN2eKh0CWNRPTBFW1/Q47Kpat62QchsHDg4M+5DK1HcAFxuombLXUyvoOLQyWe5w==",
+      "requires": {
+        "graphite": "0.0.7",
+        "performance-now": "^2.1.0"
       }
     },
     "tslib": {

@@ -39,6 +39,7 @@
     "pg": "7.4.1",
     "pg-camelcase": "0.0.3",
     "pg-pool": "2.0.3",
+    "ts-graphite-decorator": "0.0.10",
     "validator": "8.2.0"
   },
   "repository": {
