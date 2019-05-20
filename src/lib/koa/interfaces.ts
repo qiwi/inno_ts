@@ -15,6 +15,8 @@ export interface ICorsConfig {
 }
 
 export interface IAppConfig {
+    appName?: string;
+    pm2?: boolean;
     host?: string;
     port?: number;
     jwt?: IAppJwtConfig;
