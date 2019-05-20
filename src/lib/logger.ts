@@ -1,22 +1,23 @@
 import * as log4js from 'log4js';
-import {LoggingEvent} from 'log4js';
+import {Configuration, LoggingEvent} from 'log4js';
 import {IAppConfig} from './koa/interfaces';
 import Logger = log4js.Logger;
 import {ClsService} from "./services/cls_service";
 
 export const DEFAULT_LOG_LEVEL = 'TRACE';
 
-export function getLogger(config: IAppConfig): Logger {
-    const logLevel = config.logLevel || DEFAULT_LOG_LEVEL;
-    log4js.addLayout('json', (config) => {
+export function createLoggerJsonLayout(appConfig: IAppConfig): void {
+    log4js.addLayout('json', (loggerConfig: Configuration) => {
         return (logEvent: LoggingEvent) => {
             logEvent.context = {
-                service: process.env.service_name,
+                service: appConfig.appName,
                 mdc: ClsService.getTrace()
             };
             return JSON.stringify(logEvent);
         };
     });
+}
+export function configureLogger(appConfig: IAppConfig): void {
     log4js.configure({
         appenders: {
             out: {
@@ -27,9 +28,15 @@ export function getLogger(config: IAppConfig): Logger {
             }
         },
         categories: {
-            default: {appenders: ['out'], level: logLevel}
-        }
+            default: {appenders: ['out'], level: appConfig.logLevel || DEFAULT_LOG_LEVEL}
+        },
+        pm2: appConfig.pm2
     });
+}
+
+export function getLogger(config: IAppConfig): Logger {
+    createLoggerJsonLayout(config);
+    configureLogger(config);
 
     return log4js.getLogger();
 }
