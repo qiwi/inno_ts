@@ -5,14 +5,13 @@
 export function AllMethods(decorator: MethodDecorator): any {
     return (target: any): any => {
         Object.getOwnPropertyNames(target.prototype).forEach((key: string) => {
-            const value = target.prototype[key];
             const descriptor = Object.getOwnPropertyDescriptor(target.prototype, key);
-            if (typeof value !== 'function'
+            if (typeof descriptor.value !== 'function'
                 || key === 'constructor'
             ) {
                 return;
             }
-            target.prototype[key] = decorator(value, key, descriptor);
+            target.prototype[key] = decorator(descriptor.value, key, descriptor);
         });
         return target;
     };
