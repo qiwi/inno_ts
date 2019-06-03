@@ -1,6 +1,7 @@
 import * as _ from "lodash";
 import {ClsService} from "../..";
 import {DEFAULT_LOG_LEVEL, getLogger} from "../logger";
+import {getClassAndMethodName} from "./helpers";
 
 const traceSpanLogger = getLogger({logLevel: DEFAULT_LOG_LEVEL});
 
@@ -44,13 +45,4 @@ export function TraceSpan(target: any, propertyKey: string, descriptor: TypedPro
     descriptor.value = wrapper;
 
     return wrapper;
-}
-
-function getClassAndMethodName(self: any, methodName: string): string {
-    let result = _.get(self, 'constructor.name', '');
-    if (result !== '') {
-        result += '.';
-    }
-    result += methodName;
-    return result;
 }
