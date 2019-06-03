@@ -17,6 +17,7 @@ export * from './lib/trace';
 export * from './lib/decorators/graphite';
 export * from './lib/decorators/trace_span';
 export * from './lib/decorators/traced_class';
+export * from './lib/decorators/graphite_class';
 export * from './lib/validation/item_validator';
 export * from './lib/validation/validator';
 export * from './lib/koa/middleware/error_middleware';
