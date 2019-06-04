@@ -1,7 +1,6 @@
-import * as _ from "lodash";
-import {ClsService} from "../..";
-import {DEFAULT_LOG_LEVEL, getLogger} from "../logger";
 import {getClassAndMethodName} from "./helpers";
+import {DEFAULT_LOG_LEVEL, getLogger} from "../logger";
+import {ClsService} from "../..";
 
 const traceSpanLogger = getLogger({logLevel: DEFAULT_LOG_LEVEL});
 
@@ -18,8 +17,8 @@ export function TraceSpan(target: any, propertyKey: string, descriptor: TypedPro
         let isAsync: boolean = false;
         try {
             const methodResult = method.apply(this, arguments);
-            if (methodResult.then) {
-                // duck typing. but it is the only Promise definition.
+            if (methodResult && methodResult.then) {
+                // duck typing. but "thenable" is the only Promise definition.
                 isAsync = true;
                 methodResult.then(() => {
                     traceSpanLogger.info('End success', getClassAndMethodName(this, propertyKey));

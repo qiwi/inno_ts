@@ -1,6 +1,6 @@
 build/*
 !build/declarations.d.ts
-src/*.js
+src/**/*.js
 *.js.map
 logs
 *.log

@@ -6,12 +6,18 @@ export function AllMethods(decorator: MethodDecorator): any {
     return (target: any): any => {
         Object.getOwnPropertyNames(target.prototype).forEach((key: string) => {
             const descriptor = Object.getOwnPropertyDescriptor(target.prototype, key);
-            if (typeof descriptor.value !== 'function'
+            if (typeof descriptor.get !== 'undefined'
+                || typeof descriptor.set !== 'undefined'
                 || key === 'constructor'
             ) {
                 return;
             }
-            target.prototype[key] = decorator(descriptor.value, key, descriptor);
+            // some decorators work with descriptor.value. some returns new method.
+            // call decorator in target scope
+            const decoratorResult = decorator.call(target, target.prototype[key], key, descriptor);
+            if (decoratorResult) {
+                target.prototype[key] = decoratorResult;
+            }
         });
         return target;
     };
