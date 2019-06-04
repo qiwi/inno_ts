@@ -1,6 +1,6 @@
 /**
  * Adds provided decorator for each method of a class.
- * Caution: no function expressions will be decorated.
+ * Caution: no function expressions will be decorated. Also methods start with '_' will be ignored
  */
 export function AllMethods(decorator: MethodDecorator): any {
     return (target: any): any => {
@@ -9,6 +9,7 @@ export function AllMethods(decorator: MethodDecorator): any {
             if (typeof descriptor.get !== 'undefined'
                 || typeof descriptor.set !== 'undefined'
                 || key === 'constructor'
+                || key[0] === '_'
             ) {
                 return;
             }
