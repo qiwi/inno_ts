@@ -2,7 +2,7 @@ import {Metered, RPM} from 'ts-graphite-decorator';
 import {getClassAndMethodName} from "./helpers";
 
 export function Graphite(graphiteDefaultKey: string, graphiteUrl: string): MethodDecorator {
-    return function(target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<any>): void {
+    return function(target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<any>): any {
         const timingsKey = graphiteDefaultKey + 'timings.$method.';
         const rpmKey = graphiteDefaultKey + 'rpm.$method.';
 
@@ -10,5 +10,6 @@ export function Graphite(graphiteDefaultKey: string, graphiteUrl: string): Metho
 
         RPM(rpmKey + propertyKey, graphiteUrl)(target, classAndMethodName, descriptor);
         Metered(timingsKey + propertyKey, graphiteUrl)(target, classAndMethodName, descriptor);
+        return descriptor.value;
     };
 }
