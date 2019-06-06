@@ -9,14 +9,18 @@ export const DEFAULT_LOG_LEVEL = 'TRACE';
 export function createLoggerJsonLayout(appConfig: IAppConfig): void {
     log4js.addLayout('json', (loggerConfig: Configuration) => {
         return (logEvent: LoggingEvent) => {
-            logEvent.context = {
-                service: appConfig.appName,
-                mdc: ClsService.getTrace()
+            const loggedObject = {
+                startTime: logEvent.startTime,
+                level: logEvent.level.levelStr,
+                application: appConfig.appName,
+                mdc: ClsService.getTrace(),
+                message: logEvent.data.map((data) => typeof data === "object" ? JSON.stringify(data) : data)
             };
-            return JSON.stringify(logEvent);
+            return JSON.stringify(loggedObject);
         };
     });
 }
+
 export function configureLogger(appConfig: IAppConfig): void {
     log4js.configure({
         appenders: {
