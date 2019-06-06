@@ -8,8 +8,8 @@ export function Graphite(graphiteDefaultKey: string, graphiteUrl: string): Metho
 
         const classAndMethodName = getClassAndMethodName(this, propertyKey);
 
-        RPM(rpmKey + propertyKey, graphiteUrl)(target, classAndMethodName, descriptor);
-        Metered(timingsKey + propertyKey, graphiteUrl)(target, classAndMethodName, descriptor);
+        RPM(rpmKey + classAndMethodName, graphiteUrl)(target, classAndMethodName, descriptor);
+        Metered(timingsKey + classAndMethodName, graphiteUrl)(target, classAndMethodName, descriptor);
         return descriptor.value;
     };
 }
