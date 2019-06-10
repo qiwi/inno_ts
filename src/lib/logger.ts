@@ -11,7 +11,7 @@ export function createLoggerJsonLayout(appConfig: IAppConfig): void {
         return (logEvent: LoggingEvent) => {
             const loggedObject = {
                 startTime: logEvent.startTime,
-                level: logEvent.level.levelStr,
+                levelStr: logEvent.level.levelStr,
                 application: appConfig.appName,
                 mdc: ClsService.getTrace(),
                 message: logEvent.data.map((data) => typeof data === "object" ? JSON.stringify(data) : data)
