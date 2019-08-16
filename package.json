@@ -34,7 +34,7 @@
     "koa-jwt": "3.3.2",
     "koa-router": "7.2.1",
     "koa-useragent": "0.1.5",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.15",
     "log4js": "^4.2.0",
     "pg": "7.4.1",
     "pg-camelcase": "0.0.3",
