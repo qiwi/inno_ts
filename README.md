@@ -9,7 +9,7 @@ and some popular koa middlewares for quick app init and bootstrap.
 First of all module is designed to use with typescript and it's async await implementation
 but you can also use it with plain javascript.
 
-```
+```ts
 import {InnotsApp, Context} from 'innots';
 
 const app = new InnotsApp({
@@ -29,7 +29,7 @@ app.bootstrap().then(() => {
 You can also define validation middleware in route method 
 (validation is powered by [joi library](https://www.npmjs.com/package/joi)):
 
-```
+```ts
 app.route(
     'get',
     '/foo,
@@ -56,7 +56,7 @@ Constructs new http server (powered by [koa framework](https://www.npmjs.com/pac
 #### config: IAppConfig
 An object for configuring built in middlewares.
 
-```
+```ts
 {
     host?: string; // listening host, e.g. 'localhost'
     port: number; // listening port
@@ -82,7 +82,7 @@ An instance of [koa-router](https://www.npmjs.com/package/koa-router) (you can u
 An object with your own custom implementations if middlewares (if you don't want to use 
 built in middlewares):
 
-```
+```ts
 {
     bodyParser?: Middleware; // bodyParser middleware - defaults to koa-bodyparser
     log?: Middleware;
@@ -98,7 +98,7 @@ built in middlewares):
 ### app.route(method: string, url: string, ...actions: IMiddleware[]): void
 
 Defines middleware for processing request.
-```
+```ts
 app.route(
     'get',
     '/foo,
@@ -111,7 +111,7 @@ app.route(
 
 You can also make validation middleware here:
 
-```
+```ts
 app.route(
     'get',
     '/foo,
